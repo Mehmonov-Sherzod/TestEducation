@@ -54,6 +54,9 @@ namespace TestEducation.Data
             // 3].restrict forenkey bolsa primary key ochmaydi oldin forenkey ochish kere
 
 
+
+
+
         }
 
     }
