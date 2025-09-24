@@ -11,9 +11,9 @@ namespace TestEducation.Models
         public Subject Subject { get; set; }
         public string Description { get; set; }
         public List<Question> Questions { get; set; }
-        public List<UserTest> userTests   { get; set; }
+        public List<UserTest> userTests { get; set; }
 
-       
+
     }
 }
 
