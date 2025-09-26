@@ -2,7 +2,8 @@
 {
     public class QuestionLevelDto
     {
-        public int Id { get; set; }
-        public string LevelName { get; set; } = null!;
+     
+        public string LevelName { get; set; } 
+        public int Point { get; set; }
     }
 }

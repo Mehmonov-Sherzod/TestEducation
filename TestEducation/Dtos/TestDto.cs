@@ -1,15 +1,13 @@
-﻿namespace TestEducation.Dtos
+﻿using TestEducation.Models;
+
+namespace TestEducation.Dtos
 {
     public class TestDto
     {
-        public int Id { get; set; }
-        public string Title { get; set; } = null!;
-        public int SubjectId { get; set; }
+        public string Name { get; set; }
+        public string subjectId { get; set; }
+        public string Description { get; set; }
     }
 
-    public class TestCreateDto
-    {
-        public string Title { get; set; } = null!;
-        public int SubjectId { get; set; }
-    }
+
 }
