@@ -3,7 +3,7 @@
     public enum  PermissionEnum
     {
         // Subject
-        ViewSubject,
+    ViewSubject,
     CreateSubject,
     UpdateSubject,
     DeleteSubject,
