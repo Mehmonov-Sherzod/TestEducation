@@ -19,7 +19,7 @@ namespace TestEducation.Service
             var claims = new[]
             {
 
-            new Claim(JwtRegisteredClaimNames.Email, email)
+            new Claim(ClaimTypes.Email, email)
         };
 
             var key = new SymmetricSecurityKey(
