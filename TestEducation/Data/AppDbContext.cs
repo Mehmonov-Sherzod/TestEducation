@@ -5,33 +5,27 @@ namespace TestEducation.Data
 {
     public class AppDbContext : DbContext
     {
+        private readonly IConfiguration _configuration;
         public DbSet<AnswerOption> Answers { get; set; }
-
         public DbSet<Permission> permissions { get; set; }
-
         public DbSet<Question> question { get; set; }   
-
         public DbSet<Role> roles { get; set; }  
-
         public DbSet<RolePermission> rolePermissions { get; set; }
-
         public DbSet<Test> tests { get; set; }  
-
         public DbSet<User> users { get; set; }  
-
         public DbSet<UserRole> userRoles { get; set; }  
-
         public DbSet<UserTest> userTests { get; set; }      
-        
-
-        public DbSet<Subject> subjects { get; set; }        
+        public DbSet<Subject> subjects { get; set; }      
+        public AppDbContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string path = "Host=localhost;Username=postgres;Password=Sherzod3466;Database=TestEducation";
-
+            string path = _configuration.GetConnectionString("Default")!;
             optionsBuilder.UseNpgsql(path);
         }
 
