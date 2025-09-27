@@ -37,7 +37,7 @@ namespace TestEducation.Data
 
             modelBuilder.Entity<RolePermission>()
                 .HasKey(rp => new { rp.RoleId, rp.PermissionId });
-
+           
             modelBuilder.Entity<UserRole>()
                .HasKey(rp => new { rp.RoleId, rp.UserId });
 
