@@ -15,7 +15,9 @@ namespace TestEducation.Data
         public DbSet<User> users { get; set; }  
         public DbSet<UserRole> userRoles { get; set; }  
         public DbSet<UserTest> userTests { get; set; }      
-        public DbSet<Subject> subjects { get; set; }      
+        public DbSet<Subject> subjects { get; set; }        
+        public DbSet<UserQuestion> userQuestions { get; set; }  
+        public  DbSet<UserQuestionAnswer> userQuestionsAnswer { get; set; } 
         public AppDbContext(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -41,6 +43,9 @@ namespace TestEducation.Data
 
             modelBuilder.Entity<UserTest>()
                .HasKey(rp => new { rp.TestId, rp.UserId });
+
+            modelBuilder.Entity<UserQuestion>()
+                .HasKey(rp => new {rp.UserId , rp.QuestionId});
 
             // deletebehavior  nimaar qiladi   
             // 1].cascade primary key ochkandan keyin primary key ochadi

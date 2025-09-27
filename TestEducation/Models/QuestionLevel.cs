@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public string Level { get; set; }
         public int Point {  get; set; } 
-        public Question Question { get; set; }  
+        public List<Question> questions { get; set; }  
     }
 }
     

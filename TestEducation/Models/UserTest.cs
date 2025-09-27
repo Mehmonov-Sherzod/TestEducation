@@ -12,8 +12,6 @@ namespace TestEducation.Models
 
         public User User { get; set; }
 
-        public List<UserTestAnswer> UserAnswers { get; set; }
-
         public int score { get; set; }  
 
         public DateTime DateTime { get; set; }
