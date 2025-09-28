@@ -30,9 +30,8 @@ namespace TestEducation.Controllers.AuthService
         public IActionResult UserCreate(UserDto userDto)
         {
             if (userDto == null)
-            {
                 NotFound("hato");
-            }
+            
 
             var user = new User
             {
