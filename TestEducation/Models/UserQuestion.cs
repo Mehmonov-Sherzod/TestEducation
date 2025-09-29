@@ -6,6 +6,7 @@
         public User User { get; set; }
         public int QuestionId { get; set; }
         public Question Question { get; set; }  
+        public bool IsAnswer { get; set; }
         public DateTime AnsweredAt { get; set; } 
         public List<UserQuestionAnswer> UserAnswers { get; set; } 
     }
