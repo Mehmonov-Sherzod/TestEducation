@@ -16,7 +16,6 @@ namespace TestEducation.Controllers
         {
             appDbContext = _appDbContext;
         }
-
         [HttpPost]
         public IActionResult TestCreate(TestDto testDto)
         {
@@ -32,7 +31,6 @@ namespace TestEducation.Controllers
             };
             return Ok("test yaratildi");
         }
-
         [HttpGet]
         public IActionResult GetAllTest()
         {
@@ -48,7 +46,6 @@ namespace TestEducation.Controllers
         }
 
         [HttpGet("{id}")]
-
         public IActionResult GetById(int id)
         {
             var test = appDbContext.tests
@@ -65,7 +62,6 @@ namespace TestEducation.Controllers
         }
 
         [HttpPut("{id}")]
-
         public IActionResult UpdateTest(int id, TestDto testDto)
         {
             var test = appDbContext.tests.

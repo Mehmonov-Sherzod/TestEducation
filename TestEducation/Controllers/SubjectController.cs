@@ -11,7 +11,6 @@ namespace TestEducation.Controllers
     public class SubjectController : ControllerBase 
     {
         private readonly AppDbContext appDbContext;
-
         public SubjectController( AppDbContext _appDbContext)
         {      
             appDbContext = _appDbContext;
@@ -37,7 +36,6 @@ namespace TestEducation.Controllers
         }
 
         [HttpGet]
-
         public IActionResult GetAll()
         {
             var Subject = appDbContext.subjects.
@@ -66,7 +64,6 @@ namespace TestEducation.Controllers
         }
 
         [HttpPut("{id}")]
-
         public IActionResult UpdateSubject(int id, SubjectDto subjectDto)
         {
             var subject = appDbContext.subjects
@@ -83,7 +80,6 @@ namespace TestEducation.Controllers
         }
 
         [HttpDelete("{id}")]
-
         public IActionResult DeleteSubject(int id)
         {
             var subject = appDbContext.subjects.

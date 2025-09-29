@@ -2,39 +2,17 @@
 {
     public enum  PermissionEnum
     {
-        // Subject
-    ViewSubject,
-    CreateSubject,
-    UpdateSubject,
-    DeleteSubject,
+        // Admin huquqlari
+        ManageSubjects,
+        ManageTests,
+        ManageQuestions,
+        ManageAnswerOptions,
+        ManageStudents,
 
-    // Test
-    ViewTest,
-    CreateTest,
-    UpdateTest,
-    DeleteTest,
-
-    // Question
-    ViewQuestion,
-    CreateQuestion,
-    UpdateQuestion,
-    DeleteQuestion,
-
-    // Answer Options
-    ViewAnswerOption,
-    CreateAnswerOption,
-    UpdateAnswerOption,
-    DeleteAnswerOption,
-
-    // Student
-    ViewStudent,
-    CreateStudent,
-    UpdateStudent,
-    DeleteStudent,
-
-    // Student Test
-    AssignTestToStudent,
-    TakeTest,
-    ViewResults
+        // Student huquqlari
+        ViewSubjects,
+        ViewTests,
+        TakeTest,
+        ViewResults
     }
 }

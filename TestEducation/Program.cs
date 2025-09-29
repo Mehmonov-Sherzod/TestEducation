@@ -42,26 +42,28 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-//    var permissions = Enum.GetValues(typeof(PermissionEnum))
-//        .Cast<PermissionEnum>()
-//        .Select(p => new Permission
-//        {
-//            Name = p.ToString(),
-//            Description = p + " permission"
-//        }).ToList();
+    var permissions = Enum.GetValues(typeof(PermissionEnum))
+        .Cast<PermissionEnum>()
+        .Select(p => new Permission
+        {
+            Name = p.ToString(),
+            Description = p + " permission"
+        }).ToList();
 
-//    foreach (var perm in permissions)
-//    {
-//        if (!context.permissions.Any(x => x.Name == perm.Name))
-//            context.permissions.Add(perm);
-//    }
+    foreach (var perm in permissions)
+    {
+        if (!context.permissions.Any(x => x.Name == perm.Name))
+            context.permissions.Add(perm);
+    }
 
-//    context.SaveChanges();
-//}
+    
+
+    context.SaveChanges();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -33,7 +33,6 @@ namespace TestEducation.Controllers
                     IsCorrect = a.IsCorrect,
                 }).ToList()
             };
-
             appDbContext.question.Add(question);
             appDbContext.SaveChanges();
 

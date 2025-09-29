@@ -53,6 +53,14 @@ namespace TestEducation.Data
             // 3].restrict forenkey bolsa primary key ochmaydi oldin forenkey ochish kere
 
 
+            modelBuilder.Entity<Role>()
+                .HasData(
+                new Role { Id = 1, Name = "Admin", Description = "Barcha tizimdi boshqaradiga admin rol" },
+                new Role { Id = 2, Name = "Student", Description = "Test yechish va natija korish" }
+
+                );
+
+
 
 
 

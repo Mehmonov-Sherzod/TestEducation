@@ -32,7 +32,7 @@ namespace TestEducation.Controllers
 
             return Ok("Answer yaratildi");
         }
-
+        
         [HttpGet]
         public IActionResult GetAllAnswer()
         {
@@ -46,7 +46,6 @@ namespace TestEducation.Controllers
 
             return Ok(answer);
         }
-
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
@@ -67,7 +66,6 @@ namespace TestEducation.Controllers
         }
 
         [HttpPut("{id}")]
-
         public IActionResult UpdateAnswer(int id , AnswerOptionDto answerOptionDto )
         {
             var answer = appDbContext.Answers
