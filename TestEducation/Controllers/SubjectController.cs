@@ -15,10 +15,8 @@ namespace TestEducation.Controllers
 
         public readonly ISubjectServise _IsubjectServise;
         public SubjectController( ISubjectServise IsubjectServise )
-        {      
-      
-            _IsubjectServise = IsubjectServise; 
-           
+        {        
+            _IsubjectServise = IsubjectServise;       
         }
 
         [HttpPost]
@@ -26,11 +24,8 @@ namespace TestEducation.Controllers
         public async Task<IActionResult> CreateSubject(SubjectDto subjectDto)
         {
             var rezult = await _IsubjectServise.CreateSubject(subjectDto);
-
             return Ok(rezult);
 
-
-        
         }
     }
 }
