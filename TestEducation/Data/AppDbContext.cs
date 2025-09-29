@@ -6,15 +6,13 @@ namespace TestEducation.Data
     public class AppDbContext : DbContext
     {
         private readonly IConfiguration _configuration;
-        public DbSet<AnswerOption> Answers { get; set; }
+        public DbSet<Answer> Answers { get; set; }
         public DbSet<Permission> permissions { get; set; }
         public DbSet<Question> question { get; set; }   
         public DbSet<Role> roles { get; set; }  
         public DbSet<RolePermission> rolePermissions { get; set; }
-        public DbSet<Test> tests { get; set; }  
         public DbSet<User> users { get; set; }  
-        public DbSet<UserRole> userRoles { get; set; }  
-        public DbSet<UserTest> userTests { get; set; }      
+        public DbSet<UserRole> userRoles { get; set; }   
         public DbSet<Subject> subjects { get; set; }        
         public DbSet<UserQuestion> userQuestions { get; set; }  
         public  DbSet<UserQuestionAnswer> userQuestionsAnswer { get; set; } 
@@ -40,9 +38,6 @@ namespace TestEducation.Data
            
             modelBuilder.Entity<UserRole>()
                .HasKey(rp => new { rp.RoleId, rp.UserId });
-
-            modelBuilder.Entity<UserTest>()
-               .HasKey(rp => new { rp.TestId, rp.UserId });
 
             modelBuilder.Entity<UserQuestion>()
                 .HasKey(rp => new {rp.UserId , rp.QuestionId});

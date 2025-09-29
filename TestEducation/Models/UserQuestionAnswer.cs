@@ -6,7 +6,7 @@
         public int UserQuestionId { get; set; }
         public UserQuestion UserQuestion { get; set; }
         public int AnswerId { get; set; }
-        public AnswerOption  Answer { get; set; }
+        public Answer  Answer { get; set; }
 
 
     }
