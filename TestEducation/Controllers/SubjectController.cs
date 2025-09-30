@@ -19,9 +19,9 @@ namespace TestEducation.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> CreateSubject(SubjectDto subjectDto)
+        public async Task<IActionResult> CreateSubject(SubjectDTO subjectDTO)
         {
-            var rezult = await _IsubjectServise.CreateSubject(subjectDto);
+            var rezult = await _IsubjectServise.CreateSubject(subjectDTO);
             return Ok(rezult);
 
         }

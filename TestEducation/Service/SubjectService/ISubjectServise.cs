@@ -4,13 +4,13 @@ namespace TestEducation.Service.SubjectService
 {
     public interface ISubjectServise
     {
-        Task<string> CreateSubject(SubjectDto subjectDto);
+        Task<string> CreateSubject(SubjectDTO subjectDTO );
 
-        Task<IEnumerable<SubjectDto>> GetaAllSubjects();    
+        Task<IEnumerable<SubjectDTO>> GetaAllSubjects();    
 
-        Task<SubjectDto> GetByIdSubject(int id);    
+        Task<SubjectDTO> GetByIdSubject(int id);    
 
-        Task<string> UpdateSubject(int id , SubjectDto subjectDto);
+        Task<string> UpdateSubject(int id , SubjectDTO subjectDTO );
 
         Task<string> DeleteSubject(int id); 
     }
