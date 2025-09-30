@@ -4,9 +4,8 @@
     {
         public string QuestionText { get; set; }
         public int SubjectId { get; set; }
-        public List<AnswerOptionDto> Answers { get; set; }
-
-      //  public QuestionLevelDto Level { get; set; }
+        public int QuestionLevelId { get; set; }    
+        public List<AnswerDTO> Answers { get; set; } 
     }
 
 }
