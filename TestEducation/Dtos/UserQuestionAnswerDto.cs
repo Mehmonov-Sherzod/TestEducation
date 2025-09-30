@@ -1,6 +1,6 @@
 ﻿namespace TestEducation.Dtos
 {
-    public class UserQuestionAnswerDto
+    public class UserQuestionAnswerDTO
     {
         public int AnswerOptionId { get; set; }
         public bool IsSelected { get; set; }

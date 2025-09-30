@@ -1,6 +1,6 @@
 ﻿namespace TestEducation.Dtos
 {
-    public class LoginDto
+    public class LoginDTO
     {
         public string Email { get; set; }
 

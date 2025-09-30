@@ -1,6 +1,6 @@
 ﻿namespace TestEducation.Dtos
 {
-    public class UserQuestionDto
+    public class UserQuestionDTO
     {
 
         public int UserId { get; set; }

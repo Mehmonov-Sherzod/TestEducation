@@ -1,6 +1,6 @@
 ﻿namespace TestEducation.Dtos
 {
-    public class SubjectDto
+    public class SubjectDTO
     {
         public string Name { get; set; }
 
