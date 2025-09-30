@@ -10,7 +10,7 @@ namespace TestEducation.Service.UserService
 
         Task<UserDTO> GetByIdUser(int id);
 
-        Task<string> UpdateUser(int id, UserDTO userDTO);
+        Task<UserDTO> UpdateUser(int id, UserDTO userDTO);
 
         Task<string> DeleteByIdUser(int id);
     }

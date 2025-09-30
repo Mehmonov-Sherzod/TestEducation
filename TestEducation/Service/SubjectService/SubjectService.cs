@@ -28,11 +28,10 @@ namespace TestEducation.Service.SubjectService
 
             };
 
-            _appDbContext.subjects.Add(Subject);
-            _appDbContext.SaveChanges();
+           _appDbContext.subjects.Add(Subject);
+           await  _appDbContext.SaveChangesAsync();
 
             return "Subject Qo'shildi";
-
         }
 
         public Task<string> DeleteSubject(int id)

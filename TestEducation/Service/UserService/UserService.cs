@@ -27,28 +27,87 @@ namespace TestEducation.Service.UserService
                 Password = userDTO.Password,
                 IsActive = userDTO.IsActive,
                 CreatedAt = DateTime.UtcNow,
-            }
+                UserRoles = userDTO.Roles.Select(x => new UserRole
+                {
+                    RoleId = x.RoleId
+                }).ToList()
+            };
 
+            _appDbContext.users.Add(user);
+            await _appDbContext.SaveChangesAsync();
+
+            return "user qowildi";
         }
 
-        public Task<string> DeleteByIdUser(int id)
+        public async Task<string> DeleteByIdUser(int id)
         {
-            throw new NotImplementedException();
+            var user = await _appDbContext.users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null)
+                return "user topilmadi";
+
+            _appDbContext.users.Remove(user);
+            await  _appDbContext.SaveChangesAsync();
+
+            return "user ochirildi";
         }
 
-        public Task<ICollection<UserDTO>> GetAllUsers()
+        public async Task<ICollection<UserDTO>> GetAllUsers()
         {
-            throw new NotImplementedException();
+            var users = await _appDbContext.users.Select(x => new UserDTO
+            {
+                FullName = x.FullName,
+                Email = x.Email,
+                Password = x.Password,
+                IsActive = x.IsActive,
+                CreatedAt = DateTime.UtcNow,
+            
+            }).ToListAsync();
+
+            return users;
         }
 
-        public Task<UserDTO> GetByIdUser(int id)
+        public async Task<UserDTO> GetByIdUser(int id)
         {
-            throw new NotImplementedException();
+            var user = await _appDbContext.users.
+                Where(x => x.Id == id)
+                .Select(x => new UserDTO
+                {
+                    FullName = x.FullName,
+                    Email = x.Email,
+                    Password = x.Password,
+                    IsActive = x.IsActive,
+                    CreatedAt = DateTime.UtcNow,
+                }).FirstOrDefaultAsync();
+
+            return user;
+
+
+        }
+        public async Task<UserDTO> UpdateUser(int id , UserDTO userDTO)
+        {
+            var user = await _appDbContext.users.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (user == null)
+                return null;
+
+            user.FullName = userDTO.FullName;
+            user.Email = userDTO.Email;
+            user.Password = userDTO.Password;
+            user.IsActive = userDTO.IsActive;
+            user.CreatedAt = DateTime.UtcNow;
+
+            await _appDbContext.SaveChangesAsync();
+
+            return new UserDTO
+            {
+                FullName = user.FullName,
+                Email = user.Email,
+                Password = user.Password,
+                IsActive = user.IsActive,
+                CreatedAt = DateTime.UtcNow,
+            };
         }
 
-        public Task<string> UpdateUser(int id, UserDTO userDTO)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }

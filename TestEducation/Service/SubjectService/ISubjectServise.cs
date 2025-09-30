@@ -10,7 +10,7 @@ namespace TestEducation.Service.SubjectService
 
         Task<SubjectDTO> GetByIdSubject(int id);    
 
-        Task<string> UpdateSubject(int id , SubjectDTO subjectDTO );
+        Task<string> UpdateSubject(int id , SubjectDTO subjectDTO);
 
         Task<string> DeleteSubject(int id); 
     }

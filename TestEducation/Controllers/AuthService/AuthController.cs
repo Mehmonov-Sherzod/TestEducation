@@ -27,7 +27,7 @@ namespace TestEducation.Controllers.AuthService
 
         [HttpPost("Regist")]
 
-        public IActionResult UserCreate(UserDto userDto)
+        public IActionResult UserCreate(UserDTO userDto)
         {
             if (userDto == null)
                 NotFound("hato");
@@ -53,7 +53,7 @@ namespace TestEducation.Controllers.AuthService
 
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginDto loginDto )
+        public IActionResult Login([FromBody] LoginDTO loginDto )
         {
 
             var user = appDbContext.users

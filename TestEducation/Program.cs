@@ -7,6 +7,7 @@ using TestEducation.Models;
 using TestEducation.Models.Enum;
 using TestEducation.Service;
 using TestEducation.Service.SubjectService;
+using TestEducation.Service.UserService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<AppDbContext>();
 builder.Services.AddScoped<ISubjectServise, SubjectService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
