@@ -10,5 +10,7 @@
         public DateTime AnsweredAt { get; set; } 
         public List<UserQuestionAnswer> UserAnswers { get; set; } 
     }
+
+
 }
 

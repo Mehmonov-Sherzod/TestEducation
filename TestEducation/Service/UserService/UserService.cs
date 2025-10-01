@@ -17,14 +17,16 @@ namespace TestEducation.Service.UserService
 
         public async Task<ResponseDTO> CreateUser(UserDTO userDTO)
         {
-           var rezult = await _appDbContext.users.AnyAsync(x => x.Email == userDTO.Email);
-
-            if (rezult)
+            if (await _appDbContext.users.AnyAsync(x => x.Email == userDTO.Email))
+            {
                 return new ResponseDTO
                 {
                     IsSuccess = false,
-                    Message = "bunday email ga ega user mavjud"
+                    Message = "bunday email ga ega user mavjud",
+                    StatusCode = 400
                 };
+            }
+                
 
             var user = new User
             {
@@ -33,10 +35,7 @@ namespace TestEducation.Service.UserService
                 Password = userDTO.Password,
                 IsActive = userDTO.IsActive,
                 CreatedAt = DateTime.UtcNow,
-                UserRoles = userDTO.Roles.Select(x => new UserRole
-                {
-                    RoleId = x.RoleId
-                }).ToList()
+               
             };
 
             _appDbContext.users.Add(user);
@@ -45,7 +44,8 @@ namespace TestEducation.Service.UserService
             return new ResponseDTO
             {
                 IsSuccess = true,
-                Message = "user qoshildi"
+                Message = "user qoshildi",
+                StatusCode = 201
             };
         }
 
@@ -57,6 +57,7 @@ namespace TestEducation.Service.UserService
                 {
                     IsSuccess = false,
                     Message = "bunday id li user mavjud emas",
+                    StatusCode = 404
                 };
 
             _appDbContext.users.Remove(user);
@@ -65,7 +66,9 @@ namespace TestEducation.Service.UserService
             return new ResponseDTO
             {
                 IsSuccess = true,
-                Message = "foydalanuvchi ochirildi"
+                Message = "foydalanuvchi ochirildi",
+                StatusCode = 200
+                
             };
         }
 
@@ -86,6 +89,7 @@ namespace TestEducation.Service.UserService
             {
                 IsSuccess = true,
                 Message = "Foydalanuvchilar ro'yxati olindi",
+                StatusCode = 200,
                 Data = users
             };
         }
@@ -109,7 +113,9 @@ namespace TestEducation.Service.UserService
                 {
                     IsSuccess = false,
                     Message = $"ID ga bo'lgan user topilmadi",
+                    StatusCode = 404,
                     Data = null
+
                 };
             
 
@@ -117,6 +123,7 @@ namespace TestEducation.Service.UserService
             {
                 IsSuccess = true,
                 Message = "User topildi",
+                StatusCode = 200,
                 Data = user
             };
 
@@ -131,6 +138,7 @@ namespace TestEducation.Service.UserService
                 {
                     IsSuccess = false,
                     Message = "bunday id ga ega bolgan user yo'q",
+                    StatusCode = 404,
                     Data = null,
                 };
 
@@ -147,6 +155,7 @@ namespace TestEducation.Service.UserService
             {
                 IsSuccess = true,
                 Message = "user qoshildi",
+                StatusCode = 200,
                 Data = userDTO
 
             };

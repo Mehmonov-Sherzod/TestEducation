@@ -8,11 +8,9 @@
 
         public string Password { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
 
-        public DateTime CreatedAt { get; set; }
-
-        public List<UserRoleDto> Roles { get; set; }    
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
 
     }

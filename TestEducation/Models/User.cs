@@ -6,8 +6,8 @@
         public string FullName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }     
-        public bool IsActive { get; set; }
-        public DateTime CreatedAt { get; set; }  
+        public bool IsActive { get; set; } = true;
+        public DateTime CreatedAt { get; set; }  = DateTime.UtcNow;
         public List<UserQuestion> userQuestions   { get; set; }     
         public List<UserRole> UserRoles { get; set; }
     }

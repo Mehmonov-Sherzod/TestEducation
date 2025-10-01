@@ -15,6 +15,7 @@ namespace TestEducation.Data
         public DbSet<UserRole> userRoles { get; set; }   
         public DbSet<Subject> subjects { get; set; }        
         public DbSet<UserQuestion> userQuestions { get; set; }  
+        public DbSet<QuestionLevel> questionLevel { get; set; }
         public  DbSet<UserQuestionAnswer> userQuestionsAnswer { get; set; } 
         public AppDbContext(IConfiguration configuration)
         {
@@ -47,6 +48,13 @@ namespace TestEducation.Data
             modelBuilder.Entity<User>()
                  .HasIndex(u => u.Email)
                  .IsUnique();
+
+            // QuestionLevel modelida Level Uniq Boladi
+            modelBuilder.Entity<QuestionLevel>()
+               .HasIndex(u => u.Level)
+               .IsUnique();
+
+
             // deletebehavior  nimaar qiladi   
             // 1].cascade primary key ochkandan keyin primary key ochadi
             // 2].settnull primary key ochkandan keyin forenkey null boladi
