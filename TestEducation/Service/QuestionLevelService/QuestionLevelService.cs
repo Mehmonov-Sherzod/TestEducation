@@ -4,27 +4,27 @@ namespace TestEducation.Service.QuestionLevelService
 {
     public class QuestionLevelService : IQuestionLevelService
     {
-        public Task<string> CreateQuestionLevel()
+        public Task<ResponseDTO> CreateQuestionLevel()
         {
             throw new NotImplementedException();
         }
 
-        public Task<QuestionLevelDTO> DeleteByIdQuestionLevel(int Id)
+        public Task<ResponseDTO<QuestionLevelDTO>> DeleteByIdQuestionLevel(int Id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<QuestionLevelDTO>> GetAllQuestionLevel()
+        public Task<ResponseDTO<ICollection<QuestionLevelDTO>>> GetAllQuestionLevel()
         {
             throw new NotImplementedException();
         }
 
-        public Task<QuestionLevelDTO> GetByIdQuestionLevel()
+        public Task<ResponseDTO<QuestionLevelDTO>> GetByIdQuestionLevel()
         {
             throw new NotImplementedException();
         }
 
-        public Task<QuestionLevelDTO> UpdateQuestionLevel(int Id, QuestionLevelDTO questionLevel)
+        public Task<ResponseDTO<QuestionLevelDTO>> UpdateQuestionLevel(int Id, QuestionLevelDTO questionLevel)
         {
             throw new NotImplementedException();
         }

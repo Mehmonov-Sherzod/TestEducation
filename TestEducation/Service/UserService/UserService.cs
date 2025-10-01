@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Security.AccessControl;
+using Microsoft.EntityFrameworkCore;
 using TestEducation.Data;
 using TestEducation.Dtos;
 using TestEducation.Models;
@@ -13,12 +14,17 @@ namespace TestEducation.Service.UserService
         {
             _appDbContext = appDbContext;
         }
-        public async Task<string> CreateUser(UserDTO userDTO)
+
+        public async Task<ResponseDTO> CreateUser(UserDTO userDTO)
         {
            var rezult = await _appDbContext.users.AnyAsync(x => x.Email == userDTO.Email);
 
             if (rezult)
-                return "Bunday emailga ega bolgan user mavjud";
+                return new ResponseDTO
+                {
+                    IsSuccess = false,
+                    Message = "bunday email ga ega user mavjud"
+                };
 
             var user = new User
             {
@@ -36,59 +42,97 @@ namespace TestEducation.Service.UserService
             _appDbContext.users.Add(user);
             await _appDbContext.SaveChangesAsync();
 
-            return "user qowildi";
+            return new ResponseDTO
+            {
+                IsSuccess = true,
+                Message = "user qoshildi"
+            };
         }
 
-        public async Task<string> DeleteByIdUser(int id)
+        public async Task<ResponseDTO> DeleteByIdUser(int id)
         {
             var user = await _appDbContext.users.FirstOrDefaultAsync(x => x.Id == id);
             if (user == null)
-                return "user topilmadi";
+                return new ResponseDTO
+                {
+                    IsSuccess = false,
+                    Message = "bunday id li user mavjud emas",
+                };
 
             _appDbContext.users.Remove(user);
             await  _appDbContext.SaveChangesAsync();
 
-            return "user ochirildi";
-        }
-
-        public async Task<ICollection<UserDTO>> GetAllUsers()
-        {
-            var users = await _appDbContext.users.Select(x => new UserDTO
+            return new ResponseDTO
             {
-                FullName = x.FullName,
-                Email = x.Email,
-                Password = x.Password,
-                IsActive = x.IsActive,
-                CreatedAt = DateTime.UtcNow,
-            
-            }).ToListAsync();
-
-            return users;
+                IsSuccess = true,
+                Message = "foydalanuvchi ochirildi"
+            };
         }
 
-        public async Task<UserDTO> GetByIdUser(int id)
+        public async Task<ResponseDTO<ICollection<UserDTO>>> GetAllUsers()
         {
-            var user = await _appDbContext.users.
-                Where(x => x.Id == id)
+            var users = await _appDbContext.users
                 .Select(x => new UserDTO
                 {
                     FullName = x.FullName,
                     Email = x.Email,
                     Password = x.Password,
                     IsActive = x.IsActive,
-                    CreatedAt = DateTime.UtcNow,
-                }).FirstOrDefaultAsync();
+                    CreatedAt = DateTime.UtcNow
+                })
+                .ToListAsync();
 
-            return user;
-
-
+            return new ResponseDTO<ICollection<UserDTO>>
+            {
+                IsSuccess = true,
+                Message = "Foydalanuvchilar ro'yxati olindi",
+                Data = users
+            };
         }
-        public async Task<UserDTO> UpdateUser(int id , UserDTO userDTO)
+
+        public async Task<ResponseDTO<UserDTO>> GetByIdUser(int id)
         {
-            var user = await _appDbContext.users.FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _appDbContext.users
+         .Where(x => x.Id == id)
+         .Select(x => new UserDTO
+         {
+             FullName = x.FullName,
+             Email = x.Email,
+             Password = x.Password,
+             IsActive = x.IsActive,
+             CreatedAt = DateTime.UtcNow
+         })
+         .FirstOrDefaultAsync();
 
             if (user == null)
-                return null;
+                return new ResponseDTO<UserDTO>
+                {
+                    IsSuccess = false,
+                    Message = $"ID ga bo'lgan user topilmadi",
+                    Data = null
+                };
+            
+
+            return new ResponseDTO<UserDTO>
+            {
+                IsSuccess = true,
+                Message = "User topildi",
+                Data = user
+            };
+
+        }
+
+        public async Task<ResponseDTO<UserDTO>> UpdateUser(int id, UserDTO userDTO)
+        {
+           var user = await _appDbContext.users.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (user == null)
+                return new ResponseDTO<UserDTO>
+                {
+                    IsSuccess = false,
+                    Message = "bunday id ga ega bolgan user yo'q",
+                    Data = null,
+                };
 
             user.FullName = userDTO.FullName;
             user.Email = userDTO.Email;
@@ -96,18 +140,16 @@ namespace TestEducation.Service.UserService
             user.IsActive = userDTO.IsActive;
             user.CreatedAt = DateTime.UtcNow;
 
+            _appDbContext.users.Add(user);
             await _appDbContext.SaveChangesAsync();
 
-            return new UserDTO
+            return new ResponseDTO<UserDTO>
             {
-                FullName = user.FullName,
-                Email = user.Email,
-                Password = user.Password,
-                IsActive = user.IsActive,
-                CreatedAt = DateTime.UtcNow,
+                IsSuccess = true,
+                Message = "user qoshildi",
+                Data = userDTO
+
             };
         }
-
-      
     }
 }

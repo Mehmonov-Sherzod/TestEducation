@@ -14,42 +14,27 @@ namespace TestEducation.Service.SubjectService
             _appDbContext = appDbContext;
         }
 
-        public async Task<string> CreateSubject(SubjectDTO subjectDTO)
-        {
-            
-            var subject = await _appDbContext.subjects.AnyAsync( x => x.Name == subjectDTO.Name );
-
-            if (subject)
-                return "bu nomli subject bor";
-
-            var Subject = new Subject
-            {
-                Name = subjectDTO.Name,
-
-            };
-
-           _appDbContext.subjects.Add(Subject);
-           await  _appDbContext.SaveChangesAsync();
-
-            return "Subject Qo'shildi";
-        }
-
-        public Task<string> DeleteSubject(int id)
+        public Task<ResponseDTO> CreateSubject(SubjectDTO subjectDTO)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<SubjectDTO>> GetaAllSubjects()
+        public Task<ResponseDTO> DeleteSubject(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<SubjectDTO> GetByIdSubject(int id)
+        public Task<ResponseDTO<ICollection<SubjectDTO>>> GetaAllSubjects()
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> UpdateSubject(int id, SubjectDTO subjectDTO)
+        public Task<ResponseDTO<SubjectDTO>> GetByIdSubject(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ResponseDTO<SubjectDTO>> UpdateSubject(int id, SubjectDTO subjectDTO)
         {
             throw new NotImplementedException();
         }

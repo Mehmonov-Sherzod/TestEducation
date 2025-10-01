@@ -4,14 +4,14 @@ namespace TestEducation.Service.UserService
 {
     public interface IUserService
     {
-        Task<string> CreateUser(UserDTO userDTO);
+        Task<ResponseDTO> CreateUser(UserDTO userDTO);
 
-        Task<ICollection<UserDTO>> GetAllUsers();
+        Task<ResponseDTO<ICollection<UserDTO>>> GetAllUsers();
 
-        Task<UserDTO> GetByIdUser(int id);
+        Task<ResponseDTO<UserDTO>> GetByIdUser(int id);
 
-        Task<UserDTO> UpdateUser(int id, UserDTO userDTO);
+        Task<ResponseDTO<UserDTO>> UpdateUser(int id, UserDTO userDTO);
 
-        Task<string> DeleteByIdUser(int id);
+        Task<ResponseDTO> DeleteByIdUser(int id);
     }
 }

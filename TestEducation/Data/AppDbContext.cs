@@ -42,6 +42,11 @@ namespace TestEducation.Data
             modelBuilder.Entity<UserQuestion>()
                 .HasKey(rp => new {rp.UserId , rp.QuestionId});
 
+
+            // user emaili bir xil bolmaydi
+            modelBuilder.Entity<User>()
+                 .HasIndex(u => u.Email)
+                 .IsUnique();
             // deletebehavior  nimaar qiladi   
             // 1].cascade primary key ochkandan keyin primary key ochadi
             // 2].settnull primary key ochkandan keyin forenkey null boladi

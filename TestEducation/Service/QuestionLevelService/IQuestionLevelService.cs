@@ -4,10 +4,10 @@ namespace TestEducation.Service.QuestionLevelService
 {
     public interface IQuestionLevelService
     {
-        Task<string> CreateQuestionLevel();
-        Task<ICollection<QuestionLevelDTO>> GetAllQuestionLevel();
-        Task<QuestionLevelDTO> GetByIdQuestionLevel();
-        Task<QuestionLevelDTO> UpdateQuestionLevel(int Id , QuestionLevelDTO questionLevel);
-        Task<QuestionLevelDTO> DeleteByIdQuestionLevel(int Id);
+        Task<ResponseDTO> CreateQuestionLevel();
+        Task<ResponseDTO<ICollection<QuestionLevelDTO>>> GetAllQuestionLevel();
+        Task<ResponseDTO<QuestionLevelDTO>> GetByIdQuestionLevel();
+        Task<ResponseDTO<QuestionLevelDTO>> UpdateQuestionLevel(int Id , QuestionLevelDTO questionLevel);
+        Task<ResponseDTO<QuestionLevelDTO>> DeleteByIdQuestionLevel(int Id);
     }
 }

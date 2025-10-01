@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.AccessControl;
+using Microsoft.AspNetCore.Mvc;
 using TestEducation.Dtos;
 using TestEducation.Service.UserService;
 
@@ -17,12 +18,12 @@ namespace TestEducation.Controllers
         [HttpPost("User-Create")]
         public async Task<IActionResult> CreateUser(UserDTO userDTO)
         {
-            if (userDTO == null)
-                return BadRequest("Bunday emailga ega user mavjud");
+            var result = await _userService.CreateUser(userDTO);
 
-            var user = await  _userService.CreateUser(userDTO);
-
-            return Ok("user qoshildi");      
+            if (result.IsSuccess)
+                return Ok(result);     
+            else
+                return BadRequest(result); 
 
         }
 
@@ -40,8 +41,8 @@ namespace TestEducation.Controllers
         public async Task<IActionResult> GetByIdUser(int id)
         {      
             var user = await _userService.GetByIdUser(id);
-            if (user == null)
-                return BadRequest("bunday id ga ega user mavjud emas");
+            if (!user.IsSuccess)
+                return BadRequest(user.Message);
 
             return Ok(user);
         }
@@ -52,10 +53,21 @@ namespace TestEducation.Controllers
         {
             var user = await _userService.UpdateUser(id, userDTO);
 
-            if (user == null)
-                return BadRequest("bunday id ga ega user mavjud emas");
+            if (!user.IsSuccess)
+                return BadRequest(user.Message);
 
             return Ok(user);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var user = await _userService.DeleteByIdUser(id);
+
+            if (!user.IsSuccess)
+                return NotFound(user.Message);
+
+            return Ok(user.Message);
         }
     }
 }
