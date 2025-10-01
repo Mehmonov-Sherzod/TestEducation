@@ -38,7 +38,6 @@ namespace TestEducation.Controllers.AuthService
                 FullName = userDto.FullName,
                 Email = userDto.Email,
                 Password = userDto.Password,
-                IsActive = userDto.IsActive,
                 CreatedAt = DateTime.UtcNow,
             };
 

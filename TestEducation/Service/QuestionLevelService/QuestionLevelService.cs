@@ -25,6 +25,7 @@ namespace TestEducation.Service.QuestionLevelService
                 {
                     IsSuccess = false,
                     Message = "bunay Level Mavjud",
+                    StatusCode = 400,
                 };
 
             var levelquest = new QuestionLevel
@@ -39,33 +40,55 @@ namespace TestEducation.Service.QuestionLevelService
             return new ResponseDTO<QuestionDTO>
             {
                 IsSuccess = true,
-                Message = "Level Qo'shildi"
+                Message = "Level Qo'shildi",
+                StatusCode = 201,
+                          
             };
         }
 
-        public Task<ResponseDTO<QuestionLevelDTO>> DeleteByIdQuestionLevel(int Id)
+        public async Task<ResponseDTO<ICollection<QuestionLevelDTO>>> GetAllQuestionLevel()
         {
-            throw new NotImplementedException();
+            var level = await _appDbContext.questionLevel
+                .Select(x => new QuestionLevelDTO
+                {
+                    Level = x.Level,
+                    Point = x.Point,
+                }).ToListAsync();
+
+            return new ResponseDTO<ICollection<QuestionLevelDTO>>
+            {
+                IsSuccess = true,
+                Message = "malumotlar olindi",
+                StatusCode = 200,
+                Data = level,
+            };
         }
-
-        //public async Task<ResponseDTO<QuestionLevelDTO>> DeleteByIdQuestionLevel(int Id)
-        //{
-        //   var rezult = await  _appDbContext.questionLevel.FirstOrDefaultAsync(x => x.Id == Id);
-
-
-
-
-
-        //}
-
-        public Task<ResponseDTO<ICollection<QuestionLevelDTO>>> GetAllQuestionLevel()
+        public async Task<ResponseDTO<QuestionLevelDTO>> GetByIdQuestionLevel(int id)
         {
-            throw new NotImplementedException();
-        }
+            var result = await _appDbContext.questionLevel.
+                Where(x => x.Id == id).
+                Select(x => new QuestionLevelDTO
+                {
+                    Level = x.Level,
+                    Point = x.Point,
+                }).FirstOrDefaultAsync();
 
-        public Task<ResponseDTO<QuestionLevelDTO>> GetByIdQuestionLevel(int id)
-        {
-            throw new NotImplementedException();
+            if (result == null)
+                return new ResponseDTO<QuestionLevelDTO>
+                {
+                    IsSuccess = false,
+                    Message = "bunday id ga ega questionlevel mavjud emas",
+                    StatusCode = 404,
+                    Data = null
+                };
+
+            return new ResponseDTO<QuestionLevelDTO>
+            {
+                IsSuccess = true,
+                Message = "obyekt topildi",
+                StatusCode = 201,
+                Data = result
+            };
         }
 
         public Task<ResponseDTO<QuestionLevelDTO>> UpdateQuestionLevel(int Id, QuestionLevelDTO questionLevel)
@@ -74,6 +97,10 @@ namespace TestEducation.Service.QuestionLevelService
         }
 
         Task<ResponseDTO<QuestionDTO>> IQuestionLevelService.GetByIdQuestionLevel(int id)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<ResponseDTO<QuestionLevelDTO>> DeleteByIdQuestionLevel(int Id)
         {
             throw new NotImplementedException();
         }

@@ -19,13 +19,20 @@ namespace TestEducation.Controllers
 
         public async Task<IActionResult> CreateQuestionLevel(QuestionLevelDTO questionLevelDTO)
         {
-            var level = await _questionLevelService.CreateQuestionLevel(questionLevelDTO);
+            return await _questionLevelService.CreateQuestionLevel(questionLevelDTO);             
+        }
 
-            if (level.IsSuccess)
-                return Ok(level.Message);
+        [HttpGet]
+        public async Task<IActionResult> GetAllQuestionLevel()
+        {
+            return await _questionLevelService.GetAllQuestionLevel();
+        }
 
-            else
-                return BadRequest(level.Message);                 
+        [HttpGet("{id}")]
+
+        public async Task<IActionResult> GetByIdQuestionLevel(int id)
+        {
+            return await _questionLevelService.GetByIdQuestionLevel(id);
         }
     }
 }

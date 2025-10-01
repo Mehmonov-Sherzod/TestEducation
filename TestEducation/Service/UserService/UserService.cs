@@ -33,7 +33,6 @@ namespace TestEducation.Service.UserService
                 FullName = userDTO.FullName,
                 Email = userDTO.Email,
                 Password = userDTO.Password,
-                IsActive = userDTO.IsActive,
                 CreatedAt = DateTime.UtcNow,
                
             };
@@ -73,6 +72,7 @@ namespace TestEducation.Service.UserService
         }
 
         public async Task<ResponseDTO<ICollection<UserDTO>>> GetAllUsers()
+
         {
             var users = await _appDbContext.users
                 .Select(x => new UserDTO
@@ -80,8 +80,7 @@ namespace TestEducation.Service.UserService
                     FullName = x.FullName,
                     Email = x.Email,
                     Password = x.Password,
-                    IsActive = x.IsActive,
-                    CreatedAt = DateTime.UtcNow
+
                 })
                 .ToListAsync();
 
@@ -103,8 +102,7 @@ namespace TestEducation.Service.UserService
              FullName = x.FullName,
              Email = x.Email,
              Password = x.Password,
-             IsActive = x.IsActive,
-             CreatedAt = DateTime.UtcNow
+
          })
          .FirstOrDefaultAsync();
 
@@ -145,9 +143,7 @@ namespace TestEducation.Service.UserService
             user.FullName = userDTO.FullName;
             user.Email = userDTO.Email;
             user.Password = userDTO.Password;
-            user.IsActive = userDTO.IsActive;
-            user.CreatedAt = DateTime.UtcNow;
-
+        
             _appDbContext.users.Add(user);
             await _appDbContext.SaveChangesAsync();
 
