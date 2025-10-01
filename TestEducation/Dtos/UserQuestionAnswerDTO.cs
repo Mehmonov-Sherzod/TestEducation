@@ -1,8 +1,10 @@
-﻿namespace TestEducation.Dtos
+﻿using TestEducation.Models;
+
+namespace TestEducation.Dtos
 {
     public class UserQuestionAnswerDTO
     {
-        public int AnswerOptionId { get; set; }
-        public bool IsSelected { get; set; }
+        public int UserQuestionId { get; set; }
+        public int AnswerId { get; set; }
     }
 }
