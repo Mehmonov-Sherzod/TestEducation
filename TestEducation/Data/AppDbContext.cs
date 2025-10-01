@@ -54,6 +54,11 @@ namespace TestEducation.Data
                .HasIndex(u => u.Level)
                .IsUnique();
 
+            // Subject modelida Name Uniq Boladi
+            modelBuilder.Entity<Subject>()
+               .HasIndex(u => u.Name)
+               .IsUnique();
+
 
             // deletebehavior  nimaar qiladi   
             // 1].cascade primary key ochkandan keyin primary key ochadi

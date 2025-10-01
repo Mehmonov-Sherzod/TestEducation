@@ -10,7 +10,6 @@ namespace TestEducation.Controllers
     public class SubjectController : ControllerBase
     {
 
-
         public readonly ISubjectServise _IsubjectServise;
         public SubjectController(ISubjectServise IsubjectServise)
         {
@@ -21,16 +20,34 @@ namespace TestEducation.Controllers
 
         public async Task<IActionResult> CreateSubject(SubjectDTO subjectDTO)
         {
-            var rezult = await _IsubjectServise.CreateSubject(subjectDTO);
-            return Ok(rezult);
-
+            return await _IsubjectServise.CreateSubject(subjectDTO);
         }
 
-        //[HttpPost]
-        //public ActionResult Post([FromBody] Subject subject)
-        //{
+        [HttpGet]
+        public async Task<IActionResult> GetAllSubject()
+        {
+            return await _IsubjectServise.GetaAllSubjects();
+        }
 
-        //}
+        [HttpGet("{id}")]
 
+        public async Task<IActionResult> GetByIdSubject(int id)
+        {
+            return await _IsubjectServise.GetByIdSubject(id);
+        }
+
+        [HttpPut("{id}")]
+
+        public async Task<IActionResult> UpdateSubject(int Id, SubjectDTO subjectDTO)
+        {
+            return await _IsubjectServise.UpdateSubject(Id, subjectDTO);    
+        }
+
+        [HttpDelete("{id}")]
+
+        public async Task<IActionResult> DeleteSubject(int Id)
+        {
+            return await _IsubjectServise.DeleteSubject(Id);
+        }
     }
 }

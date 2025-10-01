@@ -4,6 +4,6 @@
     {
         public string Level { get; set; }
         public int Point { get; set; }
-        public List<QuestionDTO> Questions { get; set; }
+       // public List<QuestionDTO> Questions { get; set; }
     }
 }

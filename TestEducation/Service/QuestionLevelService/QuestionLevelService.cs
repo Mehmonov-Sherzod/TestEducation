@@ -1,8 +1,6 @@
-﻿using System.Drawing;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TestEducation.Data;
 using TestEducation.Dtos;
-using TestEducation.Migrations;
 using TestEducation.Models;
 
 namespace TestEducation.Service.QuestionLevelService
@@ -10,12 +8,10 @@ namespace TestEducation.Service.QuestionLevelService
     public class QuestionLevelService : IQuestionLevelService
     {
         private readonly AppDbContext _appDbContext;
-
         public QuestionLevelService(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
         }
-
         public async Task<ResponseDTO> CreateQuestionLevel(QuestionLevelDTO questionLevelDTO)
         {
             var rezult = await _appDbContext.questionLevel.AnyAsync(x => x.Level == questionLevelDTO.Level);
@@ -45,7 +41,6 @@ namespace TestEducation.Service.QuestionLevelService
                           
             };
         }
-
         public async Task<ResponseDTO<ICollection<QuestionLevelDTO>>> GetAllQuestionLevel()
         {
             var level = await _appDbContext.questionLevel
@@ -90,19 +85,51 @@ namespace TestEducation.Service.QuestionLevelService
                 Data = result
             };
         }
+        public async Task<ResponseDTO<QuestionLevelDTO>> UpdateQuestionLevel(int Id, QuestionLevelDTO questionLevel)
+        {
+            var result = await _appDbContext.questionLevel.FirstOrDefaultAsync(x => x.Id == Id );
 
-        public Task<ResponseDTO<QuestionLevelDTO>> UpdateQuestionLevel(int Id, QuestionLevelDTO questionLevel)
-        {
-            throw new NotImplementedException();
-        }
+            if (result == null)
+                return new ResponseDTO<QuestionLevelDTO>
+                {
+                    IsSuccess = false,
+                    Message = "bunday id mavjud emas",
+                    StatusCode = 404,
+                    Data = null,
+                };
 
-        Task<ResponseDTO<QuestionDTO>> IQuestionLevelService.GetByIdQuestionLevel(int id)
-        {
-            throw new NotImplementedException();
+            result.Level = questionLevel.Level;
+            result.Point = questionLevel.Point;
+
+            _appDbContext.questionLevel.Add(result);
+            await _appDbContext.SaveChangesAsync();
+
+            return new ResponseDTO<QuestionLevelDTO>
+            {
+                IsSuccess = true,
+                Message = "Update bo'ldi",
+                StatusCode = 200,
+                Data = questionLevel,
+            };
         }
-        public Task<ResponseDTO<QuestionLevelDTO>> DeleteByIdQuestionLevel(int Id)
+        public async Task<ResponseDTO<QuestionLevelDTO>> DeleteByIdQuestionLevel(int Id)
         {
-            throw new NotImplementedException();
+           var result = await _appDbContext.questionLevel.FirstOrDefaultAsync(x => x.Id == Id);
+
+            if (result == null)
+                return new ResponseDTO<QuestionLevelDTO>
+                {
+                    IsSuccess = false,
+                    Message = "bunday id ga ega mavjud emas",
+                    StatusCode = 404,
+                };
+
+            return new ResponseDTO<QuestionLevelDTO>
+            {
+                IsSuccess = true,
+                Message = "malumot o'chirildi",
+                StatusCode = 200,
+            };
         }
     }
 }
