@@ -9,7 +9,7 @@ namespace TestEducation.Controllers
     public class QuestionLevelController : ControllerBase
     {
         private readonly IQuestionLevelService _questionLevelService;
-       
+
         public QuestionLevelController(IQuestionLevelService questionLevelService)
         {
             _questionLevelService = questionLevelService;
@@ -18,7 +18,7 @@ namespace TestEducation.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateQuestionLevel(QuestionLevelDTO questionLevelDTO)
         {
-            return await _questionLevelService.CreateQuestionLevel(questionLevelDTO);             
+            return await _questionLevelService.CreateQuestionLevel(questionLevelDTO);
         }
 
         [HttpGet]
@@ -35,9 +35,9 @@ namespace TestEducation.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateQuestionLevel(int id , QuestionLevelDTO questionLevelDTO)
+        public async Task<IActionResult> UpdateQuestionLevel(int id, QuestionLevelDTO questionLevelDTO)
         {
-            return await _questionLevelService.UpdateQuestionLevel(id, questionLevelDTO);       
+            return await _questionLevelService.UpdateQuestionLevel(id, questionLevelDTO);
         }
 
         [HttpDelete("{id}")]

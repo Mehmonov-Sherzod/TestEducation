@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using TestEducation.Data;
 using TestEducation.Models;
 using TestEducation.Models.Enum;
@@ -66,9 +65,54 @@ using (var scope = app.Services.CreateScope())
             context.permissions.Add(perm);
     }
 
-    
+    context.SaveChanges();
+
+    List<int> role = context.roles.Select(x => x.Id).ToList();
+    List<int> Permissions = context.permissions.Select(x => x.Id).ToList();
+    HashSet<int> RolePermission = context.rolePermissions.Select(x => x.RoleId).ToHashSet();
+
+    foreach (var roles in role)
+    {
+        if (!RolePermission.Contains(roles))
+        {
+            if (roles == 1)
+            {
+                foreach (var permission in Permissions)
+                {
+                    RolePermission rolePermission = new RolePermission
+                    {
+                        RoleId = roles,
+                        PermissionId = permission,
+                    };
+
+                    context.rolePermissions.Add(rolePermission);
+
+                }
+            }
+
+            if (roles == 2)
+            {
+
+                foreach (var permission in Permissions)
+                {
+                    if (permission >= 6 && permission <= 9)
+                    {
+                        RolePermission rolePermission = new RolePermission
+                        {
+                            RoleId = roles,
+                            PermissionId = permission,
+                        };
+
+                        context.rolePermissions.Add(rolePermission);
+                    }
+
+                }
+            }
+        }
+    }
 
     context.SaveChanges();
+
 }
 
 // Configure the HTTP request pipeline.

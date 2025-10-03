@@ -3,6 +3,7 @@
     public class UserQuestionAnswer
     {
         public int Id { get; set; }
+        public int Order { get; set; }  
         public int UserQuestionId { get; set; }
         public UserQuestion UserQuestion { get; set; }
         public int AnswerId { get; set; }

@@ -39,7 +39,7 @@ namespace TestEducation.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult>  UpdateQuestionAnswer(int id, QuestionUpdateDTO questionUpdateDTO )
+        public async Task<IActionResult> UpdateQuestionAnswer(int id, QuestionUpdateDTO questionUpdateDTO)
         {
             return await _questionAnswerService.UpdateQuestionAnswer(id, questionUpdateDTO);
         }
