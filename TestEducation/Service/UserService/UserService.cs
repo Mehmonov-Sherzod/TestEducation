@@ -143,8 +143,7 @@ namespace TestEducation.Service.UserService
             user.FullName = userDTO.FullName;
             user.Email = userDTO.Email;
             user.Password = userDTO.Password;
-        
-            _appDbContext.users.Add(user);
+
             await _appDbContext.SaveChangesAsync();
 
             return new ResponseDTO<UserDTO>

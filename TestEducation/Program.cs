@@ -6,6 +6,7 @@ using TestEducation.Data;
 using TestEducation.Models;
 using TestEducation.Models.Enum;
 using TestEducation.Service;
+using TestEducation.Service.QuestionAnswerService;
 using TestEducation.Service.QuestionLevelService;
 using TestEducation.Service.SubjectService;
 using TestEducation.Service.UserService;
@@ -21,6 +22,7 @@ builder.Services.AddScoped<AppDbContext>();
 builder.Services.AddScoped<ISubjectServise, SubjectService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IQuestionLevelService, QuestionLevelService>();
+builder.Services.AddScoped<IQuestionAnswerService, QuestionAnswerService>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

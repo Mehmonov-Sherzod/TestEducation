@@ -8,7 +8,6 @@ namespace TestEducation.Service.SubjectService
     public class SubjectService : ISubjectServise
     {
         private readonly AppDbContext _appDbContext;
-
         public SubjectService(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
@@ -26,20 +25,23 @@ namespace TestEducation.Service.SubjectService
                     StatusCode = 404,
                 };
 
-            var result = new SubjectDTO
+            var result = new Subject
             {
                 Name = subjectDTO.Name,
             };
+
+             _appDbContext.subjects.Add(result);
+            await _appDbContext.SaveChangesAsync();
 
             return new ResponseDTO
             {
                 IsSuccess = true,
                 Message = "fan qoshildi",
                 StatusCode = 200,
+                
             };
 
         }
-
         public async Task<ResponseDTO<SubjectDTO>> GetByIdSubject(int id)
         {
             var subject = await _appDbContext.subjects
@@ -81,7 +83,6 @@ namespace TestEducation.Service.SubjectService
                 Data = subject,
             };
         }
-
         public async Task<ResponseDTO<SubjectDTO>> UpdateSubject(int id, SubjectDTO subjectDTO)
         {
             var subject = await _appDbContext.subjects

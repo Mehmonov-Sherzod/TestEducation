@@ -1,0 +1,171 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TestEducation.Data;
+using TestEducation.Dtos;
+using TestEducation.Models;
+
+namespace TestEducation.Service.QuestionAnswerService
+{
+    public class QuestionAnswerService : IQuestionAnswerService
+    {
+        private readonly AppDbContext _appDbContext;
+
+        public QuestionAnswerService(AppDbContext appDbContext)
+        {
+            _appDbContext = appDbContext;
+        }
+
+        public async Task<ResponseDTO> CreateQuestionAnswer(QuestionDTO questionDTO)
+        {
+            var question = new Question
+            {
+                QuestionText = questionDTO.QuestionText,
+                QuestionLevelId = questionDTO.QuestionLevelId,
+                SubjectId = questionDTO.SubjectId,
+                AnswerOptions = questionDTO.Answers
+                .Select(a => new Answer
+                {
+                    AnswerText = a.Text,
+                    IsCorrect = a.IsCorrect,
+                }).ToList()
+            };
+
+            _appDbContext.question.Add(question);
+            await _appDbContext.SaveChangesAsync();
+
+            return new ResponseDTO<QuestionDTO>
+            {
+                IsSuccess = true,
+                Message = "Malumoot qo'shildi",
+                StatusCode = 200,
+                Data = questionDTO
+            };
+        }
+
+        public async Task<ResponseDTO> DeleteQuestionAnswer(int Id)
+        {
+            var question = await _appDbContext.question
+                .Include(a => a.AnswerOptions)
+                .FirstOrDefaultAsync(x => x.Id == Id);
+
+            if (question == null)
+                return new ResponseDTO
+                {
+                    IsSuccess = false,
+                    Message = "Savol topilmadi",
+                    StatusCode = 404
+                };
+
+            // Avval Answer’larni o‘chiramiz
+            _appDbContext.Answers.RemoveRange(question.AnswerOptions);
+
+            // Keyin Questionni o‘chiramiz
+            _appDbContext.question.Remove(question);
+
+            await _appDbContext.SaveChangesAsync();
+
+            return new ResponseDTO
+            {
+                IsSuccess = true,
+                Message = "Savol va uning javoblari o‘chirildi",
+                StatusCode = 200
+            };
+        }
+
+        public async Task<ResponseDTO<ICollection<QuestionGetAllDTO>>> GetAllQuestionAnswer()
+        {
+            var question = await _appDbContext.question
+                .Include(a => a.AnswerOptions)
+                .Select(x => new QuestionGetAllDTO
+                {
+                    QuestionText = x.QuestionText,
+                    Answers = x.AnswerOptions.
+                    Select(n => new AnswerGetAllDTO
+                    {
+                        AnswerText = n.AnswerText,
+                    }).ToList()
+                }).ToListAsync();
+
+            return new ResponseDTO<ICollection<QuestionGetAllDTO>>
+            {
+                StatusCode = 200,
+                Data = question,
+            };           
+
+        }
+
+        public async Task<ResponseDTO<QuestionGetAllDTO>> GetByIdQuestionAnswer(int Id)
+        {
+            var question = await _appDbContext.question
+                .Where(a => a.Id == Id)
+                .Include(a => a.AnswerOptions)
+                .Select(x => new QuestionGetAllDTO
+                {
+                    QuestionText = x.QuestionText,
+                    Answers = x.AnswerOptions
+                    .Select(x => new AnswerGetAllDTO
+                    {
+                        AnswerText = x.AnswerText,
+                    }).ToList()
+                }).FirstOrDefaultAsync();
+
+            if (question == null)
+                return new ResponseDTO<QuestionGetAllDTO>()
+                {
+                    Message = "Bunday id ga ega question mavjud emas",
+                    StatusCode = 404,
+                    Data = question
+                };
+
+
+            return new ResponseDTO<QuestionGetAllDTO>
+            {
+                StatusCode = 200,
+                Data = question,
+            };
+ 
+        }
+
+        public async Task<IActionResult> UpdateQuestionAnswer(int id, QuestionUpdateDTO questionUpdateDTO)
+        {
+           var question = await _appDbContext.question
+                .FirstOrDefaultAsync(x =>  x.Id == id); 
+
+            if (question == null)
+                return new ResponseDTO<QuestionUpdateDTO>()
+                {
+                    IsSuccess = false,
+                    Message = "bunday id ga ega question mavjud emas",
+                    StatusCode = 404,
+                    Data = null,
+                };
+
+            question.QuestionText = questionUpdateDTO.QuestionText;
+            question.AnswerOptions = questionUpdateDTO.Answers.
+                Select(x => new Answer
+                {
+                    AnswerText = x.Text,
+                    IsCorrect = x.IsCorrect,
+                }).ToList();
+
+            _appDbContext.question.Add(question);
+            await _appDbContext.SaveChangesAsync();
+
+            return new ResponseDTO<QuestionUpdateDTO>()
+            {
+                Message = "Malumot Qo'shildi",
+                StatusCode = 200,
+                Data = new QuestionUpdateDTO
+                {
+                    QuestionText = questionUpdateDTO.QuestionText,
+                    Answers = questionUpdateDTO.Answers.
+                    Select(a => new AnswerDTO
+                    {
+                        Text = a.Text,
+                        IsCorrect = a.IsCorrect,
+                    }).ToList()
+                },
+            };
+        }
+    }
+}

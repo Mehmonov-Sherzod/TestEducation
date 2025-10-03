@@ -60,6 +60,14 @@ namespace TestEducation.Data
                .IsUnique();
 
 
+            // bu qismida question ochkandan keyin avtomadtik unga boglangan savollar ham ochadi
+            //modelBuilder.Entity<Answer>()
+            //   .HasOne(a => a.Question)
+            //   .WithMany(q => q.AnswerOptions)
+            //   .HasForeignKey(a => a.QuestionId)
+            //   .OnDelete(DeleteBehavior.Cascade);
+
+
             // deletebehavior  nimaar qiladi   
             // 1].cascade primary key ochkandan keyin primary key ochadi
             // 2].settnull primary key ochkandan keyin forenkey null boladi
@@ -72,10 +80,6 @@ namespace TestEducation.Data
                 new Role { Id = 2, Name = "Student", Description = "Test yechish va natija korish" }
 
                 );
-
-
-
-
 
         }
 
