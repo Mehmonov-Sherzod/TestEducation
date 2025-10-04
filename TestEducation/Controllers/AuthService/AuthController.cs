@@ -18,26 +18,33 @@ namespace TestEducation.Controllers.AuthService
 
         private readonly AppDbContext appDbContext;
 
-        public AuthController(JwtService _jwtService, AppDbContext _appDbContext )
+        private readonly PasswordHelper passwordHelper;
+
+        public AuthController(JwtService _jwtService, AppDbContext _appDbContext, PasswordHelper _passwordHelper )
         {
             jwtService = _jwtService;
             appDbContext = _appDbContext;
+            passwordHelper = _passwordHelper;
         }
 
 
-        [HttpPost("Regist")]
+        [HttpPost("Register")]
 
         public IActionResult UserCreate(UserDTO userDto)
         {
             if (userDto == null)
                 NotFound("hato");
-            
+
+            string salt = Guid.NewGuid().ToString();
+
+            var hashPass = passwordHelper.Incrypt(userDto.Password, salt);
 
             var user = new User
             {
                 FullName = userDto.FullName,
                 Email = userDto.Email,
-                Password = userDto.Password,
+                Salt = salt,
+                Password = hashPass,
                 CreatedAt = DateTime.UtcNow,
             };
 
@@ -59,7 +66,10 @@ namespace TestEducation.Controllers.AuthService
                 .FirstOrDefault(u => u.Email == loginDto.Email);
 
             if (user == null)
-                return NotFound("Email  noto‘g‘ri");
+                return NotFound("User topilmadi");
+
+            if (!passwordHelper.Verify(loginDto.Password, user.Salt, user.Password))
+                return BadRequest("Email or Password not correct");
 
 
             string token = jwtService.GenerateToken(user);
