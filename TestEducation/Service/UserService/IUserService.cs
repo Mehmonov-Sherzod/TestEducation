@@ -15,3 +15,4 @@ namespace TestEducation.Service.UserService
         Task<ResponseDTO> DeleteByIdUser(int id);
     }
 }
+ 
