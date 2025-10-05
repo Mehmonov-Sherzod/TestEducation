@@ -22,6 +22,7 @@ builder.Services.AddScoped<ISubjectServise, SubjectService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IQuestionLevelService, QuestionLevelService>();
 builder.Services.AddScoped<IQuestionAnswerService, QuestionAnswerService>();
+builder.Services.AddScoped<PasswordHelper>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
