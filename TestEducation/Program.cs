@@ -1,16 +1,22 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Minio;
 using TestEducation.Data;
+using TestEducation.Dtos.Common;
 using TestEducation.Models;
 using TestEducation.Models.Enum;
 using TestEducation.Service;
+using TestEducation.Service.FileStoreageService;
 using TestEducation.Service.QuestionAnswerService;
 using TestEducation.Service.QuestionLevelService;
 using TestEducation.Service.SubjectService;
 using TestEducation.Service.UserService;
 
+
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 // Add services to the container.
 
@@ -22,6 +28,7 @@ builder.Services.AddScoped<ISubjectServise, SubjectService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IQuestionLevelService, QuestionLevelService>();
 builder.Services.AddScoped<IQuestionAnswerService, QuestionAnswerService>();
+builder.Services.AddScoped<IFileStoreageService, MinioFileStorageService>();
 builder.Services.AddScoped<PasswordHelper>();
 
 // JWT Authentication
@@ -40,6 +47,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+builder.Services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
+
+builder.Services.AddSingleton<IMinioClient>(sp =>
+{
+    var minioSettings = sp.GetRequiredService<IOptions<MinioSettings>>().Value;
+
+    // MinioClient obyektini yaratish
+    var client = new MinioClient()
+        .WithEndpoint(minioSettings.Endpoint)
+        .WithCredentials(minioSettings.AccessKey, minioSettings.SecretKey);
+
+    // Agar SSL yoqilgan bo'lsa
+    if (minioSettings.UseSsl)
+    {
+        client = client.WithSSL();
+    }
+
+    return client.Build(); // MinioClient ni qurish
+});
+
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

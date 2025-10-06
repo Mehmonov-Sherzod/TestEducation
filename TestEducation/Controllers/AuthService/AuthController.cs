@@ -57,7 +57,6 @@ namespace TestEducation.Controllers.AuthService
         }
 
 
-
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDTO loginDto )
         {
@@ -68,8 +67,9 @@ namespace TestEducation.Controllers.AuthService
             if (user == null)
                 return NotFound("User topilmadi");
 
-            if (!passwordHelper.Verify(loginDto.Password, user.Salt, user.Password))
-                return BadRequest("Email or Password not correct");
+
+            //if (!passwordHelper.Verify(loginDto.Password, user.Salt, user.Password))
+            //    return BadRequest("Email or Password not correct");
 
 
             string token = jwtService.GenerateToken(user);

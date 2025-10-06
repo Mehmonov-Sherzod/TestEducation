@@ -10,9 +10,12 @@ namespace TestEducation.Service.UserService
     {
         private readonly AppDbContext _appDbContext;
 
-        public UserService(AppDbContext appDbContext)
+        private readonly PasswordHelper passwordHelper;
+
+        public UserService(AppDbContext appDbContext , PasswordHelper passwordHelper)
         {
             _appDbContext = appDbContext;
+            this.passwordHelper = passwordHelper;
         }
 
         public async Task<ResponseDTO> CreateUser(UserDTO userDTO)
@@ -26,7 +29,10 @@ namespace TestEducation.Service.UserService
                     StatusCode = 400
                 };
             }
-                
+            string salt = Guid.NewGuid().ToString();
+
+            var hashPass = passwordHelper.Incrypt(userDTO.Password, salt);
+
 
             var user = new User
             {
@@ -34,7 +40,8 @@ namespace TestEducation.Service.UserService
                 Email = userDTO.Email,
                 Password = userDTO.Password,
                 CreatedAt = DateTime.UtcNow,
-               
+                Salt = salt
+
             };
 
             _appDbContext.users.Add(user);
