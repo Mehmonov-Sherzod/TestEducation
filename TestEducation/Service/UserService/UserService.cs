@@ -1,4 +1,5 @@
 ﻿using System.Security.AccessControl;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TestEducation.Data;
 using TestEducation.Dtos;
@@ -18,7 +19,7 @@ namespace TestEducation.Service.UserService
             this.passwordHelper = passwordHelper;
         }
 
-        public async Task<ResponseDTO> CreateUser(UserDTO userDTO)
+        public async Task<ResponseDTO> CreateUser([FromBody] UserDTO userDTO)
         {
             if (await _appDbContext.users.AnyAsync(x => x.Email == userDTO.Email))
             {
@@ -55,7 +56,7 @@ namespace TestEducation.Service.UserService
             };
         }
 
-        public async Task<ResponseDTO> DeleteByIdUser(int id)
+        public async Task<ResponseDTO> DeleteByIdUser([FromQuery] int id)
         {
             var user = await _appDbContext.users.FirstOrDefaultAsync(x => x.Id == id);
             if (user == null)

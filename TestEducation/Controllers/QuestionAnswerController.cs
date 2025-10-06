@@ -15,9 +15,10 @@ namespace TestEducation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuestionAnswer(QuestionDTO questionAnswerDTO)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateQuestionAnswer([FromForm] QuestionDTO questionDTO)
         {
-            return await _questionAnswerService.CreateQuestionAnswer(questionAnswerDTO);
+            return await _questionAnswerService.CreateQuestionAnswer(questionDTO);
         }
 
         [HttpDelete("{id}")]

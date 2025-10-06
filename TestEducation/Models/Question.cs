@@ -4,6 +4,8 @@
     {
         public int Id { get; set; }
         public string QuestionText { get; set; }
+
+        public string? ImageUrl { get; set; }
         public int SubjectId { get; set; }
         public Subject Subject { get; set; }
         public int QuestionLevelId { get; set; }

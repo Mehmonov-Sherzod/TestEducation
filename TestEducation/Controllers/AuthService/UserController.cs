@@ -42,9 +42,6 @@ namespace TestEducation.Controllers
         }
 
 
-
-
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {

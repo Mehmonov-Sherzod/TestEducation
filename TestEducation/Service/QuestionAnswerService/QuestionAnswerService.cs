@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TestEducation.Data;
 using TestEducation.Dtos;
 using TestEducation.Models;
+using static System.Net.Mime.MediaTypeNames;
+using TestEducation.Service.FileStoreageService;
 
 namespace TestEducation.Service.QuestionAnswerService
 {
@@ -10,18 +12,39 @@ namespace TestEducation.Service.QuestionAnswerService
     {
         private readonly AppDbContext _appDbContext;
 
-        public QuestionAnswerService(AppDbContext appDbContext)
+        private readonly IFileStoreageService _fileStorageService;
+
+        public QuestionAnswerService(AppDbContext appDbContext , IFileStoreageService fileStorageService)
         {
             _appDbContext = appDbContext;
+            _fileStorageService = fileStorageService;
         }
 
-        public async Task<ResponseDTO> CreateQuestionAnswer(QuestionDTO questionDTO)
+        public async Task<ResponseDTO> CreateQuestionAnswer( QuestionDTO questionDTO)
         {
+            string? urlImage = null;
+
+            if (questionDTO.Image != null && questionDTO.Image.Length > 0)
+            {
+                var extension = Path.GetExtension(questionDTO.Image.FileName);
+                var objectName = $"{Guid.NewGuid()}{extension}";
+
+                using var stream = questionDTO.Image.OpenReadStream();
+                urlImage = await _fileStorageService.UploadFileAsync(
+                    "questions-image",
+                    objectName,
+                    stream,
+                    questionDTO.Image.ContentType
+                );
+            }
+
+
             var question = new Question
             {
                 QuestionText = questionDTO.QuestionText,
                 QuestionLevelId = questionDTO.QuestionLevelId,
                 SubjectId = questionDTO.SubjectId,
+                ImageUrl = urlImage,
                 AnswerOptions = questionDTO.Answers
                 .Select(a => new Answer
                 {
@@ -74,11 +97,13 @@ namespace TestEducation.Service.QuestionAnswerService
 
         public async Task<ResponseDTO<ICollection<QuestionGetAllDTO>>> GetAllQuestionAnswer()
         {
+           
             var question = await _appDbContext.question
                 .Include(a => a.AnswerOptions)
                 .Select(x => new QuestionGetAllDTO
                 {
                     QuestionText = x.QuestionText,
+                    Image = x.ImageUrl,
                     Answers = x.AnswerOptions.
                     Select(n => new AnswerGetAllDTO
                     {
