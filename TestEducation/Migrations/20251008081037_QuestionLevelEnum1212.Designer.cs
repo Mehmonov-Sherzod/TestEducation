@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestEducation.Data;
@@ -11,9 +12,11 @@ using TestEducation.Data;
 namespace TestEducation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251008081037_QuestionLevelEnum1212")]
+    partial class QuestionLevelEnum1212
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -278,50 +281,6 @@ namespace TestEducation.Migrations
                     b.ToTable("userRoles");
                 });
 
-            modelBuilder.Entity("TestEducation.Models.UserTestResult", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CorrectAnswers")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("FinishedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<double>("Percentage")
-                        .HasColumnType("double precision");
-
-                    b.Property<DateTime>("StartedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("integer");
-
-                    b.Property<TimeSpan>("TimeTaken")
-                        .HasColumnType("interval");
-
-                    b.Property<int>("TotalQuestions")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("WrongAnswers")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubjectId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("userTestResult");
-                });
-
             modelBuilder.Entity("TestEducation.Models.Answer", b =>
                 {
                     b.HasOne("TestEducation.Models.Question", "Question")
@@ -420,25 +379,6 @@ namespace TestEducation.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TestEducation.Models.UserTestResult", b =>
-                {
-                    b.HasOne("TestEducation.Models.Subject", "Subject")
-                        .WithMany("userTestResult")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TestEducation.Models.User", "User")
-                        .WithMany("userTestResult")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subject");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TestEducation.Models.Answer", b =>
                 {
                     b.Navigation("UserAnswers");
@@ -466,8 +406,6 @@ namespace TestEducation.Migrations
             modelBuilder.Entity("TestEducation.Models.Subject", b =>
                 {
                     b.Navigation("Questions");
-
-                    b.Navigation("userTestResult");
                 });
 
             modelBuilder.Entity("TestEducation.Models.User", b =>
@@ -475,8 +413,6 @@ namespace TestEducation.Migrations
                     b.Navigation("UserRoles");
 
                     b.Navigation("userQuestions");
-
-                    b.Navigation("userTestResult");
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserQuestion", b =>

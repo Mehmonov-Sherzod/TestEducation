@@ -5,6 +5,8 @@ using TestEducation.Dtos;
 using TestEducation.Models;
 using static System.Net.Mime.MediaTypeNames;
 using TestEducation.Service.FileStoreageService;
+using Minio.DataModel.Args;
+using Minio;
 
 namespace TestEducation.Service.QuestionAnswerService
 {
@@ -14,10 +16,14 @@ namespace TestEducation.Service.QuestionAnswerService
 
         private readonly IFileStoreageService _fileStorageService;
 
-        public QuestionAnswerService(AppDbContext appDbContext , IFileStoreageService fileStorageService)
+
+        private readonly IMinioClient _minioClient;
+
+        public QuestionAnswerService(AppDbContext appDbContext , IFileStoreageService fileStorageService , IMinioClient minioClient)
         {
             _appDbContext = appDbContext;
             _fileStorageService = fileStorageService;
+            _minioClient = minioClient;
         }
 
         public async Task<ResponseDTO> CreateQuestionAnswer( QuestionDTO questionDTO)
@@ -28,29 +34,38 @@ namespace TestEducation.Service.QuestionAnswerService
             {
                 var extension = Path.GetExtension(questionDTO.Image.FileName);
                 var objectName = $"{Guid.NewGuid()}{extension}";
-
-                using var stream = questionDTO.Image.OpenReadStream();
+                //Console.WriteLine("\n" +extension + " " + objectName);
+                //Console.WriteLine(questionDTO.Image);
+                //using var stream = questionDTO.Image.OpenReadStream();
+                //using var ms = new MemoryStream();
+                //await stream.CopyToAsync(ms);
+                //byte[] results = new byte[stream.Length];
+                //results = ms.ToArray();
+                //string result = string.Join("", results);
+                //Console.Write(result);
+                //Console.Write('\n' + result.Length);
+                using var mystream = questionDTO.Image.OpenReadStream();
                 urlImage = await _fileStorageService.UploadFileAsync(
                     "questions-image",
                     objectName,
-                    stream,
+                    mystream,
                     questionDTO.Image.ContentType
                 );
             }
 
-
             var question = new Question
             {
                 QuestionText = questionDTO.QuestionText,
-                QuestionLevelId = questionDTO.QuestionLevelId,
                 SubjectId = questionDTO.SubjectId,
                 ImageUrl = urlImage,
+                Level = questionDTO.Level,
                 AnswerOptions = questionDTO.Answers
                 .Select(a => new Answer
                 {
                     AnswerText = a.Text,
                     IsCorrect = a.IsCorrect,
-                }).ToList()
+                }).ToList(),
+
             };
 
             _appDbContext.question.Add(question);
@@ -95,6 +110,23 @@ namespace TestEducation.Service.QuestionAnswerService
             };
         }
 
+        public async Task<Stream> DownloadFileAsyncQuestion( string objectName)
+        {
+            var memoryStream1 = new MemoryStream();
+            await _minioClient.GetObjectAsync(
+                new GetObjectArgs()
+                    .WithBucket("questions-image")
+                    .WithObject(objectName)
+                    .WithCallbackStream(async (stream) => // Fayl streamini memoryStream ga nusxalash
+                    {
+                        await stream.CopyToAsync(memoryStream1);
+                    })
+            ).ConfigureAwait(false);
+
+            memoryStream1.Position = 0; // Streamni boshiga qaytarish, chunki undan o'qish mumkin bo'lishi uchun
+            return memoryStream1;
+        }
+
         public async Task<ResponseDTO<ICollection<QuestionGetAllDTO>>> GetAllQuestionAnswer()
         {
            
@@ -127,6 +159,7 @@ namespace TestEducation.Service.QuestionAnswerService
                 .Select(x => new QuestionGetAllDTO
                 {
                     QuestionText = x.QuestionText,
+                    Image = x.ImageUrl,
                     Answers = x.AnswerOptions
                     .Select(x => new AnswerGetAllDTO
                     {
@@ -151,7 +184,7 @@ namespace TestEducation.Service.QuestionAnswerService
  
         }
 
-        public async Task<IActionResult> UpdateQuestionAnswer(int id, QuestionUpdateDTO questionUpdateDTO)
+        public async Task<ResponseDTO<QuestionUpdateDTO>> UpdateQuestionAnswer(int id, QuestionUpdateDTO questionUpdateDTO)
         {
            var question = await _appDbContext.question
                 .FirstOrDefaultAsync(x =>  x.Id == id); 

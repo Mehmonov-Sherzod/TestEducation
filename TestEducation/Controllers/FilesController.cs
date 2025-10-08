@@ -74,6 +74,8 @@ namespace TestEducation.Controllers
                 {
                     return Ok("Fayl muvaffaqiyatli o'chirildi.");
                 }
+
+
                 return NotFound("Fayl topilmadi yoki o'chirishda muammo yuz berdi.");
             }
             catch (Exception)

@@ -15,8 +15,9 @@ namespace TestEducation.Data
         public DbSet<UserRole> userRoles { get; set; }   
         public DbSet<Subject> subjects { get; set; }        
         public DbSet<UserQuestion> userQuestions { get; set; }  
-        public DbSet<QuestionLevel> questionLevel { get; set; }
         public  DbSet<UserQuestionAnswer> userQuestionsAnswer { get; set; } 
+
+        public DbSet<UserTestResult> userTestResult { get; set; }   
         public AppDbContext(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -49,10 +50,7 @@ namespace TestEducation.Data
                  .HasIndex(u => u.Email)
                  .IsUnique();
 
-            // QuestionLevel modelida Level Uniq Boladi
-            modelBuilder.Entity<QuestionLevel>()
-               .HasIndex(u => u.Level)
-               .IsUnique();
+
 
             // Subject modelida Name Uniq Boladi
             modelBuilder.Entity<Subject>()
@@ -73,6 +71,13 @@ namespace TestEducation.Data
             // 2].settnull primary key ochkandan keyin forenkey null boladi
             // 3].restrict forenkey bolsa primary key ochmaydi oldin forenkey ochish kere
 
+
+            modelBuilder.Entity<Question>()
+          .Property(q => q.Level)
+          .HasConversion<string>();
+
+
+           
 
             modelBuilder.Entity<Role>()
                 .HasData(

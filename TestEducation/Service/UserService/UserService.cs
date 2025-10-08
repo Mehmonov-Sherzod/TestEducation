@@ -39,14 +39,27 @@ namespace TestEducation.Service.UserService
             {
                 FullName = userDTO.FullName,
                 Email = userDTO.Email,
-                Password = userDTO.Password,
+                Password = hashPass,
                 CreatedAt = DateTime.UtcNow,
                 Salt = salt
 
             };
-
             _appDbContext.users.Add(user);
             await _appDbContext.SaveChangesAsync();
+            var studentRole = await _appDbContext.roles.FirstOrDefaultAsync(r => r.Name == "Student");
+            if (studentRole != null)
+            {
+                var userRole = new UserRole
+
+                {
+                    UserId = user.Id,
+                    RoleId = studentRole.Id
+                };
+                await _appDbContext.userRoles.AddAsync(userRole);
+                await _appDbContext.SaveChangesAsync();
+            }
+
+         
 
             return new ResponseDTO
             {

@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +11,6 @@ using TestEducation.Models.Enum;
 using TestEducation.Service;
 using TestEducation.Service.FileStoreageService;
 using TestEducation.Service.QuestionAnswerService;
-using TestEducation.Service.QuestionLevelService;
 using TestEducation.Service.SubjectService;
 using TestEducation.Service.UserService;
 
@@ -26,7 +26,6 @@ builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<AppDbContext>();
 builder.Services.AddScoped<ISubjectServise, SubjectService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IQuestionLevelService, QuestionLevelService>();
 builder.Services.AddScoped<IQuestionAnswerService, QuestionAnswerService>();
 builder.Services.AddScoped<IFileStoreageService, MinioFileStorageService>();
 builder.Services.AddScoped<PasswordHelper>();
@@ -44,6 +43,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
+    });
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 builder.Services.AddAuthorization();

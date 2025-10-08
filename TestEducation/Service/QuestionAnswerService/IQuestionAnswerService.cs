@@ -9,6 +9,11 @@ namespace TestEducation.Service.QuestionAnswerService
         Task<ResponseDTO<ICollection<QuestionGetAllDTO>>> GetAllQuestionAnswer();
         Task<ResponseDTO<QuestionGetAllDTO>> GetByIdQuestionAnswer(int Id);
         Task<ResponseDTO> DeleteQuestionAnswer(int Id);
-        Task<IActionResult> UpdateQuestionAnswer(int id, QuestionUpdateDTO questionUpdateDTO);
+        Task<ResponseDTO<QuestionUpdateDTO>> UpdateQuestionAnswer(int id, QuestionUpdateDTO questionUpdateDTO);
+        Task<Stream> DownloadFileAsyncQuestion( string objectName);
+
+
+
+
     }
 }
