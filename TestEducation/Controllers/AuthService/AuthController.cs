@@ -46,6 +46,7 @@ namespace TestEducation.Controllers.AuthService
                 Salt = salt,
                 Password = hashPass,
                 CreatedAt = DateTime.UtcNow,
+               
             };
 
             appDbContext.users.Add(user);   

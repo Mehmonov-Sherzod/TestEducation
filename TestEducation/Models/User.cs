@@ -9,8 +9,7 @@
         public string? Salt { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; }  = DateTime.UtcNow;
-        public List<UserQuestion> userQuestions   { get; set; }    
-        
+        public List<UserQuestion> userQuestions   { get; set; }      
         public List<UserTestResult> userTestResult { get; set; }    
         public List<UserRole> UserRoles { get; set; }
     }

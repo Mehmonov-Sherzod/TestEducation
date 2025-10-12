@@ -15,9 +15,11 @@ namespace TestEducation.Data
         public DbSet<UserRole> userRoles { get; set; }   
         public DbSet<Subject> subjects { get; set; }        
         public DbSet<UserQuestion> userQuestions { get; set; }  
-        public  DbSet<UserQuestionAnswer> userQuestionsAnswer { get; set; } 
-
+        public DbSet<UserQuestionAnswer> userQuestionsAnswer { get; set; } 
         public DbSet<UserTestResult> userTestResult { get; set; }   
+
+
+
         public AppDbContext(IConfiguration configuration)
         {
             _configuration = configuration;

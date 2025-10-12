@@ -45,6 +45,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
+// api da enum tipini string qilish uchun
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
