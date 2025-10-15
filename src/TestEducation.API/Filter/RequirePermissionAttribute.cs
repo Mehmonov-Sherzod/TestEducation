@@ -25,7 +25,7 @@ namespace TestEducation.Filter
 
 
             var dbContext = filterContext .HttpContext.RequestServices.GetService<AppDbContext>();
-            var userPermissions = dbContext.permissions;
+            var userPermissions = dbContext.Permissions;
 
         }
     }

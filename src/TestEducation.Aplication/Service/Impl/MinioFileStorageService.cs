@@ -2,8 +2,8 @@
 using Minio.DataModel.Args;
 using Minio.Exceptions;
 using Minio;
-using TestEducation.Dtos.Common;
 using TestEducation.Service.FileStoreageService;
+using TestEducation.Aplication.Common;
 
 public class MinioFileStorageService : IFileStoreageService
 {

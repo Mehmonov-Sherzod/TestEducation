@@ -12,14 +12,14 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.AddColumn<int>(
                 name: "Order",
-                table: "userQuestionsAnswer",
+                table: "UserQuestionsAnswer",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
                 name: "Order",
-                table: "userQuestions",
+                table: "UserQuestions",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
@@ -30,11 +30,11 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Order",
-                table: "userQuestionsAnswer");
+                table: "UserQuestionsAnswer");
 
             migrationBuilder.DropColumn(
                 name: "Order",
-                table: "userQuestions");
+                table: "UserQuestions");
         }
     }
 }

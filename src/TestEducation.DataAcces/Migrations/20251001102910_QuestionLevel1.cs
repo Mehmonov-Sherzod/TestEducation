@@ -12,7 +12,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_question_QuestionLevel_QuestionLevelId",
-                table: "question");
+                table: "Question");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_QuestionLevel",
@@ -35,7 +35,7 @@ namespace TestEducation.Migrations
 
             migrationBuilder.AddForeignKey(
                 name: "FK_question_questionLevel_QuestionLevelId",
-                table: "question",
+                table: "Question",
                 column: "QuestionLevelId",
                 principalTable: "questionLevel",
                 principalColumn: "Id",
@@ -47,7 +47,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_question_questionLevel_QuestionLevelId",
-                table: "question");
+                table: "Question");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_questionLevel",
@@ -68,7 +68,7 @@ namespace TestEducation.Migrations
 
             migrationBuilder.AddForeignKey(
                 name: "FK_question_QuestionLevel_QuestionLevelId",
-                table: "question",
+                table: "Question",
                 column: "QuestionLevelId",
                 principalTable: "QuestionLevel",
                 principalColumn: "Id",

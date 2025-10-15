@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Subject;
 using TestEducation.Service.SubjectService;
 
@@ -8,7 +9,6 @@ namespace TestEducation.Controllers
     [Route("[controller]")]
     public class SubjectController : ControllerBase
     {
-
         public readonly ISubjectServise _IsubjectServise;
         public SubjectController(ISubjectServise IsubjectServise)
         {
@@ -16,33 +16,43 @@ namespace TestEducation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSubject(SubjectDTO subjectDTO)
+        public async Task<IActionResult> CreateSubject(CreateSubjectModel subjectDTO)
         {
-            return await _IsubjectServise.CreateSubject(subjectDTO);
+            var result = await _IsubjectServise.CreateSubject(subjectDTO);
+
+            return Ok(ApiResult<CreateSubjectResponseModel>.Success(result));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllSubject()
         {
-            return await _IsubjectServise.GetaAllSubjects();
+            var result = await _IsubjectServise.GetaAllSubjects();
+
+            return Ok(ApiResult<List<SubjectResponsModel>>.Success(result));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdSubject(int id)
         {
-            return await _IsubjectServise.GetByIdSubject(id);
+            var result = await _IsubjectServise.GetByIdSubject(id);
+
+            return Ok(ApiResult<SubjectResponsModel>.Success(result));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSubject(int Id, SubjectDTO subjectDTO)
+        public async Task<IActionResult> UpdateSubject(int Id, UpdateSubjectModel subjectDTO)
         {
-            return await _IsubjectServise.UpdateSubject(Id, subjectDTO);    
+            var result = await _IsubjectServise.UpdateSubject(Id , subjectDTO);
+
+            return Ok(ApiResult<UpdateSubjectResponseModel>.Success(result));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSubject(int Id)
         {
-            return await _IsubjectServise.DeleteSubject(Id);
+            var result = await _IsubjectServise.DeleteSubject(Id);
+
+            return Ok(ApiResult<string>.Success(result));
         }
     }
 }

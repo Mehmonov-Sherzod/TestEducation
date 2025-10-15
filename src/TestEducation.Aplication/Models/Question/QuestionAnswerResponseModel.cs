@@ -2,10 +2,10 @@
 
 namespace TestEducation.Aplication.Models.Question
 {
-    public class QuestionGetAllDTO
+    public class QuestionAnswerResponseModel
     {
         public string QuestionText { get; set; }
         public string Image { get; set; }
-        public List<AnswerGetAllDTO> Answers { get; set; } 
+        public List<AnswerGetAllDTO> Answers { get; set; }
     }
 }

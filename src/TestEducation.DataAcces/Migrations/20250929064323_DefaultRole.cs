@@ -13,7 +13,7 @@ namespace TestEducation.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.InsertData(
-                table: "roles",
+                table: "Roles",
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
@@ -26,12 +26,12 @@ namespace TestEducation.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DeleteData(
-                table: "roles",
+                table: "Roles",
                 keyColumn: "Id",
                 keyValue: 1);
 
             migrationBuilder.DeleteData(
-                table: "roles",
+                table: "Roles",
                 keyColumn: "Id",
                 keyValue: 2);
         }

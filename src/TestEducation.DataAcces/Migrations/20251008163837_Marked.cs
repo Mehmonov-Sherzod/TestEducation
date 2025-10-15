@@ -12,15 +12,15 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "IsAnswer",
-                table: "userQuestions");
+                table: "UserQuestions");
 
             migrationBuilder.DropColumn(
                 name: "QuestionLevelId",
-                table: "question");
+                table: "Question");
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsMarked",
-                table: "userQuestionsAnswer",
+                table: "UserQuestionsAnswer",
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
@@ -31,18 +31,18 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "IsMarked",
-                table: "userQuestionsAnswer");
+                table: "UserQuestionsAnswer");
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsAnswer",
-                table: "userQuestions",
+                table: "UserQuestions",
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
 
             migrationBuilder.AddColumn<int>(
                 name: "QuestionLevelId",
-                table: "question",
+                table: "Question",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);

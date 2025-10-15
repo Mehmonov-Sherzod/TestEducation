@@ -1,4 +1,4 @@
-﻿namespace TestEducation.Dtos.Common
+﻿namespace TestEducation.Aplication.Common
 {
     public class MinioSettings
     {

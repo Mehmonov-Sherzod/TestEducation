@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestEducation.DataAcces", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestEducation.Domain", "src\TestEducation.Domain\TestEducation.Domain.csproj", "{03CF63A4-8446-CC47-63DC-9A18E3F25529}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestEducation.Shared", "src\TestEducation.Shared\TestEducation.Shared.csproj", "{1239BE46-8E20-A142-85C3-C401D41B8101}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,10 +35,6 @@ Global
 		{03CF63A4-8446-CC47-63DC-9A18E3F25529}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03CF63A4-8446-CC47-63DC-9A18E3F25529}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03CF63A4-8446-CC47-63DC-9A18E3F25529}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1239BE46-8E20-A142-85C3-C401D41B8101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1239BE46-8E20-A142-85C3-C401D41B8101}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1239BE46-8E20-A142-85C3-C401D41B8101}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1239BE46-8E20-A142-85C3-C401D41B8101}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,7 +44,6 @@ Global
 		{176ABB48-5355-2519-151F-D33C84B160F4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{65A919A7-922A-6657-1CCF-357E666960C5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{03CF63A4-8446-CC47-63DC-9A18E3F25529} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{1239BE46-8E20-A142-85C3-C401D41B8101} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {263DE81F-825E-4D04-AEB3-D78DDB24216F}

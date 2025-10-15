@@ -12,7 +12,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.AddColumn<bool>(
                 name: "IsAnswer",
-                table: "userQuestions",
+                table: "UserQuestions",
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
@@ -23,7 +23,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "IsAnswer",
-                table: "userQuestions");
+                table: "UserQuestions");
         }
     }
 }

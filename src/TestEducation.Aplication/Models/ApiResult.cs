@@ -1,4 +1,5 @@
-﻿namespace TestEducation.Aplication.Models
+﻿
+namespace TestEducation.Aplication.Models
 {
     public class ApiResult<T>
     {
@@ -25,6 +26,11 @@
         public static ApiResult<T> Failure(IEnumerable<string> errors)
         {
             return new ApiResult<T>(false, default, errors);
+        }
+
+        public static object? Success(string result)
+        {
+            throw new NotImplementedException();
         }
     }
 }

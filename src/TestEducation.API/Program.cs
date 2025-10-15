@@ -5,9 +5,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Minio;
 using TestEducation.API.Middleware;
+using TestEducation.Aplication.Common;
 using TestEducation.Data;
 using TestEducation.Domain.Enums;
-using TestEducation.Dtos.Common;
 using TestEducation.Models;
 using TestEducation.Service;
 using TestEducation.Service.FileStoreageService;
@@ -133,15 +133,15 @@ using (var scope = app.Services.CreateScope())
 
     foreach (var perm in permissions)
     {
-        if (!context.permissions.Any(x => x.Name == perm.Name))
-            context.permissions.Add(perm);
+        if (!context.Permissions.Any(x => x.Name == perm.Name))
+            context.Permissions.Add(perm);
     }
 
     context.SaveChanges();
 
-    List<int> role = context.roles.Select(x => x.Id).ToList();
-    List<int> Permissions = context.permissions.Select(x => x.Id).ToList();
-    HashSet<int> RolePermission = context.rolePermissions.Select(x => x.RoleId).ToHashSet();
+    List<int> role = context.Roles.Select(x => x.Id).ToList();
+    List<int> Permissions = context.Permissions.Select(x => x.Id).ToList();
+    HashSet<int> RolePermission = context.RolePermissions.Select(x => x.RoleId).ToHashSet();
 
     foreach (var roles in role)
     {
@@ -157,7 +157,7 @@ using (var scope = app.Services.CreateScope())
                         PermissionId = permission,
                     };
 
-                    context.rolePermissions.Add(rolePermission);
+                    context.RolePermissions.Add(rolePermission);
 
                 }
             }
@@ -175,7 +175,7 @@ using (var scope = app.Services.CreateScope())
                             PermissionId = permission,
                         };
 
-                        context.rolePermissions.Add(rolePermission);
+                        context.RolePermissions.Add(rolePermission);
                     }
 
                 }

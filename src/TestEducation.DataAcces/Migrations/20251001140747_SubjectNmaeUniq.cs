@@ -12,7 +12,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.CreateIndex(
                 name: "IX_subjects_Name",
-                table: "subjects",
+                table: "Subjects",
                 column: "Name",
                 unique: true);
         }
@@ -22,7 +22,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropIndex(
                 name: "IX_subjects_Name",
-                table: "subjects");
+                table: "Subjects");
         }
     }
 }

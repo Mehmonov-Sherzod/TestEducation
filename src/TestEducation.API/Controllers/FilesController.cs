@@ -83,5 +83,5 @@ namespace TestEducation.Controllers
                 return StatusCode(500, "Faylni o'chirishda kutilmagan xatolik yuz berdi.");
             }
         }
-}
     }
+}
