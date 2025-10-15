@@ -7,24 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.9" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
     <PackageReference Include="Minio" Version="6.0.5" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestEducation.DataAcces\TestEducation.DataAcces.csproj" />
-    <ProjectReference Include="..\TestEducation.ViewModel\TestEducation.Shared.csproj" />
+    <Folder Include="Models\Permissions\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\" />
-    <Folder Include="Models\Permissions\" />
+    <ProjectReference Include="..\TestEducation.DataAcces\TestEducation.DataAcces.csproj" />
   </ItemGroup>
 
 </Project>

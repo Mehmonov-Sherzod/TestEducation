@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TestEducation.Aplication.Exceptions;
-using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Users;
 using TestEducation.Data;
 using TestEducation.Models;
@@ -11,7 +9,6 @@ namespace TestEducation.Service.UserService
     public class UserService : IUserService
     {
         private readonly AppDbContext _appDbContext;
-
         private readonly PasswordHelper passwordHelper;
 
         public UserService(AppDbContext appDbContext, PasswordHelper passwordHelper)
@@ -19,10 +16,9 @@ namespace TestEducation.Service.UserService
             _appDbContext = appDbContext;
             this.passwordHelper = passwordHelper;
         }
-
-        public async Task<ApiResult<string>> CreateUser(UserDTO userDTO)
+        public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
         {
-            if (await _appDbContext.users.AnyAsync(x => x.Email == userDTO.Email))
+            if (await _appDbContext.Users.AnyAsync(x => x.Email == userDTO.Email))
             {
                 throw new BadRequestException("Bunday email bilan foydalanuvchi allaqachon mavjud");
             }
@@ -40,9 +36,9 @@ namespace TestEducation.Service.UserService
                 Salt = salt
 
             };
-            _appDbContext.users.Add(user);
+            _appDbContext.Users.Add(user);
             await _appDbContext.SaveChangesAsync();
-            var studentRole = await _appDbContext.roles.FirstOrDefaultAsync(r => r.Name == "Student");
+            var studentRole = await _appDbContext.Roles.FirstOrDefaultAsync(r => r.Name == "Student");
             if (studentRole != null)
             {
                 var userRole = new UserRole
@@ -51,18 +47,20 @@ namespace TestEducation.Service.UserService
                     UserId = user.Id,
                     RoleId = studentRole.Id
                 };
-                await _appDbContext.userRoles.AddAsync(userRole);
+                await _appDbContext.UserRoles.AddAsync(userRole);
                 await _appDbContext.SaveChangesAsync();
             }
 
-            return ApiResult<string>.Success("User topildi");
+            return new CreateUserResponseModel
+            {
+                Id = user.Id,
+            };
 
         }
-
-        public async Task<ApiResult<ICollection<UserDTO>>> GetAllUsers()
+        public async Task<List<UserResponseModel>> GetAllUsers()
         {
-            var users = await _appDbContext.users
-                .Select(x => new UserDTO
+            var users = await _appDbContext.Users
+                .Select(x => new UserResponseModel
                 {
                     FullName = x.FullName,
                     Email = x.Email,
@@ -74,14 +72,14 @@ namespace TestEducation.Service.UserService
             if (users == null || users.Count == 0)
                 throw new NotFoundException("Foydalanuvchilar topilmadi.");
 
-            return ApiResult<ICollection<UserDTO>>.Success(users);
-        }
+            return users;
 
-        public async Task<ApiResult<UserDTO>> GetByIdUser(int id)
+        }
+        public async Task<UserResponseModel> GetByIdUser(int id)
         {
-            var user = await _appDbContext.users
+            var user = await _appDbContext.Users
          .Where(x => x.Id == id)
-         .Select(x => new UserDTO
+         .Select(x => new UserResponseModel
          {
              FullName = x.FullName,
              Email = x.Email,
@@ -90,18 +88,16 @@ namespace TestEducation.Service.UserService
          })
          .FirstOrDefaultAsync();
 
-            if (user == null )
+            if (user == null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
 
-            return ApiResult<UserDTO>.Success(user);
+            return user;
 
         }
-
-
-        public async Task<ApiResult<string>> UpdateUser(int id, UserDTO userDTO)
+        public async Task<UpdateUserResponseModel> UpdateUser(int id, UpdateUserModel userDTO)
         {
-            var user = await _appDbContext.users.FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
 
             if (user == null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
@@ -112,21 +108,22 @@ namespace TestEducation.Service.UserService
 
             await _appDbContext.SaveChangesAsync();
 
-           return  ApiResult<string>.Success("Malumot o'zgardi");
+            return new UpdateUserResponseModel
+            {
+                Id = user.Id,
+            };
         }
-
-
-        public async Task<ApiResult<string> DeleteByIdUser(int id)
+        public async Task<string> DeleteByIdUser(int id)
         {
-            var user = await _appDbContext.users.FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
 
             if (user == null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
-            _appDbContext.users.Remove(user);
+            _appDbContext.Users.Remove(user);
             await _appDbContext.SaveChangesAsync();
 
-            return ApiResult<string>.Success("Malumot o'chirildi");
+            return "Malumot o'chirildi";
         }
 
 

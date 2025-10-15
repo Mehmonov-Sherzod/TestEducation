@@ -9,16 +9,16 @@ namespace TestEducation.Data
     {
         private readonly IConfiguration _configuration;
         public DbSet<Answer> Answers { get; set; }
-        public DbSet<Permission> permissions { get; set; }
-        public DbSet<Question> question { get; set; }   
-        public DbSet<Role> roles { get; set; }  
-        public DbSet<RolePermission> rolePermissions { get; set; }
-        public DbSet<User> users { get; set; }  
-        public DbSet<UserRole> userRoles { get; set; }   
-        public DbSet<Subject> subjects { get; set; }        
-        public DbSet<UserQuestion> userQuestions { get; set; }  
-        public DbSet<UserQuestionAnswer> userQuestionsAnswer { get; set; } 
-        public DbSet<UserTestResult> userTestResult { get; set; }   
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Question> Question { get; set; }   
+        public DbSet<Role> Roles { get; set; }  
+        public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<User> Users { get; set; }  
+        public DbSet<UserRole> UserRoles { get; set; }   
+        public DbSet<Subject> Subjects { get; set; }        
+        public DbSet<UserQuestion> UserQuestions { get; set; }  
+        public DbSet<UserQuestionAnswer> UserQuestionsAnswer { get; set; } 
+        public DbSet<UserTestResult> UserTestResult { get; set; }   
 
 
 
@@ -50,7 +50,7 @@ namespace TestEducation.Data
             modelBuilder.Entity<UserQuestion>()
                 .HasKey(rp => new {rp.UserId , rp.QuestionId});
 
-            //bu qismida question ochkandan keyin avtomadtik unga boglangan savollar ham ochadi
+            //bu qismida Question ochkandan keyin avtomadtik unga boglangan savollar ham ochadi
             //modelBuilder.Entity<Answer>()
             //   .HasOne(a => a.Question)
             //   .WithMany(q => q.AnswerOptions)

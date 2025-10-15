@@ -14,7 +14,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_question_tests_TestId",
-                table: "question");
+                table: "Question");
 
             migrationBuilder.DropTable(
                 name: "userTests");
@@ -24,11 +24,11 @@ namespace TestEducation.Migrations
 
             migrationBuilder.DropIndex(
                 name: "IX_question_TestId",
-                table: "question");
+                table: "Question");
 
             migrationBuilder.DropColumn(
                 name: "TestId",
-                table: "question");
+                table: "Question");
         }
 
         /// <inheritdoc />
@@ -36,7 +36,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.AddColumn<int>(
                 name: "TestId",
-                table: "question",
+                table: "Question",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
@@ -57,7 +57,7 @@ namespace TestEducation.Migrations
                     table.ForeignKey(
                         name: "FK_tests_subjects_subjectId",
                         column: x => x.subjectId,
-                        principalTable: "subjects",
+                        principalTable: "Subjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -84,14 +84,14 @@ namespace TestEducation.Migrations
                     table.ForeignKey(
                         name: "FK_userTests_users_UserId",
                         column: x => x.UserId,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_question_TestId",
-                table: "question",
+                table: "Question",
                 column: "TestId");
 
             migrationBuilder.CreateIndex(
@@ -106,7 +106,7 @@ namespace TestEducation.Migrations
 
             migrationBuilder.AddForeignKey(
                 name: "FK_question_tests_TestId",
-                table: "question",
+                table: "Question",
                 column: "TestId",
                 principalTable: "tests",
                 principalColumn: "Id",

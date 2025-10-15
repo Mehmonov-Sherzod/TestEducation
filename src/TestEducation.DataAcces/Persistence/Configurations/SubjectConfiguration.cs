@@ -10,12 +10,14 @@ using TestEducation.Models;
 
 namespace TestEducation.DataAcces.Persistence.Configurations
 {
+    
     class SubjectConfiguration : IEntityTypeConfiguration<Subject>
     {
         public void Configure(EntityTypeBuilder<Subject> builder)
         {
             // Subject modelida Name Uniq Boladi
-            builder.HasIndex(x=>x.Name).IsUnique();
+            builder.HasIndex(x=>x.Name)
+                .IsUnique();
         }
     }
 }

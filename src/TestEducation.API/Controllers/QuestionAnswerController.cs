@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models.Question;
-using TestEducation.Dtos;
 using TestEducation.Service.FileStoreageService;
 using TestEducation.Service.QuestionAnswerService;
 
@@ -12,46 +11,48 @@ namespace TestEducation.Controllers
     {
         private readonly IQuestionAnswerService _questionAnswerService;
         private readonly IFileStoreageService _fileStoreageService;
-
-
-        public QuestionAnswerController(IQuestionAnswerService questionAnswerService , IFileStoreageService fileStorageService)
+        public QuestionAnswerController(IQuestionAnswerService questionAnswerService, IFileStoreageService fileStorageService)
         {
             _questionAnswerService = questionAnswerService;
-            _fileStoreageService = fileStorageService; 
+            _fileStoreageService = fileStorageService;
         }
+
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuestionAnswer([FromForm] QuestionDTO questionDTO)
+        public async Task<IActionResult> CreateQuestionAnswer([FromForm] CreateQuestionModel 
+            
+            
+            questionDTO)
         {
-            return await _questionAnswerService.CreateQuestionAnswer(questionDTO);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteQuestionAnswer(int id)
-        {
-            return await _questionAnswerService.DeleteQuestionAnswer(id);
+            return Ok(await _questionAnswerService.CreateQuestionAnswer(questionDTO));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllQuestionAnswer()
         {
-            return await _questionAnswerService.GetAllQuestionAnswer();
+            return Ok(await _questionAnswerService.GetAllQuestionAnswer());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdQuestionAnswer(int id)
         {
-            return await _questionAnswerService.GetByIdQuestionAnswer(id);
+            return Ok(await _questionAnswerService.GetByIdQuestionAnswer(id));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateQuestionAnswer(int id, QuestionUpdateDTO questionUpdateDTO)
+        public async Task<IActionResult> UpdateQuestionAnswer(int id, UpdateQuestionAnswerModel questionUpdateDTO)
         {
-            return await _questionAnswerService.UpdateQuestionAnswer(id, questionUpdateDTO);
+            return Ok(await _questionAnswerService.UpdateQuestionAnswer(id, questionUpdateDTO));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteQuestionAnswer(int id)
+        {
+            return Ok(await _questionAnswerService.DeleteQuestionAnswer(id));
         }
 
         [HttpGet("download")]
-        public async Task<IActionResult> DownloadFileQuestionsAnswer( [FromQuery] string objectName)
+        public async Task<IActionResult> DownloadFileQuestionsAnswer([FromQuery] string objectName)
         {
             if (string.IsNullOrEmpty("questions-image") || string.IsNullOrEmpty(objectName))
             {

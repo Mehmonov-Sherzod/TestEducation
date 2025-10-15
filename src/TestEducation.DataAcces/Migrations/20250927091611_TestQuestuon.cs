@@ -13,7 +13,7 @@ namespace TestEducation.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "permissions",
+                name: "Permissions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -41,7 +41,7 @@ namespace TestEducation.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "roles",
+                name: "Roles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -55,7 +55,7 @@ namespace TestEducation.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "subjects",
+                name: "Subjects",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -68,7 +68,7 @@ namespace TestEducation.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "users",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -85,7 +85,7 @@ namespace TestEducation.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "rolePermissions",
+                name: "RolePermissions",
                 columns: table => new
                 {
                     RoleId = table.Column<int>(type: "integer", nullable: false),
@@ -97,13 +97,13 @@ namespace TestEducation.Migrations
                     table.ForeignKey(
                         name: "FK_rolePermissions_permissions_PermissionId",
                         column: x => x.PermissionId,
-                        principalTable: "permissions",
+                        principalTable: "Permissions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_rolePermissions_roles_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "roles",
+                        principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -124,13 +124,13 @@ namespace TestEducation.Migrations
                     table.ForeignKey(
                         name: "FK_tests_subjects_subjectId",
                         column: x => x.subjectId,
-                        principalTable: "subjects",
+                        principalTable: "Subjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "userRoles",
+                name: "UserRoles",
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "integer", nullable: false),
@@ -142,19 +142,19 @@ namespace TestEducation.Migrations
                     table.ForeignKey(
                         name: "FK_userRoles_roles_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "roles",
+                        principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_userRoles_users_UserId",
                         column: x => x.UserId,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "question",
+                name: "Question",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -202,7 +202,7 @@ namespace TestEducation.Migrations
                     table.ForeignKey(
                         name: "FK_userTests_users_UserId",
                         column: x => x.UserId,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -223,13 +223,13 @@ namespace TestEducation.Migrations
                     table.ForeignKey(
                         name: "FK_Answers_question_QuestionId",
                         column: x => x.QuestionId,
-                        principalTable: "question",
+                        principalTable: "Question",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "userQuestions",
+                name: "UserQuestions",
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "integer", nullable: false),
@@ -242,19 +242,19 @@ namespace TestEducation.Migrations
                     table.ForeignKey(
                         name: "FK_userQuestions_question_QuestionId",
                         column: x => x.QuestionId,
-                        principalTable: "question",
+                        principalTable: "Question",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_userQuestions_users_UserId",
                         column: x => x.UserId,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "userQuestionsAnswer",
+                name: "UserQuestionsAnswer",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -276,7 +276,7 @@ namespace TestEducation.Migrations
                     table.ForeignKey(
                         name: "FK_userQuestionsAnswer_userQuestions_UserQuestionUserId_UserQu~",
                         columns: x => new { x.UserQuestionUserId, x.UserQuestionQuestionId },
-                        principalTable: "userQuestions",
+                        principalTable: "UserQuestions",
                         principalColumns: new[] { "UserId", "QuestionId" },
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -288,17 +288,17 @@ namespace TestEducation.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_question_QuestionLevelId",
-                table: "question",
+                table: "Question",
                 column: "QuestionLevelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_question_TestId",
-                table: "question",
+                table: "Question",
                 column: "TestId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_rolePermissions_PermissionId",
-                table: "rolePermissions",
+                table: "RolePermissions",
                 column: "PermissionId");
 
             migrationBuilder.CreateIndex(
@@ -308,22 +308,22 @@ namespace TestEducation.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_userQuestions_QuestionId",
-                table: "userQuestions",
+                table: "UserQuestions",
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_userQuestionsAnswer_AnswerId",
-                table: "userQuestionsAnswer",
+                table: "UserQuestionsAnswer",
                 column: "AnswerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_userQuestionsAnswer_UserQuestionUserId_UserQuestionQuestion~",
-                table: "userQuestionsAnswer",
+                table: "UserQuestionsAnswer",
                 columns: new[] { "UserQuestionUserId", "UserQuestionQuestionId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_userRoles_UserId",
-                table: "userRoles",
+                table: "UserRoles",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -336,34 +336,34 @@ namespace TestEducation.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "rolePermissions");
+                name: "RolePermissions");
 
             migrationBuilder.DropTable(
-                name: "userQuestionsAnswer");
+                name: "UserQuestionsAnswer");
 
             migrationBuilder.DropTable(
-                name: "userRoles");
+                name: "UserRoles");
 
             migrationBuilder.DropTable(
                 name: "userTests");
 
             migrationBuilder.DropTable(
-                name: "permissions");
+                name: "Permissions");
 
             migrationBuilder.DropTable(
                 name: "Answers");
 
             migrationBuilder.DropTable(
-                name: "userQuestions");
+                name: "UserQuestions");
 
             migrationBuilder.DropTable(
-                name: "roles");
+                name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "question");
+                name: "Question");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "QuestionLevel");
@@ -372,7 +372,7 @@ namespace TestEducation.Migrations
                 name: "tests");
 
             migrationBuilder.DropTable(
-                name: "subjects");
+                name: "Subjects");
         }
     }
 }

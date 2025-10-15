@@ -12,7 +12,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.CreateIndex(
                 name: "IX_users_Email",
-                table: "users",
+                table: "Users",
                 column: "Email",
                 unique: true);
         }
@@ -22,7 +22,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropIndex(
                 name: "IX_users_Email",
-                table: "users");
+                table: "Users");
         }
     }
 }

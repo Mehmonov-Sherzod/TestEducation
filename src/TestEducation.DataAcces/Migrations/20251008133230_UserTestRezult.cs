@@ -13,7 +13,7 @@ namespace TestEducation.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "userTestResult",
+                name: "UserTestResult",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -34,25 +34,25 @@ namespace TestEducation.Migrations
                     table.ForeignKey(
                         name: "FK_userTestResult_subjects_SubjectId",
                         column: x => x.SubjectId,
-                        principalTable: "subjects",
+                        principalTable: "Subjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_userTestResult_users_UserId",
                         column: x => x.UserId,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_userTestResult_SubjectId",
-                table: "userTestResult",
+                table: "UserTestResult",
                 column: "SubjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_userTestResult_UserId",
-                table: "userTestResult",
+                table: "UserTestResult",
                 column: "UserId");
         }
 
@@ -60,7 +60,7 @@ namespace TestEducation.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "userTestResult");
+                name: "UserTestResult");
         }
     }
 }

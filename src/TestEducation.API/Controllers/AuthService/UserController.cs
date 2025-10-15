@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Users;
-using TestEducation.Dtos;
 using TestEducation.Service.UserService;
 
 namespace TestEducation.Controllers
@@ -16,37 +16,44 @@ namespace TestEducation.Controllers
         }
 
         [HttpPost("User-Create")]
-        public async Task<IActionResult> CreateUser(UserDTO userDTO)
+        public async Task<IActionResult> CreateUser(CreateUserModel userDTO)
         {
-            return Ok(await _userService.CreateUser(userDTO));
+            var result = await _userService.CreateUser(userDTO);
+
+            return Ok(ApiResult<CreateUserResponseModel>.Success(result));
 
         }
 
         [HttpGet("User-GetAll")]
         public async Task<IActionResult> GetAllUsers()
         {
-            return Ok(await _userService.GetAllUsers());
+            var result = await _userService.GetAllUsers();
+
+            return Ok(ApiResult<List<UserResponseModel>>.Success(result));
         }
 
         [HttpGet("{id}")]
-
         public async Task<IActionResult> GetByIdUser(int id)
         {
-            return Ok(await _userService.GetByIdUser(id));    
+            var result = await _userService.GetByIdUser(id);
+
+            return Ok(ApiResult<UserResponseModel>.Success(result));
         }
 
         [HttpPut("{id}")]
-
-        public async Task<IActionResult> UpdateUser(int id, UserDTO userDTO)
+        public async Task<IActionResult> UpdateUser(int id, UpdateUserModel userDTO)
         {
-            return Ok(await _userService.UpdateUser(id, userDTO));
-        }
+           var result =  await _userService.UpdateUser(id, userDTO);
 
+           return Ok(ApiResult<UpdateUserResponseModel>.Success(result));
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            return await _userService.DeleteByIdUser(id);
+            var result = await _userService.DeleteByIdUser(id);
+
+            return Ok(ApiResult<string>.Success(result));
         }
     }
 }

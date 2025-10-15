@@ -68,7 +68,7 @@ namespace TestEducation.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("permissions");
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("TestEducation.Models.Question", b =>
@@ -95,7 +95,7 @@ namespace TestEducation.Migrations
 
                     b.HasIndex("TestId");
 
-                    b.ToTable("question");
+                    b.ToTable("Question");
                 });
 
             modelBuilder.Entity("TestEducation.Models.QuestionLevel", b =>
@@ -136,7 +136,7 @@ namespace TestEducation.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("roles");
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("TestEducation.Models.RolePermission", b =>
@@ -151,7 +151,7 @@ namespace TestEducation.Migrations
 
                     b.HasIndex("PermissionId");
 
-                    b.ToTable("rolePermissions");
+                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("TestEducation.Models.Subject", b =>
@@ -168,7 +168,7 @@ namespace TestEducation.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("subjects");
+                    b.ToTable("Subjects");
                 });
 
             modelBuilder.Entity("TestEducation.Models.Test", b =>
@@ -225,7 +225,7 @@ namespace TestEducation.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("users");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserQuestion", b =>
@@ -243,7 +243,7 @@ namespace TestEducation.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("userQuestions");
+                    b.ToTable("UserQuestions");
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserQuestionAnswer", b =>
@@ -272,7 +272,7 @@ namespace TestEducation.Migrations
 
                     b.HasIndex("UserQuestionUserId", "UserQuestionQuestionId");
 
-                    b.ToTable("userQuestionsAnswer");
+                    b.ToTable("UserQuestionsAnswer");
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserRole", b =>
@@ -287,7 +287,7 @@ namespace TestEducation.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("userRoles");
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserTest", b =>
@@ -383,7 +383,7 @@ namespace TestEducation.Migrations
                         .IsRequired();
 
                     b.HasOne("TestEducation.Models.User", "User")
-                        .WithMany("userQuestions")
+                        .WithMany("UserQuestions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -497,7 +497,7 @@ namespace TestEducation.Migrations
 
                     b.Navigation("UserRoles");
 
-                    b.Navigation("userQuestions");
+                    b.Navigation("UserQuestions");
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserQuestion", b =>

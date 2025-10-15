@@ -15,7 +15,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.9" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\TestEducation.Domain\TestEducation.Domain.csproj" />
   </ItemGroup>

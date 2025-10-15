@@ -1,18 +1,19 @@
-﻿using TestEducation.Aplication.Models.Subject;
-using TestEducation.Dtos;
+﻿using TestEducation.Aplication.Models;
+using TestEducation.Aplication.Models.Subject;
+
 
 namespace TestEducation.Service.SubjectService
 {
     public interface ISubjectServise
     {
-        Task<ResponseDTO> CreateSubject(SubjectDTO subjectDTO );
+        Task<CreateSubjectResponseModel> CreateSubject(CreateSubjectModel subjectDTO );
 
-        Task<ResponseDTO<ICollection<SubjectDTO>>> GetaAllSubjects();    
+        Task<List<SubjectResponsModel>> GetaAllSubjects();    
 
-        Task<ResponseDTO<SubjectDTO>> GetByIdSubject(int id);    
+        Task<SubjectResponsModel> GetByIdSubject(int id);    
 
-        Task<ResponseDTO<SubjectDTO>> UpdateSubject(int id , SubjectDTO subjectDTO);
+        Task<UpdateSubjectResponseModel> UpdateSubject(int Id, UpdateSubjectModel subjectDTO);
 
-        Task<ResponseDTO> DeleteSubject(int id); 
+        Task<string> DeleteSubject(int id); 
     }
 }

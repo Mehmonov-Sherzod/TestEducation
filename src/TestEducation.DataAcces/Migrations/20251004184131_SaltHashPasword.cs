@@ -12,7 +12,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.AddColumn<string>(
                 name: "Salt",
-                table: "users",
+                table: "Users",
                 type: "text",
                 nullable: false,
                 defaultValue: "");
@@ -23,7 +23,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Salt",
-                table: "users");
+                table: "Users");
         }
     }
 }

@@ -12,21 +12,21 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.AddColumn<int>(
                 name: "SubjectId",
-                table: "question",
+                table: "Question",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.CreateIndex(
                 name: "IX_question_SubjectId",
-                table: "question",
+                table: "Question",
                 column: "SubjectId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_question_subjects_SubjectId",
-                table: "question",
+                table: "Question",
                 column: "SubjectId",
-                principalTable: "subjects",
+                principalTable: "Subjects",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
@@ -36,15 +36,15 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_question_subjects_SubjectId",
-                table: "question");
+                table: "Question");
 
             migrationBuilder.DropIndex(
                 name: "IX_question_SubjectId",
-                table: "question");
+                table: "Question");
 
             migrationBuilder.DropColumn(
                 name: "SubjectId",
-                table: "question");
+                table: "Question");
         }
     }
 }

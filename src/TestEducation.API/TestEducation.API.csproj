@@ -25,8 +25,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestEducation.Aplication\TestEducation.Aplication.csproj" />
-    <ProjectReference Include="..\TestEducation.Shared\TestEducation.Aplication.csproj" />
-    <ProjectReference Include="..\TestEducation.Shared\TestEducation.Shared.csproj" />
   </ItemGroup>
+
+  
 
 </Project>

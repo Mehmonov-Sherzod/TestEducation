@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 using TestEducation.Aplication.Exceptions;
 using TestEducation.Aplication.Models;
 using TestEducation.Domain.Exceptions;
@@ -35,7 +35,7 @@ namespace TestEducation.API.Middleware
                 _ => code
             };
 
-            var result = JsonConvert.SerializeObject(ApiResult<string>.Failure(errors));
+            var result = JsonSerializer.Serialize(ApiResult<string>.Failure(errors));
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = code;

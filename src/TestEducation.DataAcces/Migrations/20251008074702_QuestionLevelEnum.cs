@@ -13,18 +13,18 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_question_questionLevel_QuestionLevelId",
-                table: "question");
+                table: "Question");
 
             migrationBuilder.DropTable(
                 name: "questionLevel");
 
             migrationBuilder.DropIndex(
                 name: "IX_question_QuestionLevelId",
-                table: "question");
+                table: "Question");
 
             migrationBuilder.AddColumn<int>(
                 name: "Level",
-                table: "question",
+                table: "Question",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
@@ -35,7 +35,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Level",
-                table: "question");
+                table: "Question");
 
             migrationBuilder.CreateTable(
                 name: "questionLevel",
@@ -53,7 +53,7 @@ namespace TestEducation.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_question_QuestionLevelId",
-                table: "question",
+                table: "Question",
                 column: "QuestionLevelId");
 
             migrationBuilder.CreateIndex(
@@ -64,7 +64,7 @@ namespace TestEducation.Migrations
 
             migrationBuilder.AddForeignKey(
                 name: "FK_question_questionLevel_QuestionLevelId",
-                table: "question",
+                table: "Question",
                 column: "QuestionLevelId",
                 principalTable: "questionLevel",
                 principalColumn: "Id",

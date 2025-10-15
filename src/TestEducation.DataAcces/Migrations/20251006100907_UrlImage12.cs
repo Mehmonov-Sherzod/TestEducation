@@ -16,7 +16,7 @@ namespace TestEducation.Migrations
 
             migrationBuilder.AddColumn<string>(
                 name: "ImageUrl",
-                table: "question",
+                table: "Question",
                 type: "text",
                 nullable: true);
         }
@@ -26,7 +26,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "ImageUrl",
-                table: "question");
+                table: "Question");
 
             migrationBuilder.AddColumn<string>(
                 name: "ImageUrl",

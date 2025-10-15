@@ -12,7 +12,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.AlterColumn<string>(
                 name: "Salt",
-                table: "users",
+                table: "Users",
                 type: "text",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -24,7 +24,7 @@ namespace TestEducation.Migrations
         {
             migrationBuilder.AlterColumn<string>(
                 name: "Salt",
-                table: "users",
+                table: "Users",
                 type: "text",
                 nullable: false,
                 defaultValue: "",
