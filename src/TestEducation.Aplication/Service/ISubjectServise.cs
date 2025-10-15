@@ -8,7 +8,9 @@ namespace TestEducation.Service.SubjectService
     {
         Task<CreateSubjectResponseModel> CreateSubject(CreateSubjectModel subjectDTO );
 
-        Task<List<SubjectResponsModel>> GetaAllSubjects();    
+        Task<List<SubjectResponsModel>> GetaAllSubjects();
+
+        Task<PaginationResult<SubjectResponsModel>> CreateSubjectPage(SubjectPageModel subjectDTO);
 
         Task<SubjectResponsModel> GetByIdSubject(int id);    
 

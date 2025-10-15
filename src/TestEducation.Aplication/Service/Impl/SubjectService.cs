@@ -97,7 +97,26 @@ namespace TestEducation.Service.SubjectService
 
 
         }
+        public async Task<PaginationResult<SubjectResponsModel>> CreateSubjectPage(SubjectPageModel model)
+        {
+            var result = _appDbContext.Subjects
+                .Skip(model.PageSize * (model.PageNumber - 1))
+                .Take(model.PageSize)
+                .Select(s => new SubjectResponsModel
+                {
+                    SubjectName = s.Name,
+                }).ToList();
 
+            int total = _appDbContext.Subjects.Count();
+
+            return new PaginationResult<SubjectResponsModel>
+            {
+                Values = result,
+                PageSize = model.PageSize,
+                PageNumber = model.PageNumber,
+                TotalCount = total
+            };
+        }
     }
 }
 
