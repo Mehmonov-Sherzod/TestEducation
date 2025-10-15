@@ -12,6 +12,5 @@ namespace TestEducation.Aplication.Models.Question
         public QuestionLevel Level { get; set; }
         public List<AnswerDTO> Answers { get; set; }
     }
-
     public class CreateQuestionAnswerResponseModel : BaseResponseModel;
 }

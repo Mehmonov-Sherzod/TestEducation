@@ -54,5 +54,14 @@ namespace TestEducation.Controllers
 
             return Ok(ApiResult<string>.Success(result));
         }
+
+        [HttpPost("get-all-page")]
+
+        public async Task<IActionResult> GetAllPage(SubjectPageModel model)
+        {
+            var result = await _IsubjectServise.CreateSubjectPage(model);     
+
+            return Ok(ApiResult<PaginationResult<SubjectResponsModel>>.Success(result));
+        }
     }
 }
