@@ -13,6 +13,8 @@ namespace TestEducation.Service.UserService
         Task<UpdateUserResponseModel> UpdateUser(int id, UpdateUserModel userDTO);
 
         Task<string> DeleteByIdUser(int id);
+
+        Task<PaginationResult<CreateUserModel>> CreateUserPage(UserPageModel model);
     }
 }
  

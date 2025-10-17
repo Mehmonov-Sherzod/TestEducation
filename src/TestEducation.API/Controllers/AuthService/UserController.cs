@@ -46,6 +46,7 @@ namespace TestEducation.Controllers
            var result =  await _userService.UpdateUser(id, userDTO);
 
            return Ok(ApiResult<UpdateUserResponseModel>.Success(result));
+
         }
 
         [HttpDelete("{id}")]
@@ -54,6 +55,14 @@ namespace TestEducation.Controllers
             var result = await _userService.DeleteByIdUser(id);
 
             return Ok(ApiResult<string>.Success(result));
+        }
+
+        [HttpPost("get-all-page")]
+        public async Task<IActionResult> CreateUserPage(UserPageModel model)
+        {
+            var result = await _userService.CreateUserPage(model);
+
+            return Ok(ApiResult<PaginationResult<CreateUserModel>>.Success(result));
         }
     }
 }

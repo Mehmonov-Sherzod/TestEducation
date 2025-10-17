@@ -5,6 +5,7 @@ using TestEducation.Aplication.Exceptions;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Answer;
 using TestEducation.Aplication.Models.Question;
+using TestEducation.Aplication.Models.Subject;
 using TestEducation.Data;
 using TestEducation.Models;
 using TestEducation.Service.FileStoreageService;
@@ -14,17 +15,15 @@ namespace TestEducation.Service.QuestionAnswerService
     public class QuestionAnswerService : IQuestionAnswerService
     {
         private readonly AppDbContext _appDbContext;
-
         private readonly IFileStoreageService _fileStorageService;
-
         private readonly IMinioClient _minioClient;
+
         public QuestionAnswerService(AppDbContext appDbContext, IFileStoreageService fileStorageService, IMinioClient minioClient)
         {
             _appDbContext = appDbContext;
             _fileStorageService = fileStorageService;
             _minioClient = minioClient;
         }
-
         public async Task<CreateQuestionAnswerResponseModel> CreateQuestionAnswer(CreateQuestionModel questionDTO)
         {
             string? urlImage = null;
@@ -84,6 +83,7 @@ namespace TestEducation.Service.QuestionAnswerService
                 {
                     QuestionText = x.QuestionText,
                     Image = x.ImageUrl,
+                    QuestionLevel = x.Level,
                     Answers = x.AnswerOptions.
                     Select(n => new AnswerGetAllDTO
                     {
@@ -91,7 +91,7 @@ namespace TestEducation.Service.QuestionAnswerService
                     }).ToList()
 
                 }).ToListAsync();
-  
+
             return question;
         }
         public async Task<QuestionAnswerResponseModel> GetByIdQuestionAnswer(int Id)
@@ -102,6 +102,7 @@ namespace TestEducation.Service.QuestionAnswerService
                   {
                       QuestionText = x.QuestionText,
                       Image = x.ImageUrl,
+                      QuestionLevel = x.Level,
                       Answers = x.AnswerOptions.
                       Select(n => new AnswerGetAllDTO
                       {
@@ -113,9 +114,7 @@ namespace TestEducation.Service.QuestionAnswerService
             if (question == null)
                 throw new NotFoundException("Question topilmadi.");
 
-
             return question;
-
 
         }
         public async Task<UpdateQuestionAnswerResponseModel> UpdateQuestionAnswer(int id, UpdateQuestionAnswerModel questionUpdateDTO)
@@ -148,7 +147,7 @@ namespace TestEducation.Service.QuestionAnswerService
 
             var question = await _appDbContext.Question
                  .FirstOrDefaultAsync(x => x.Id == id);
-            
+
             if (question == null)
                 throw new NotFoundException("Question topilmadi.");
 
@@ -160,7 +159,7 @@ namespace TestEducation.Service.QuestionAnswerService
                     AnswerText = x.Text,
                     IsCorrect = x.IsCorrect
                 }).ToList();
- 
+
 
             await _appDbContext.SaveChangesAsync();
 
@@ -201,7 +200,41 @@ namespace TestEducation.Service.QuestionAnswerService
             memoryStream1.Position = 0; // Streamni boshiga qaytarish, chunki undan o'qish mumkin bo'lishi uchun
             return memoryStream1;
         }
+        public async Task<PaginationResult<QuestionAnswerResponseModel>> CreateQuestionAnswerPage(QuesstionAnswerPageModel model)
+        {
+            var query = _appDbContext.Question.AsQueryable();
+
+            if (!string.IsNullOrEmpty(model.Search))
+            {
+                query = query.Where(s => s.QuestionText.Contains(model.Search));
+            }
+            Console.WriteLine(query.ToQueryString());
+            List<QuestionAnswerResponseModel> questions = await query
+                .Skip(model.PageSize * (model.PageNumber - 1))
+                .Take(model.PageSize)
+                .Select(x => new QuestionAnswerResponseModel
+                {
+                    QuestionText = x.QuestionText,
+                    Image = x.ImageUrl,
+                    QuestionLevel = x.Level,
+                    Answers = x.AnswerOptions.
+                    Select(n => new AnswerGetAllDTO
+                    {
+                        AnswerText = n.AnswerText,
+                    }).ToList()
+                }).ToListAsync();
 
 
+
+            int total = _appDbContext.Question.Count();
+
+            return new PaginationResult<QuestionAnswerResponseModel>
+            {
+                Values = questions,
+                PageSize = model.PageSize,
+                PageNumber = model.PageNumber,
+                TotalCount = total
+            };
+        }
     }
 }

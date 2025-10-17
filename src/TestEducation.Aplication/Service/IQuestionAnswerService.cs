@@ -13,6 +13,7 @@ namespace TestEducation.Service.QuestionAnswerService
         Task<UpdateQuestionAnswerResponseModel> UpdateQuestionAnswer(int id, UpdateQuestionAnswerModel questionUpdateDTO);   
         Task<string> DeleteQuestionAnswer(int Id);
         Task<Stream> DownloadFileAsyncQuestion(string objectName);
+        Task<PaginationResult<QuestionAnswerResponseModel>> CreateQuestionAnswerPage(QuesstionAnswerPageModel model);
 
     }
 }
