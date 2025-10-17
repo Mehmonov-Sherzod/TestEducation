@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TestEducation.Aplication.Exceptions;
+using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Users;
 using TestEducation.Data;
 using TestEducation.Models;
@@ -125,7 +126,34 @@ namespace TestEducation.Service.UserService
 
             return "Malumot o'chirildi";
         }
+        public async Task<PaginationResult<CreateUserModel>> CreateUserPage(UserPageModel model)
+        {
+            var query =  _appDbContext.Users.AsQueryable();
 
+            if (!string.IsNullOrEmpty(model.Search))
+            {
+                query = query.Where(s => s.FullName.Contains(model.Search));
+            }
+            Console.WriteLine(query.ToQueryString());
+            List<CreateUserModel> User = await query
+                .Skip(model.PageSize * (model.PageNumber - 1))
+                .Take(model.PageSize)
+                .Select(x => new CreateUserModel
+                {
+                    FullName = x.FullName,
+                    Email = x.Email,
+                    Password = x.Password,
+                }).ToListAsync();
 
+            int total = _appDbContext.Users.Count();
+
+            return new PaginationResult<CreateUserModel>
+            {
+                Values = User,
+                PageSize = model.PageSize,
+                PageNumber = model.PageNumber,
+                TotalCount = total
+            };
+        }
     }
 }

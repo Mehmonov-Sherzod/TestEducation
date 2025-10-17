@@ -99,19 +99,26 @@ namespace TestEducation.Service.SubjectService
         }
         public async Task<PaginationResult<SubjectResponsModel>> CreateSubjectPage(SubjectPageModel model)
         {
-            var result = _appDbContext.Subjects
+            var query = _appDbContext.Subjects.AsQueryable();
+
+            if (!string.IsNullOrEmpty(model.Search))
+            {
+                query = query.Where(s => s.Name.Contains(model.Search));
+            }
+            Console.WriteLine(query.ToQueryString());
+            List<SubjectResponsModel> subjects = await query
                 .Skip(model.PageSize * (model.PageNumber - 1))
                 .Take(model.PageSize)
                 .Select(s => new SubjectResponsModel
                 {
                     SubjectName = s.Name,
-                }).ToList();
+                }).ToListAsync();
 
             int total = _appDbContext.Subjects.Count();
 
             return new PaginationResult<SubjectResponsModel>
             {
-                Values = result,
+                Values = subjects,
                 PageSize = model.PageSize,
                 PageNumber = model.PageNumber,
                 TotalCount = total

@@ -20,8 +20,6 @@ namespace TestEducation.Data
         public DbSet<UserQuestionAnswer> UserQuestionsAnswer { get; set; } 
         public DbSet<UserTestResult> UserTestResult { get; set; }   
 
-
-
         public AppDbContext(IConfiguration configuration)
         {
             _configuration = configuration;

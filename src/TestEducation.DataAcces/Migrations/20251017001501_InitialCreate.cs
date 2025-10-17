@@ -4,10 +4,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace TestEducation.Migrations
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
+namespace TestEducation.DataAcces.Migrations
 {
     /// <inheritdoc />
-    public partial class TestQuestuon : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,21 +25,7 @@ namespace TestEducation.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_permissions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "QuestionLevel",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Level = table.Column<string>(type: "text", nullable: false),
-                    Point = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_QuestionLevel", x => x.Id);
+                    table.PrimaryKey("PK_Permissions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,7 +39,7 @@ namespace TestEducation.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_roles", x => x.Id);
+                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,7 +52,7 @@ namespace TestEducation.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_subjects", x => x.Id);
+                    table.PrimaryKey("PK_Subjects", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,12 +64,13 @@ namespace TestEducation.Migrations
                     FullName = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
+                    Salt = table.Column<string>(type: "text", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_users", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,15 +82,15 @@ namespace TestEducation.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_rolePermissions", x => new { x.RoleId, x.PermissionId });
+                    table.PrimaryKey("PK_RolePermissions", x => new { x.RoleId, x.PermissionId });
                     table.ForeignKey(
-                        name: "FK_rolePermissions_permissions_PermissionId",
+                        name: "FK_RolePermissions_Permissions_PermissionId",
                         column: x => x.PermissionId,
                         principalTable: "Permissions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_rolePermissions_roles_RoleId",
+                        name: "FK_RolePermissions_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
@@ -109,21 +98,22 @@ namespace TestEducation.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tests",
+                name: "Question",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    subjectId = table.Column<int>(type: "integer", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false)
+                    QuestionText = table.Column<string>(type: "text", nullable: false),
+                    ImageUrl = table.Column<string>(type: "text", nullable: true),
+                    SubjectId = table.Column<int>(type: "integer", nullable: false),
+                    Level = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tests", x => x.Id);
+                    table.PrimaryKey("PK_Question", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_tests_subjects_subjectId",
-                        column: x => x.subjectId,
+                        name: "FK_Question_Subjects_SubjectId",
+                        column: x => x.SubjectId,
                         principalTable: "Subjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -138,15 +128,15 @@ namespace TestEducation.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_userRoles", x => new { x.RoleId, x.UserId });
+                    table.PrimaryKey("PK_UserRoles", x => new { x.RoleId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_userRoles_roles_RoleId",
+                        name: "FK_UserRoles_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_userRoles_users_UserId",
+                        name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -154,53 +144,32 @@ namespace TestEducation.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Question",
+                name: "UserTestResult",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    QuestionText = table.Column<string>(type: "text", nullable: false),
-                    TestId = table.Column<int>(type: "integer", nullable: false),
-                    QuestionLevelId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_question", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_question_QuestionLevel_QuestionLevelId",
-                        column: x => x.QuestionLevelId,
-                        principalTable: "QuestionLevel",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_question_tests_TestId",
-                        column: x => x.TestId,
-                        principalTable: "tests",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "userTests",
-                columns: table => new
-                {
-                    TestId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    score = table.Column<int>(type: "integer", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    DateInterval = table.Column<int>(type: "integer", nullable: false)
+                    SubjectId = table.Column<int>(type: "integer", nullable: false),
+                    TotalQuestions = table.Column<int>(type: "integer", nullable: false),
+                    CorrectAnswers = table.Column<int>(type: "integer", nullable: false),
+                    WrongAnswers = table.Column<int>(type: "integer", nullable: false),
+                    Percentage = table.Column<double>(type: "double precision", nullable: false),
+                    TimeTaken = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    StartedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    FinishedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_userTests", x => new { x.TestId, x.UserId });
+                    table.PrimaryKey("PK_UserTestResult", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_userTests_tests_TestId",
-                        column: x => x.TestId,
-                        principalTable: "tests",
+                        name: "FK_UserTestResult_Subjects_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_userTests_users_UserId",
+                        name: "FK_UserTestResult_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -221,7 +190,7 @@ namespace TestEducation.Migrations
                 {
                     table.PrimaryKey("PK_Answers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Answers_question_QuestionId",
+                        name: "FK_Answers_Question_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Question",
                         principalColumn: "Id",
@@ -234,19 +203,20 @@ namespace TestEducation.Migrations
                 {
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     QuestionId = table.Column<int>(type: "integer", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
                     AnsweredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_userQuestions", x => new { x.UserId, x.QuestionId });
+                    table.PrimaryKey("PK_UserQuestions", x => new { x.UserId, x.QuestionId });
                     table.ForeignKey(
-                        name: "FK_userQuestions_question_QuestionId",
+                        name: "FK_UserQuestions_Question_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Question",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_userQuestions_users_UserId",
+                        name: "FK_UserQuestions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -259,26 +229,37 @@ namespace TestEducation.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Order = table.Column<int>(type: "integer", nullable: false),
                     UserQuestionId = table.Column<int>(type: "integer", nullable: false),
+                    IsMarked = table.Column<bool>(type: "boolean", nullable: false),
                     UserQuestionUserId = table.Column<int>(type: "integer", nullable: false),
                     UserQuestionQuestionId = table.Column<int>(type: "integer", nullable: false),
                     AnswerId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_userQuestionsAnswer", x => x.Id);
+                    table.PrimaryKey("PK_UserQuestionsAnswer", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_userQuestionsAnswer_Answers_AnswerId",
+                        name: "FK_UserQuestionsAnswer_Answers_AnswerId",
                         column: x => x.AnswerId,
                         principalTable: "Answers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_userQuestionsAnswer_userQuestions_UserQuestionUserId_UserQu~",
+                        name: "FK_UserQuestionsAnswer_UserQuestions_UserQuestionUserId_UserQu~",
                         columns: x => new { x.UserQuestionUserId, x.UserQuestionQuestionId },
                         principalTable: "UserQuestions",
                         principalColumns: new[] { "UserId", "QuestionId" },
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Barcha tizimdi boshqaradiga admin rol", "Admin" },
+                    { 2, "Test yechish va natija korish", "Student" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -287,48 +268,55 @@ namespace TestEducation.Migrations
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_question_QuestionLevelId",
+                name: "IX_Question_SubjectId",
                 table: "Question",
-                column: "QuestionLevelId");
+                column: "SubjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_question_TestId",
-                table: "Question",
-                column: "TestId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_rolePermissions_PermissionId",
+                name: "IX_RolePermissions_PermissionId",
                 table: "RolePermissions",
                 column: "PermissionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tests_subjectId",
-                table: "tests",
-                column: "subjectId");
+                name: "IX_Subjects_Name",
+                table: "Subjects",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_userQuestions_QuestionId",
+                name: "IX_UserQuestions_QuestionId",
                 table: "UserQuestions",
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_userQuestionsAnswer_AnswerId",
+                name: "IX_UserQuestionsAnswer_AnswerId",
                 table: "UserQuestionsAnswer",
                 column: "AnswerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_userQuestionsAnswer_UserQuestionUserId_UserQuestionQuestion~",
+                name: "IX_UserQuestionsAnswer_UserQuestionUserId_UserQuestionQuestion~",
                 table: "UserQuestionsAnswer",
                 columns: new[] { "UserQuestionUserId", "UserQuestionQuestionId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_userRoles_UserId",
+                name: "IX_UserRoles_UserId",
                 table: "UserRoles",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_userTests_UserId",
-                table: "userTests",
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTestResult_SubjectId",
+                table: "UserTestResult",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTestResult_UserId",
+                table: "UserTestResult",
                 column: "UserId");
         }
 
@@ -345,7 +333,7 @@ namespace TestEducation.Migrations
                 name: "UserRoles");
 
             migrationBuilder.DropTable(
-                name: "userTests");
+                name: "UserTestResult");
 
             migrationBuilder.DropTable(
                 name: "Permissions");
@@ -364,12 +352,6 @@ namespace TestEducation.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "QuestionLevel");
-
-            migrationBuilder.DropTable(
-                name: "tests");
 
             migrationBuilder.DropTable(
                 name: "Subjects");

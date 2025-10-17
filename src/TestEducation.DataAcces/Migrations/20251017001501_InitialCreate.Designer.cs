@@ -9,11 +9,11 @@ using TestEducation.Data;
 
 #nullable disable
 
-namespace TestEducation.Migrations
+namespace TestEducation.DataAcces.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251008074702_QuestionLevelEnum")]
-    partial class QuestionLevelEnum
+    [Migration("20251017001501_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,11 +82,9 @@ namespace TestEducation.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
-                    b.Property<int>("Level")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("QuestionLevelId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("QuestionText")
                         .IsRequired()
@@ -220,9 +218,6 @@ namespace TestEducation.Migrations
                     b.Property<DateTime>("AnsweredAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("IsAnswer")
-                        .HasColumnType("boolean");
-
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
@@ -243,6 +238,9 @@ namespace TestEducation.Migrations
 
                     b.Property<int>("AnswerId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("IsMarked")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Order")
                         .HasColumnType("integer");
@@ -278,6 +276,50 @@ namespace TestEducation.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
+                });
+
+            modelBuilder.Entity("TestEducation.Models.UserTestResult", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CorrectAnswers")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("FinishedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("Percentage")
+                        .HasColumnType("double precision");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<TimeSpan>("TimeTaken")
+                        .HasColumnType("interval");
+
+                    b.Property<int>("TotalQuestions")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("WrongAnswers")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserTestResult");
                 });
 
             modelBuilder.Entity("TestEducation.Models.Answer", b =>
@@ -330,7 +372,7 @@ namespace TestEducation.Migrations
                         .IsRequired();
 
                     b.HasOne("TestEducation.Models.User", "User")
-                        .WithMany("UserQuestions")
+                        .WithMany("userQuestions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -378,6 +420,25 @@ namespace TestEducation.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TestEducation.Models.UserTestResult", b =>
+                {
+                    b.HasOne("TestEducation.Models.Subject", "Subject")
+                        .WithMany("userTestResult")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestEducation.Models.User", "User")
+                        .WithMany("userTestResult")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TestEducation.Models.Answer", b =>
                 {
                     b.Navigation("UserAnswers");
@@ -405,13 +466,17 @@ namespace TestEducation.Migrations
             modelBuilder.Entity("TestEducation.Models.Subject", b =>
                 {
                     b.Navigation("Questions");
+
+                    b.Navigation("userTestResult");
                 });
 
             modelBuilder.Entity("TestEducation.Models.User", b =>
                 {
                     b.Navigation("UserRoles");
 
-                    b.Navigation("UserQuestions");
+                    b.Navigation("userQuestions");
+
+                    b.Navigation("userTestResult");
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserQuestion", b =>

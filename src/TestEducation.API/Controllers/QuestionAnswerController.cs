@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Question;
+using TestEducation.Aplication.Models.Subject;
 using TestEducation.Service.FileStoreageService;
 using TestEducation.Service.QuestionAnswerService;
+using TestEducation.Service.SubjectService;
 
 namespace TestEducation.Controllers
 {
@@ -17,38 +21,44 @@ namespace TestEducation.Controllers
             _fileStoreageService = fileStorageService;
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> CreateQuestionAnswer([FromForm] CreateQuestionModel 
-            
-            
-            questionDTO)
+        public async Task<IActionResult> CreateQuestionAnswer([FromForm] CreateQuestionModel questionDTO)
         {
-            return Ok(await _questionAnswerService.CreateQuestionAnswer(questionDTO));
+            var result = await _questionAnswerService.CreateQuestionAnswer(questionDTO);
+
+            return Ok(ApiResult<CreateQuestionAnswerResponseModel>.Success(result));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllQuestionAnswer()
         {
-            return Ok(await _questionAnswerService.GetAllQuestionAnswer());
+            var result = await _questionAnswerService.GetAllQuestionAnswer();
+
+            return Ok(ApiResult<List<QuestionAnswerResponseModel>>.Success(result));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdQuestionAnswer(int id)
         {
-            return Ok(await _questionAnswerService.GetByIdQuestionAnswer(id));
+            var result = await _questionAnswerService.GetByIdQuestionAnswer(id);
+
+            return Ok(ApiResult<QuestionAnswerResponseModel>.Success(result));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateQuestionAnswer(int id, UpdateQuestionAnswerModel questionUpdateDTO)
         {
-            return Ok(await _questionAnswerService.UpdateQuestionAnswer(id, questionUpdateDTO));
+            var result = await _questionAnswerService.UpdateQuestionAnswer(id , questionUpdateDTO);
+
+            return Ok(ApiResult<UpdateQuestionAnswerResponseModel>.Success(result));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuestionAnswer(int id)
         {
-            return Ok(await _questionAnswerService.DeleteQuestionAnswer(id));
+            var result = await _questionAnswerService.DeleteQuestionAnswer(id);
+
+            return Ok(ApiResult<string>.Success(result));
         }
 
         [HttpGet("download")]
@@ -75,6 +85,15 @@ namespace TestEducation.Controllers
             {
                 return StatusCode(500, "Faylni yuklab olishda kutilmagan xatolik yuz berdi.");
             }
+        }
+
+        [HttpPost("get-all-page")]
+        public async Task<IActionResult> GetAllQuestionAnswerPage(QuesstionAnswerPageModel model)
+        {
+            var result = await _questionAnswerService.CreateQuestionAnswerPage(model);
+
+            return Ok(ApiResult<PaginationResult<QuestionAnswerResponseModel>>.Success(result));
+
         }
     }
 }
