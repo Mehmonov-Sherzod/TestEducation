@@ -19,8 +19,8 @@ namespace TestEducation.Service.SubjectService
         {
             var subject = await _appDbContext.Subjects.AnyAsync(x => x.Name == subjectDTO.Name);
 
-            if (true)
-                throw new BadRequestException("Bunday email bilan foydalanuvchi allaqachon mavjud");
+            if (subject)
+                throw new BadRequestException("bunday kitob mavjud");
 
             var result = new Subject
             {

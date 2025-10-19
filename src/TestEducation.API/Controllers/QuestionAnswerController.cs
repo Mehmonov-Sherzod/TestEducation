@@ -22,7 +22,7 @@ namespace TestEducation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuestionAnswer([FromForm] CreateQuestionModel questionDTO)
+        public async Task<IActionResult> CreateQuestionAnswer( CreateQuestionModel questionDTO)
         {
             var result = await _questionAnswerService.CreateQuestionAnswer(questionDTO);
 
@@ -46,7 +46,7 @@ namespace TestEducation.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateQuestionAnswer(int id, UpdateQuestionAnswerModel questionUpdateDTO)
+        public async Task<IActionResult> UpdateQuestionAnswer(  int id, UpdateQuestionAnswerModel questionUpdateDTO)
         {
             var result = await _questionAnswerService.UpdateQuestionAnswer(id , questionUpdateDTO);
 

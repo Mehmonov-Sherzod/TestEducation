@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Minio;
+using TestEducation.Aplication.Common;
+using TestEducation.Aplication.Service;
+using TestEducation.Aplication.Service.Impl;
 using TestEducation.Data;
 using TestEducation.Service;
 using TestEducation.Service.FileStoreageService;
@@ -18,6 +18,7 @@ namespace TestEducation.Aplication
     {
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
             services.AddServices();
             return services;
         }
@@ -31,6 +32,28 @@ namespace TestEducation.Aplication
             services.AddScoped<IQuestionAnswerService, QuestionAnswerService>();
             services.AddScoped<IFileStoreageService, MinioFileStorageService>();
             services.AddScoped<PasswordHelper>();
+            services.AddSingleton<IRabbitMQproducer, RabbitMQProducer>();
+
+
+
+            services.AddSingleton<IMinioClient>(sp =>
+            {
+                var minioSettings = sp.GetRequiredService<IOptions<MinioSettings>>().Value;
+
+                // MinioClient obyektini yaratish
+                var client = new MinioClient()
+                    .WithEndpoint(minioSettings.Endpoint)
+                    .WithCredentials(minioSettings.AccessKey, minioSettings.SecretKey);
+
+                // Agar SSL yoqilgan bo'lsa
+                if (minioSettings.UseSsl)
+                {
+                    client = client.WithSSL();
+                }
+                return client.Build(); // MinioClient ni qurish
+            });
         }
+
+
     }
 }

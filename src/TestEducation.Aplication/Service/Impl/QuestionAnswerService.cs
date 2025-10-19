@@ -5,7 +5,6 @@ using TestEducation.Aplication.Exceptions;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Answer;
 using TestEducation.Aplication.Models.Question;
-using TestEducation.Aplication.Models.Subject;
 using TestEducation.Data;
 using TestEducation.Models;
 using TestEducation.Service.FileStoreageService;
@@ -26,47 +25,37 @@ namespace TestEducation.Service.QuestionAnswerService
         }
         public async Task<CreateQuestionAnswerResponseModel> CreateQuestionAnswer(CreateQuestionModel questionDTO)
         {
-            string? urlImage = null;
+            //string? urlImage = null;
 
-            if (questionDTO.Image != null && questionDTO.Image.Length > 0)
-            {
-                var extension = Path.GetExtension(questionDTO.Image.FileName);
-                var objectName = $"{Guid.NewGuid()}{extension}";
-                //Console.WriteLine("\n" +extension + " " + objectName);
-                //Console.WriteLine(questionDTO.Image);
-                //using var stream = questionDTO.Image.OpenReadStream();
-                //using var ms = new MemoryStream();
-                //await stream.CopyToAsync(ms);
-                //byte[] results = new byte[stream.Length];
-                //results = ms.ToArray();
-                //string result = string.Join("", results);
-                //Console.Write(result);
-                //Console.Write('\n' + result.Length);
-                using var mystream = questionDTO.Image.OpenReadStream();
-                urlImage = await _fileStorageService.UploadFileAsync(
-                    "questions-image",
-                    objectName,
-                    mystream,
-                    questionDTO.Image.ContentType
-                );
-            }
+            //if (questionDTO.Image != null && questionDTO.Image.Length > 0)
+            //{
+            //    var extension = Path.GetExtension(questionDTO.Image.FileName);
+            //    var objectName = $"{Guid.NewGuid()}{extension}";
+            //    using var mystream = questionDTO.Image.OpenReadStream();
+            //    urlImage = await _fileStorageService.UploadFileAsync(
+            //        "questions-image",
+            //        objectName,
+            //        mystream,
+            //        questionDTO.Image.ContentType
+            //    );
+            //}
 
-            var question = new Question
+            Question question = new Question
             {
                 QuestionText = questionDTO.QuestionText,
                 SubjectId = questionDTO.SubjectId,
-                ImageUrl = urlImage,
+                //ImageUrl = urlImage,
                 Level = questionDTO.Level,
-                AnswerOptions = questionDTO.Answers
+                Answers = questionDTO.Answers
                 .Select(a => new Answer
                 {
                     AnswerText = a.Text,
                     IsCorrect = a.IsCorrect,
-                }).ToList(),
 
+                }).ToList(),
             };
 
-            _appDbContext.Question.Add(question);
+            await _appDbContext.Question.AddAsync(question);
             await _appDbContext.SaveChangesAsync();
 
             return new CreateQuestionAnswerResponseModel
@@ -78,13 +67,12 @@ namespace TestEducation.Service.QuestionAnswerService
         public async Task<List<QuestionAnswerResponseModel>> GetAllQuestionAnswer()
         {
             var question = await _appDbContext.Question
-                .Include(a => a.AnswerOptions)
                 .Select(x => new QuestionAnswerResponseModel
                 {
                     QuestionText = x.QuestionText,
                     Image = x.ImageUrl,
                     QuestionLevel = x.Level,
-                    Answers = x.AnswerOptions.
+                    Answers = x.Answers.
                     Select(n => new AnswerGetAllDTO
                     {
                         AnswerText = n.AnswerText,
@@ -97,19 +85,19 @@ namespace TestEducation.Service.QuestionAnswerService
         public async Task<QuestionAnswerResponseModel> GetByIdQuestionAnswer(int Id)
         {
             var question = await _appDbContext.Question
-                  .Include(a => a.AnswerOptions)
-                  .Select(x => new QuestionAnswerResponseModel
-                  {
-                      QuestionText = x.QuestionText,
-                      Image = x.ImageUrl,
-                      QuestionLevel = x.Level,
-                      Answers = x.AnswerOptions.
-                      Select(n => new AnswerGetAllDTO
-                      {
-                          AnswerText = n.AnswerText,
-                      }).ToList()
-
-                  }).FirstOrDefaultAsync();
+                    .Where(x => x.Id == Id)
+                    .Select(x => new QuestionAnswerResponseModel
+                       {
+                           QuestionText = x.QuestionText,
+                           Image = x.ImageUrl,
+                           QuestionLevel = x.Level,
+                           Answers = x.Answers
+                                  .Select(n => new AnswerGetAllDTO
+                                   {
+                                   AnswerText = n.AnswerText,
+                                   }).ToList()
+                       })
+                      .FirstOrDefaultAsync();
 
             if (question == null)
                 throw new NotFoundException("Question topilmadi.");
@@ -119,48 +107,56 @@ namespace TestEducation.Service.QuestionAnswerService
         }
         public async Task<UpdateQuestionAnswerResponseModel> UpdateQuestionAnswer(int id, UpdateQuestionAnswerModel questionUpdateDTO)
         {
+            //string? urlImage = null;
+            //if (questionUpdateDTO.Image != null && questionUpdateDTO.Image.Length > 0)
+            //{
+            //    var extension = Path.GetExtension(questionUpdateDTO.Image.FileName);
+            //    var objectName = $"{Guid.NewGuid()}{extension}";
 
-            string? urlImage = null;
-
-            if (questionUpdateDTO.Image != null && questionUpdateDTO.Image.Length > 0)
-            {
-                var extension = Path.GetExtension(questionUpdateDTO.Image.FileName);
-                var objectName = $"{Guid.NewGuid()}{extension}";
-                //Console.WriteLine("\n" +extension + " " + objectName);
-                //Console.WriteLine(questionDTO.Image);
-                //using var stream = questionDTO.Image.OpenReadStream();
-                //using var ms = new MemoryStream();
-                //await stream.CopyToAsync(ms);
-                //byte[] results = new byte[stream.Length];
-                //results = ms.ToArray();
-                //string result = string.Join("", results);
-                //Console.Write(result);
-                //Console.Write('\n' + result.Length);
-                using var mystream = questionUpdateDTO.Image.OpenReadStream();
-                urlImage = await _fileStorageService.UploadFileAsync(
-                    "questions-image",
-                    objectName,
-                    mystream,
-                    questionUpdateDTO.Image.ContentType
-                );
-            }
+            //    using var mystream = questionUpdateDTO.Image.OpenReadStream();
+            //    urlImage = await _fileStorageService.UploadFileAsync(
+            //        "questions-image",
+            //        objectName,
+            //        mystream,
+            //        questionUpdateDTO.Image.ContentType
+            //    );
+            //}
 
             var question = await _appDbContext.Question
-                 .FirstOrDefaultAsync(x => x.Id == id);
+                    .Include(q => q.Answers)
+                    .FirstOrDefaultAsync(x => x.Id == id);
 
             if (question == null)
                 throw new NotFoundException("Question topilmadi.");
 
             question.QuestionText = questionUpdateDTO.QuestionText;
-            question.ImageUrl = urlImage;
-            question.AnswerOptions = questionUpdateDTO.Answers
-                .Select(x => new Answer
+            //question.ImageUrl = urlImage;
+
+            foreach (var answerDto in questionUpdateDTO.Answers)
+            {
+                var existingAnswer = question.Answers.FirstOrDefault(a => a.Id == answerDto.Id);
+
+                if (existingAnswer != null)
                 {
-                    AnswerText = x.Text,
-                    IsCorrect = x.IsCorrect
-                }).ToList();
+                    // mavjud javobni yangilash
+                    existingAnswer.AnswerText = answerDto.Text;
+                    existingAnswer.IsCorrect = answerDto.IsCorrect;
+                }
+                else
+                {
+                    // yangi javob qo‘shish
+                    var newAnswer = new Answer
+                    {
+                        AnswerText = answerDto.Text,
+                        IsCorrect = answerDto.IsCorrect,
+                        QuestionId = question.Id
+                    };
 
+                    _appDbContext.Answers.Add(newAnswer);
+                }
+            }
 
+            _appDbContext.Question.Update(question);
             await _appDbContext.SaveChangesAsync();
 
             return new UpdateQuestionAnswerResponseModel { Id = question.Id };
@@ -168,14 +164,14 @@ namespace TestEducation.Service.QuestionAnswerService
         public async Task<string> DeleteQuestionAnswer(int Id)
         {
             var question = await _appDbContext.Question
-                .Include(a => a.AnswerOptions)
+                .Include(a => a.Answers)
                 .FirstOrDefaultAsync(x => x.Id == Id);
 
             if (question == null)
                 throw new NotFoundException("Question topilmadi.");
 
             // Avval Answer’larni o‘chiramiz
-            _appDbContext.Answers.RemoveRange(question.AnswerOptions);
+            _appDbContext.Answers.RemoveRange(question.Answers);
 
             // Keyin Questionni o‘chiramiz
             _appDbContext.Question.Remove(question);
@@ -217,7 +213,7 @@ namespace TestEducation.Service.QuestionAnswerService
                     QuestionText = x.QuestionText,
                     Image = x.ImageUrl,
                     QuestionLevel = x.Level,
-                    Answers = x.AnswerOptions.
+                    Answers = x.Answers.
                     Select(n => new AnswerGetAllDTO
                     {
                         AnswerText = n.AnswerText,

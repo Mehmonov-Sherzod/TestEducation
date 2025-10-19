@@ -10,7 +10,7 @@ namespace TestEducation.Aplication.Helpers.JwtService
 {
     public static class Authextension
     {
-        public static IServiceCollection AddJwtAuth(this IServiceCollection serviceCollection, IConfiguration configuration)
+        public static IServiceCollection AddJwtAuth(this IServiceCollection Service, IConfiguration configuration)
         {
             var jwtOptions = configuration.GetSection("JwtOption").Get<JwtOption>();
 
@@ -20,7 +20,7 @@ namespace TestEducation.Aplication.Helpers.JwtService
             }
 
 
-            serviceCollection.AddAuthentication(options =>
+            Service.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -38,7 +38,7 @@ namespace TestEducation.Aplication.Helpers.JwtService
                 };
             });
 
-            return serviceCollection;
+            return Service;
 
         }
     }
