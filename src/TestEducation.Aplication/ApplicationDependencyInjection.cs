@@ -33,6 +33,7 @@ namespace TestEducation.Aplication
             services.AddScoped<IFileStoreageService, MinioFileStorageService>();
             services.AddScoped<PasswordHelper>();
             services.AddSingleton<IRabbitMQproducer, RabbitMQProducer>();
+           // services.AddHostedService<RabbitMQConsumer>();
 
 
 

@@ -83,20 +83,21 @@ namespace TestEducation.Service.QuestionAnswerService
             return question;
         }
         public async Task<QuestionAnswerResponseModel> GetByIdQuestionAnswer(int Id)
+
         {
             var question = await _appDbContext.Question
                     .Where(x => x.Id == Id)
                     .Select(x => new QuestionAnswerResponseModel
-                       {
-                           QuestionText = x.QuestionText,
-                           Image = x.ImageUrl,
-                           QuestionLevel = x.Level,
-                           Answers = x.Answers
+                    {
+                        QuestionText = x.QuestionText,
+                        Image = x.ImageUrl,
+                        QuestionLevel = x.Level,
+                        Answers = x.Answers
                                   .Select(n => new AnswerGetAllDTO
-                                   {
-                                   AnswerText = n.AnswerText,
-                                   }).ToList()
-                       })
+                                  {
+                                      AnswerText = n.AnswerText,
+                                  }).ToList()
+                    })
                       .FirstOrDefaultAsync();
 
             if (question == null)
@@ -107,6 +108,7 @@ namespace TestEducation.Service.QuestionAnswerService
         }
         public async Task<UpdateQuestionAnswerResponseModel> UpdateQuestionAnswer(int id, UpdateQuestionAnswerModel questionUpdateDTO)
         {
+            #region
             //string? urlImage = null;
             //if (questionUpdateDTO.Image != null && questionUpdateDTO.Image.Length > 0)
             //{
@@ -121,8 +123,9 @@ namespace TestEducation.Service.QuestionAnswerService
             //        questionUpdateDTO.Image.ContentType
             //    );
             //}
+            #endregion
 
-            var question = await _appDbContext.Question
+            Question question = await _appDbContext.Question
                     .Include(q => q.Answers)
                     .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -131,33 +134,75 @@ namespace TestEducation.Service.QuestionAnswerService
 
             question.QuestionText = questionUpdateDTO.QuestionText;
             //question.ImageUrl = urlImage;
+         
+            HashSet<int> mySet = new HashSet<int>();
+            List<Answer> answersToAssign = new List<Answer>();
 
-            foreach (var answerDto in questionUpdateDTO.Answers)
+            for (int j = 0; j < questionUpdateDTO.Answers.Count(); j++)
             {
-                var existingAnswer = question.Answers.FirstOrDefault(a => a.Id == answerDto.Id);
-
-                if (existingAnswer != null)
+                mySet.Add(questionUpdateDTO.Answers[j].Id);
+                if (questionUpdateDTO.Answers[j].Id == 0)
                 {
-                    // mavjud javobni yangilash
-                    existingAnswer.AnswerText = answerDto.Text;
-                    existingAnswer.IsCorrect = answerDto.IsCorrect;
+                    Answer newAnswer = new Answer
+                    {
+                        AnswerText = questionUpdateDTO.Answers[j].Text,
+                        IsCorrect = questionUpdateDTO.Answers[j].IsCorrect
+                    };
+                    question.Answers.Add(newAnswer);
                 }
                 else
                 {
-                    // yangi javob qo‘shish
-                    var newAnswer = new Answer
+                    for (int i = 0; i < question.Answers.Count(); i++)
                     {
-                        AnswerText = answerDto.Text,
-                        IsCorrect = answerDto.IsCorrect,
-                        QuestionId = question.Id
-                    };
-
-                    _appDbContext.Answers.Add(newAnswer);
+                        if (question.Answers[i].Id == questionUpdateDTO.Answers[j].Id)
+                        {
+                            question.Answers[i].IsCorrect = questionUpdateDTO.Answers[j].IsCorrect;
+                            question.Answers[i].AnswerText = questionUpdateDTO.Answers[j].Text;
+                        }
+                    }
                 }
             }
 
-            _appDbContext.Question.Update(question);
-            await _appDbContext.SaveChangesAsync();
+            for(int i = 0; i < question.Answers.Count(); i++)
+            {
+                if (!mySet.Contains(question.Answers[i].Id))
+                {
+                    question.Answers.Remove(question.Answers[i]);
+                    i--;
+                }
+            }
+            
+            _appDbContext.Update(question);
+            _appDbContext.SaveChanges();
+
+
+            //foreach (var answerDto in questionUpdateDTO.Answers)
+            //{
+            //    var existingAnswer = question.Answers.FirstOrDefault(a => a.Id == answerDto.Id);
+
+            //    if (existingAnswer != null)
+            //    {
+            //        // mavjud javobni yangilash
+            //        existingAnswer.AnswerText = answerDto.Text;
+            //        existingAnswer.IsCorrect = answerDto.IsCorrect;
+            //    }
+            //    else
+            //    {
+            //        // yangi javob qo‘shish
+            //        var newAnswer = new Answer
+            //        {
+            //            AnswerText = answerDto.Text,
+            //            IsCorrect = answerDto.IsCorrect,
+            //            QuestionId = question.Id
+            //        };
+
+            //        _appDbContext.Answers.Add(newAnswer);
+            //    }
+            //}
+
+
+            //_appDbContext.Question.Update(question);
+            //await _appDbContext.SaveChangesAsync();
 
             return new UpdateQuestionAnswerResponseModel { Id = question.Id };
         }

@@ -102,7 +102,7 @@ namespace TestEducation.Aplication.Service.Impl
             }
         }
 
-        public void SedMessage(LoginDTO loginDTO)
+        public void SedMessage(OrderCreatedDto createdDto)
         {
             EnsureConnection();
 
@@ -114,7 +114,7 @@ namespace TestEducation.Aplication.Service.Impl
                     throw new InvalidOperationException("RabbitMQ channel is not open or available.");
                 }
 
-                string json = JsonSerializer.Serialize(loginDTO);
+                string json = JsonSerializer.Serialize(createdDto);
                 var body = Encoding.UTF8.GetBytes(json);
 
                 var properties = _channel.CreateBasicProperties();

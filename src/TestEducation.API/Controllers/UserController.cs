@@ -3,7 +3,7 @@ using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Users;
 using TestEducation.Service.UserService;
 
-namespace TestEducation.Controllers
+namespace TestEducation.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]

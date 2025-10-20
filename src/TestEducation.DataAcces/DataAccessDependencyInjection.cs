@@ -25,8 +25,10 @@ namespace TestEducation.DataAcces
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            services.AddDbContextPool<AppDbContext>(options =>
+            {
+                options.UseNpgsql(connectionString);
+            });
         }
-    }
+}
 }

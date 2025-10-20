@@ -8,7 +8,8 @@ namespace TestEducation.Data
 {
     public class AppDbContext : DbContext
     {
-        private readonly IConfiguration _configuration;
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Question> Question { get; set; }
@@ -22,19 +23,7 @@ namespace TestEducation.Data
         public DbSet<UserQuestionAnswer> UserQuestionsAnswer { get; set; }
         public DbSet<UserTestResult> UserTestResult { get; set; }
 
-        public AppDbContext(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            string path = _configuration.GetConnectionString("Default")!;
-            optionsBuilder.UseNpgsql(path);
-        }
-
+ 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Question>()

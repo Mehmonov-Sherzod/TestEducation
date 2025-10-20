@@ -5,7 +5,7 @@ using TestEducation.Models;
 using TestEducation.Service;
 
 
-namespace TestEducation.Controllers.AuthService
+namespace TestEducation.API.Controllers
 {
 
     [ApiController]
