@@ -15,13 +15,23 @@ namespace TestEducation.API.Controllers
             _userService = userService;
         }
 
-        [HttpPost("User-Create")]
+
+        [HttpPost("Register")]
         public async Task<IActionResult> CreateUser(CreateUserModel userDTO)
         {
             var result = await _userService.CreateUser(userDTO);
 
             return Ok(ApiResult<CreateUserResponseModel>.Success(result));
 
+        }
+
+        [HttpPost("Login")]
+
+        public async Task<IActionResult> LoginAsync(LoginUserModel loginUserModel)
+        {
+            var result = await _userService.LoginAsync(loginUserModel);
+
+            return Ok(ApiResult<LoginResponseModel>.Success(result));
         }
 
         [HttpGet("User-GetAll")]

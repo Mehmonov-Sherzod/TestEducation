@@ -9,13 +9,16 @@ namespace TestEducation.Service.UserService
 {
     public class UserService : IUserService
     {
+    
         private readonly AppDbContext _appDbContext;
         private readonly PasswordHelper passwordHelper;
+        private readonly JwtService _jwtService;
 
-        public UserService(AppDbContext appDbContext, PasswordHelper passwordHelper)
+        public UserService(AppDbContext appDbContext, PasswordHelper passwordHelper, JwtService jwtService)
         {
             _appDbContext = appDbContext;
             this.passwordHelper = passwordHelper;
+            _jwtService = jwtService;
         }
         public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
         {
@@ -92,7 +95,6 @@ namespace TestEducation.Service.UserService
             if (user == null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
-
             return user;
 
         }
@@ -153,6 +155,27 @@ namespace TestEducation.Service.UserService
                 PageSize = model.PageSize,
                 PageNumber = model.PageNumber,
                 TotalCount = total
+            };
+        }
+
+        public async Task<LoginResponseModel> LoginAsync(LoginUserModel loginUserModel)
+        {
+            var user = await _appDbContext.Users
+                 .FirstOrDefaultAsync(u => u.Email == loginUserModel.Email);
+
+            if (user == null)
+                throw new NotFoundException("Username or Email is incorrect");
+
+            if (!passwordHelper.Verify(loginUserModel.Password, user.Salt, user.Password))
+                throw new BadRequestException("Email or Password not correct");
+
+            string token = _jwtService.GenerateToken(user);
+
+            return new LoginResponseModel
+            {
+                Username = user.FullName,
+                Email = user.Email,
+                Token = token
             };
         }
     }

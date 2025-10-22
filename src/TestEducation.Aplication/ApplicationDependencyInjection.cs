@@ -5,6 +5,7 @@ using Minio;
 using TestEducation.Aplication.Common;
 using TestEducation.Aplication.Service;
 using TestEducation.Aplication.Service.Impl;
+using TestEducation.Aplication.Validators.QuestionValidator;
 using TestEducation.Data;
 using TestEducation.Service;
 using TestEducation.Service.FileStoreageService;
@@ -33,6 +34,7 @@ namespace TestEducation.Aplication
             services.AddScoped<IFileStoreageService, MinioFileStorageService>();
             services.AddScoped<PasswordHelper>();
             services.AddSingleton<IRabbitMQproducer, RabbitMQProducer>();
+            services.AddScoped<QuestionCreateValidator>();
            // services.AddHostedService<RabbitMQConsumer>();
 
 

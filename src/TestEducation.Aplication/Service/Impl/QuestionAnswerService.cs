@@ -5,6 +5,7 @@ using TestEducation.Aplication.Exceptions;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Answer;
 using TestEducation.Aplication.Models.Question;
+using TestEducation.Aplication.Validators.QuestionValidator;
 using TestEducation.Data;
 using TestEducation.Models;
 using TestEducation.Service.FileStoreageService;
@@ -16,12 +17,15 @@ namespace TestEducation.Service.QuestionAnswerService
         private readonly AppDbContext _appDbContext;
         private readonly IFileStoreageService _fileStorageService;
         private readonly IMinioClient _minioClient;
+        private readonly QuestionCreateValidator _validationRules;
 
-        public QuestionAnswerService(AppDbContext appDbContext, IFileStoreageService fileStorageService, IMinioClient minioClient)
+        public QuestionAnswerService(AppDbContext appDbContext, IFileStoreageService fileStorageService, IMinioClient minioClient, QuestionCreateValidator validationRules)
         {
             _appDbContext = appDbContext;
             _fileStorageService = fileStorageService;
             _minioClient = minioClient;
+            _validationRules = validationRules;
+
         }
         public async Task<CreateQuestionAnswerResponseModel> CreateQuestionAnswer(CreateQuestionModel questionDTO)
         {
@@ -40,6 +44,8 @@ namespace TestEducation.Service.QuestionAnswerService
             //    );
             //}
 
+            var result = _validationRules.Validate(questionDTO);
+
             Question question = new Question
             {
                 QuestionText = questionDTO.QuestionText,
@@ -54,6 +60,7 @@ namespace TestEducation.Service.QuestionAnswerService
 
                 }).ToList(),
             };
+
 
             await _appDbContext.Question.AddAsync(question);
             await _appDbContext.SaveChangesAsync();
@@ -167,6 +174,8 @@ namespace TestEducation.Service.QuestionAnswerService
             {
                 if (!mySet.Contains(question.Answers[i].Id))
                 {
+
+
                     question.Answers.Remove(question.Answers[i]);
                     i--;
                 }

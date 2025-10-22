@@ -14,19 +14,26 @@ namespace TestEducation.Filter
         {
             _permissionEnums  = permissions;
         }
-        public void OnAuthorization(AuthorizationFilterContext filterContext)
+        public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var userId = filterContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
+            var userId = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
             {
-                filterContext.Result = new ForbidResult();
+                context.Result = new UnauthorizedResult();
                 return;
             }
 
+            //var permissionService = context.HttpContext.RequestServices.GetRequiredService<IUserPermissionService>();
+            //var userPermissions = permissionService.GetUserPermissions(userId);
 
-            var dbContext = filterContext .HttpContext.RequestServices.GetService<AppDbContext>();
-            var userPermissions = dbContext.Permissions;
+            //bool hasPermission = _permissions.Any(p => userPermissions.Contains(p));
 
+            //if (!hasPermission)
+            //{
+            //    context.Result = new ForbidResult();
+            //    return;
+            //}
         }
     }
 }

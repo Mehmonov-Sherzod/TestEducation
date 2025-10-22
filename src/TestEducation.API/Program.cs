@@ -1,7 +1,16 @@
-﻿using TestEducation.API;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using TestEducation.API;
+using TestEducation.API.Filter;
 using TestEducation.API.Middleware;
 using TestEducation.Aplication;
 using TestEducation.Aplication.Helpers.SeedData;
+using TestEducation.Aplication.Models.Question;
+using TestEducation.Aplication.Models.Subject;
+using TestEducation.Aplication.Models.Users;
+using TestEducation.Aplication.Validators.QuestionValidator;
+using TestEducation.Aplication.Validators.SubjectValidator;
+using TestEducation.Aplication.Validators.UserValidatoe;
 using TestEducation.Data;
 using TestEducation.DataAcces;
 
@@ -15,7 +24,14 @@ var configuration = builder.Configuration;
 //                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 //                });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(
+    config => config.Filters.Add(typeof(ValidateModelAttribute))
+    );
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<IValidator<CreateQuestionModel>, QuestionCreateValidator>();
+builder.Services.AddScoped<IValidator<CreateUserModel>, UserCreateValidator>();
+builder.Services.AddScoped<IValidator<CreateSubjectModel>, SubjectCreateValidator>();
 
 builder.Services.AddJwtAuth(builder.Configuration);
 builder.Services.AddSwagger(builder.Configuration);

@@ -129,7 +129,7 @@ namespace TestEducation.Aplication.Service.Impl
                         // 7.4. DTO dan yangi Order entitisini yaratish
                         var newOrder = new Order
                         {
-                            ProductName = orderDto.Name
+                            ProductName = orderDto.Email
                             // Id ni belgilamaymiz, chunki baza avtomatik generatsiya qiladi
                         };
 
