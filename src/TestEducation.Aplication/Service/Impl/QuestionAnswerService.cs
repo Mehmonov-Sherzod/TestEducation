@@ -184,35 +184,6 @@ namespace TestEducation.Service.QuestionAnswerService
             _appDbContext.Update(question);
             _appDbContext.SaveChanges();
 
-
-            //foreach (var answerDto in questionUpdateDTO.Answers)
-            //{
-            //    var existingAnswer = question.Answers.FirstOrDefault(a => a.Id == answerDto.Id);
-
-            //    if (existingAnswer != null)
-            //    {
-            //        // mavjud javobni yangilash
-            //        existingAnswer.AnswerText = answerDto.Text;
-            //        existingAnswer.IsCorrect = answerDto.IsCorrect;
-            //    }
-            //    else
-            //    {
-            //        // yangi javob qo‘shish
-            //        var newAnswer = new Answer
-            //        {
-            //            AnswerText = answerDto.Text,
-            //            IsCorrect = answerDto.IsCorrect,
-            //            QuestionId = question.Id
-            //        };
-
-            //        _appDbContext.Answers.Add(newAnswer);
-            //    }
-            //}
-
-
-            //_appDbContext.Question.Update(question);
-            //await _appDbContext.SaveChangesAsync();
-
             return new UpdateQuestionAnswerResponseModel { Id = question.Id };
         }
         public async Task<string> DeleteQuestionAnswer(int Id)

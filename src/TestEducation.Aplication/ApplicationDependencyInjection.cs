@@ -35,7 +35,9 @@ namespace TestEducation.Aplication
             services.AddScoped<PasswordHelper>();
             services.AddSingleton<IRabbitMQproducer, RabbitMQProducer>();
             services.AddScoped<QuestionCreateValidator>();
-           // services.AddHostedService<RabbitMQConsumer>();
+            services.AddScoped<IPermissionService, PermissionService>();
+
+            // services.AddHostedService<RabbitMQConsumer>();
 
 
 

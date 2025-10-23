@@ -1,39 +1,48 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using TestEducation.Aplication.Service;
 using TestEducation.Data;
 using TestEducation.Domain.Enums;
 
 namespace TestEducation.Filter
 {
-    public class RequirePermissionAttribute : Attribute , IAuthorizationFilter 
+    public class RequirePermissionAttribute : Attribute, IAuthorizationFilter
     {
-        private readonly PermissionEnum[] _permissionEnums;
+        private readonly PermissionEnum[] _permissions;
 
-        public RequirePermissionAttribute(params PermissionEnum [] permissions)
+        public RequirePermissionAttribute(params PermissionEnum[] permissions)
         {
-            _permissionEnums  = permissions;
+            _permissions = permissions;
         }
+
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var userId = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // 1️ User claimdan ID olish
+            var userIdClaim = context.HttpContext.User.Claims
+                          .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            if (userId == null)
+            if (userIdClaim == null)
             {
                 context.Result = new UnauthorizedResult();
                 return;
             }
 
-            //var permissionService = context.HttpContext.RequestServices.GetRequiredService<IUserPermissionService>();
-            //var userPermissions = permissionService.GetUserPermissions(userId);
+            var userId = int.Parse(userIdClaim.Value);
 
-            //bool hasPermission = _permissions.Any(p => userPermissions.Contains(p));
+            // 2️ Servisdan foydalanuvchining ruxsatlarini olish
+            var permissionService = context.HttpContext.RequestServices.GetRequiredService<IPermissionService>();
 
-            //if (!hasPermission)
-            //{
-            //    context.Result = new ForbidResult();
-            //    return;
-            //}
+            // 3️ Har bir kerakli permissionni tekshirish
+            foreach (var requiredPermission in _permissions)
+            {
+                bool hasPermission = permissionService.HasPermissionAsync(userId, requiredPermission.ToString()).Result;
+                if (!hasPermission)
+                {
+                    context.Result = new ForbidResult();
+                    return;
+                }
+            }
         }
     }
 }

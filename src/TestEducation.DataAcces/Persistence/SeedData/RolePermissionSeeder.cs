@@ -26,6 +26,19 @@ namespace TestEducation.Aplication.Helpers.SeedData
                      Description = p + " permission"
                  }).ToList();
 
+
+            var dbPermissions = _appDbContext.Permissions.ToList();
+
+            foreach (var dbPerm in dbPermissions)
+            {
+                var result = permissions.Any(e => e.Name == dbPerm.Name);
+                if (!result)
+                {
+                    _appDbContext.Permissions.Remove(dbPerm);
+
+                }
+            }
+
             foreach (var perm in permissions)
             {
                 if (!_appDbContext.Permissions.Any(x => x.Name == perm.Name))
@@ -59,7 +72,8 @@ namespace TestEducation.Aplication.Helpers.SeedData
                     {
                         foreach (var permission in Permissions)
                         {
-                            if (permission >= 6 && permission <= 9)
+
+                            if (permission >= 6 && permission <= 10)
                             {
                                 RolePermission rolePermission = new RolePermission
                                 {

@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Subject;
+using TestEducation.Domain.Enums;
+using TestEducation.Filter;
 using TestEducation.Service.SubjectService;
 
 namespace TestEducation.Controllers
@@ -56,7 +59,6 @@ namespace TestEducation.Controllers
         }
 
         [HttpPost("get-all-page")]
-
         public async Task<IActionResult> GetAllPage(SubjectPageModel model)
         {
             var result = await _IsubjectServise.CreateSubjectPage(model);     

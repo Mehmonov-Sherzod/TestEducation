@@ -13,6 +13,6 @@
         ViewSubjects,
         ViewTests,
         TakeTest,
-        ViewResults
+        ViewResult
     }
 }

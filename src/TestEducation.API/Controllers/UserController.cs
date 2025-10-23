@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Users;
+using TestEducation.Domain.Enums;
+using TestEducation.Filter;
 using TestEducation.Service.UserService;
 
 namespace TestEducation.API.Controllers
@@ -34,6 +37,10 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<LoginResponseModel>.Success(result));
         }
 
+
+
+
+
         [HttpGet("User-GetAll")]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -49,7 +56,8 @@ namespace TestEducation.API.Controllers
 
             return Ok(ApiResult<UserResponseModel>.Success(result));
         }
-
+        [Authorize]
+        //[RequirePermission(PermissionEnum.ManageStudents)]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserModel userDTO)
         {

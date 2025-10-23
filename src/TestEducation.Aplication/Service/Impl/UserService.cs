@@ -42,6 +42,7 @@ namespace TestEducation.Service.UserService
             };
             _appDbContext.Users.Add(user);
             await _appDbContext.SaveChangesAsync();
+
             var studentRole = await _appDbContext.Roles.FirstOrDefaultAsync(r => r.Name == "Student");
             if (studentRole != null)
             {

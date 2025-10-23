@@ -11,6 +11,8 @@ namespace TestEducation.Service.UserService
         Task<string> DeleteByIdUser(int id);
         Task<PaginationResult<CreateUserModel>> CreateUserPage(UserPageModel model);
         Task<LoginResponseModel> LoginAsync(LoginUserModel loginUserModel);
+
+
     }
 }
  

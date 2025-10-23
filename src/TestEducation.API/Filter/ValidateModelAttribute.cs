@@ -18,6 +18,5 @@ namespace TestEducation.API.Filter
             }
             await next();
         }
-        
     }
 }

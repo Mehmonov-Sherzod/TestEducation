@@ -26,12 +26,12 @@ namespace TestEducation.Data
  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Question>()
-       .HasMany(q => q.Answers)
-       .WithOne(a => a.Question)
-       .HasForeignKey(a => a.QuestionId)
-       .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+       //     modelBuilder.Entity<Question>()
+       //.HasMany(q => q.Answers)
+       //.WithOne(a => a.Question)
+       //.HasForeignKey(a => a.QuestionId)
+       //.OnDelete(DeleteBehavior.Cascade);
+       //     modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(modelBuilder);
 
