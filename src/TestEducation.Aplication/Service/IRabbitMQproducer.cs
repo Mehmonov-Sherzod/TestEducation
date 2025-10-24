@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestEducation.Aplication.Models;
-using TestEducation.Aplication.Models.Users;
+﻿using TestEducation.Aplication.Models;
 
 namespace TestEducation.Aplication.Service
 {
-    public  interface IRabbitMQproducer
+    public interface IRabbitMQproducer
     {
         void SedMessage(OrderCreatedDto createdDto);
     }

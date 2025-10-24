@@ -9,7 +9,6 @@ namespace TestEducation.Service.UserService
 {
     public class UserService : IUserService
     {
-    
         private readonly AppDbContext _appDbContext;
         private readonly PasswordHelper passwordHelper;
         private readonly JwtService _jwtService;
@@ -22,11 +21,11 @@ namespace TestEducation.Service.UserService
         }
         public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
         {
-            if (await _appDbContext.Users.AnyAsync(x => x.Email == userDTO.Email))
-            {
-                throw new BadRequestException("Bunday email bilan foydalanuvchi allaqachon mavjud");
-            }
+            var users = await _appDbContext.Users.AnyAsync(x => x.Email == userDTO.Email);
 
+            if (users)
+                throw new BadRequestException("Bunday email bilan foydalanuvchi allaqachon mavjud");
+            
 
             string salt = Guid.NewGuid().ToString();
             var hashPass = passwordHelper.Incrypt(userDTO.Password, salt);
@@ -74,30 +73,28 @@ namespace TestEducation.Service.UserService
                 })
                 .ToListAsync();
 
-            if (users == null || users.Count == 0)
+            if (users == null)
                 throw new NotFoundException("Foydalanuvchilar topilmadi.");
 
             return users;
-
         }
         public async Task<UserResponseModel> GetByIdUser(int id)
         {
             var user = await _appDbContext.Users
-         .Where(x => x.Id == id)
-         .Select(x => new UserResponseModel
-         {
-             FullName = x.FullName,
-             Email = x.Email,
-             Password = x.Password,
+                     .Where(x => x.Id == id)
+                     .Select(x => new UserResponseModel
+                     {
+                         FullName = x.FullName,
+                         Email = x.Email,
+                         Password = x.Password,
 
-         })
-         .FirstOrDefaultAsync();
+                     })
+                     .FirstOrDefaultAsync();
 
             if (user == null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
             return user;
-
         }
         public async Task<UpdateUserResponseModel> UpdateUser(int id, UpdateUserModel userDTO)
         {
@@ -105,6 +102,7 @@ namespace TestEducation.Service.UserService
 
             if (user == null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
+
 
             user.FullName = userDTO.FullName;
             user.Email = userDTO.Email;
@@ -158,7 +156,6 @@ namespace TestEducation.Service.UserService
                 TotalCount = total
             };
         }
-
         public async Task<LoginResponseModel> LoginAsync(LoginUserModel loginUserModel)
         {
             var user = await _appDbContext.Users

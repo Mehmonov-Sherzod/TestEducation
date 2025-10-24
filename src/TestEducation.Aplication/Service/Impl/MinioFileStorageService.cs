@@ -16,7 +16,6 @@ public class MinioFileStorageService : IFileStoreageService
         _minioClient = minioClient;
         _minioSettings = minioSettings.Value;
     }
-
     public async Task<string> UploadFileAsync(string bucketName, string objectName, Stream data, string contentType)
     {
         try
@@ -59,7 +58,6 @@ public class MinioFileStorageService : IFileStoreageService
             throw;
         }
     }
-
     public async Task<Stream> DownloadFileAsync(string bucketName, string objectName)
     {
         try
@@ -84,7 +82,6 @@ public class MinioFileStorageService : IFileStoreageService
             throw;
         }
     }
-
     public async Task<bool> FileExistsAsync(string bucketName, string objectName)
     {
         try
@@ -106,7 +103,6 @@ public class MinioFileStorageService : IFileStoreageService
             throw;
         }
     }
-
     public async Task<bool> RemoveFileAsync(string bucketName, string objectName)
     {
         try
@@ -124,7 +120,6 @@ public class MinioFileStorageService : IFileStoreageService
             throw;
         }
     }
-
     public async Task<bool> BucketExistsAsync(string bucketName)
     {
         try
@@ -139,7 +134,6 @@ public class MinioFileStorageService : IFileStoreageService
             throw;
         }
     }
-
     public async Task CreateBucketAsync(string bucketName)
     {
         try

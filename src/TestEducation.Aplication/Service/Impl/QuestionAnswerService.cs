@@ -175,7 +175,6 @@ namespace TestEducation.Service.QuestionAnswerService
                 if (!mySet.Contains(question.Answers[i].Id))
                 {
 
-
                     question.Answers.Remove(question.Answers[i]);
                     i--;
                 }

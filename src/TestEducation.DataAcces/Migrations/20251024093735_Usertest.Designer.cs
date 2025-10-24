@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestEducation.Data;
@@ -11,9 +12,11 @@ using TestEducation.Data;
 namespace TestEducation.DataAcces.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251024093735_Usertest")]
+    partial class Usertest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,16 +288,13 @@ namespace TestEducation.DataAcces.Migrations
                     b.Property<int>("QuestionId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("AnsweredAt")
+                    b.Property<DateTime>("AnsweredAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
 
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserTestId")
+                    b.Property<int?>("UserTestId")
                         .HasColumnType("integer");
 
                     b.HasKey("UserId", "QuestionId");
@@ -489,17 +489,13 @@ namespace TestEducation.DataAcces.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TestEducation.Domain.Entities.UserTest", "UserTest")
+                    b.HasOne("TestEducation.Domain.Entities.UserTest", null)
                         .WithMany("UserQuestions")
-                        .HasForeignKey("UserTestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserTestId");
 
                     b.Navigation("Question");
 
                     b.Navigation("User");
-
-                    b.Navigation("UserTest");
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserQuestionAnswer", b =>

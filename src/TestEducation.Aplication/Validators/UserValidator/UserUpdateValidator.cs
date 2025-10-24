@@ -4,20 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
-using TestEducation.Aplication.Models.Question;
 using TestEducation.Aplication.Models.Users;
 
-namespace TestEducation.Aplication.Validators.UserValidatoe
+namespace TestEducation.Aplication.Validators.UserValidator
 {
-    public  class UserCreateValidator : AbstractValidator<CreateUserModel>
+    public class UserUpdateValidator : AbstractValidator<UpdateUserModel>
     {
-        public UserCreateValidator()
+        public UserUpdateValidator()
         {
             RuleFor(u => u.FullName)
-                .MinimumLength(3)
-                    .WithMessage("User FullName should have minimum 3 characters")
-                .MaximumLength(20)
-                    .WithMessage("User FullName should have minimum 20 characters");
+               .MinimumLength(3)
+                   .WithMessage("User FullName should have minimum 3 characters")
+               .MaximumLength(20)
+                   .WithMessage("User FullName should have minimum 20 characters");
 
             RuleFor(u => u.Email).
                 Matches(@"^[a-zA-Z0-9._%+-]+@gmail\.com$")
@@ -28,7 +27,7 @@ namespace TestEducation.Aplication.Validators.UserValidatoe
 
 
             RuleFor(p => p.Password)
-                 .MinimumLength(8)
+                .MinimumLength(8)
                     .WithMessage("must be at least 8 characters")
                 .Matches("[A-Z]")
                     .WithMessage("Parolda kamida bitta katta harf bo‘lishi kerak.")

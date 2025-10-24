@@ -29,17 +29,12 @@ namespace TestEducation.API.Controllers
         }
 
         [HttpPost("Login")]
-
         public async Task<IActionResult> LoginAsync(LoginUserModel loginUserModel)
         {
             var result = await _userService.LoginAsync(loginUserModel);
 
             return Ok(ApiResult<LoginResponseModel>.Success(result));
         }
-
-
-
-
 
         [HttpGet("User-GetAll")]
         public async Task<IActionResult> GetAllUsers()

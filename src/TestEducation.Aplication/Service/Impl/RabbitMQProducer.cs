@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using TestEducation.Aplication.Models;
-using TestEducation.Aplication.Models.Users;
 
 namespace TestEducation.Aplication.Service.Impl
 {
@@ -15,8 +14,7 @@ namespace TestEducation.Aplication.Service.Impl
     /// IDisposable interface'ini implement qiladi - ulanishlarni to'g'ri yopish uchun.
     /// </summary>
     /// 
-
-    public class RabbitMQProducer : IRabbitMQproducer , IDisposable
+    public class RabbitMQProducer : IRabbitMQproducer, IDisposable
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<RabbitMQProducer> _logger;
@@ -32,7 +30,6 @@ namespace TestEducation.Aplication.Service.Impl
             _queueName = _configuration["RabbitMQ:QueueName"] ?? "orders_queue";
             _logger.LogInformation("RabbitMQ Producer yaratildi");
         }
-
         private void EnsureConnection()
         {
             lock (_lock)
@@ -77,12 +74,11 @@ namespace TestEducation.Aplication.Service.Impl
         }
 
         // <<<< O'zgarish shu yerda! T emas, OrderCreatedDto qabul qilamiz
-       
+
 
         // Agar sizga hali ham generik SendMessage kerak bo'lsa, uni saqlab qolishingiz mumkin,
         // lekin u boshqa DTOlar uchun ishlaydi, Order uchun emas.
         // public void SendMessage<T>(T message) {...}
-
         public void Dispose()
         {
             GC.SuppressFinalize(this);
@@ -101,7 +97,6 @@ namespace TestEducation.Aplication.Service.Impl
                 _connection?.Dispose();
             }
         }
-
         public void SedMessage(OrderCreatedDto createdDto)
         {
             EnsureConnection();
@@ -136,7 +131,6 @@ namespace TestEducation.Aplication.Service.Impl
         }
     }
 }
-
 
 /* ============================================
  * XULOSA - RabbitMQProducer qanday ishlaydi:

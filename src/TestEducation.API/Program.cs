@@ -11,7 +11,6 @@ using TestEducation.Aplication.Models.Users;
 using TestEducation.Aplication.Validators.QuestionValidator;
 using TestEducation.Aplication.Validators.SubjectValidator;
 using TestEducation.Aplication.Validators.UserValidatoe;
-using TestEducation.Data;
 using TestEducation.DataAcces;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,7 +43,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
 app.UseCors(corsPolicyBuilder =>
     corsPolicyBuilder.AllowAnyOrigin()
         .AllowAnyMethod()
