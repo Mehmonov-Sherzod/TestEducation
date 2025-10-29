@@ -184,7 +184,6 @@ namespace TestEducation.Service.UserService
             };
         }
         public Task<List<string>> GetUserPermission(int Id)
-
         {
             return _appDbContext.UserRoles
                 .Where(x => x.UserId == Id)

@@ -9,11 +9,11 @@ using TestEducation.Data;
 
 #nullable disable
 
-namespace TestEducation.DataAcces.Migrations
+namespace TestEducation.DataAcces.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251027114328_QuestionTest")]
-    partial class QuestionTest
+    [Migration("20251029120104_HasDataRole")]
+    partial class HasDataRole
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -198,14 +198,20 @@ namespace TestEducation.DataAcces.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Barcha tizimdi boshqaradiga admin rol",
+                            Description = "Barcha tizimni boshqaradigan admin rol",
                             Name = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Test yechish va natija korish",
+                            Description = "Test yechish va natija ko‘rish",
                             Name = "Student"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Test yaratish va tahrirlash",
+                            Name = "Creator"
                         });
                 });
 

@@ -4,16 +4,28 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
-namespace TestEducation.DataAcces.Migrations
+namespace TestEducation.DataAcces.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class UserConfig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ProductName = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Permissions",
                 columns: table => new
@@ -120,6 +132,27 @@ namespace TestEducation.DataAcces.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Test",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    SubjectId = table.Column<int>(type: "integer", nullable: false),
+                    DurationMinutes = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Test", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Test_Subjects_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRoles",
                 columns: table => new
                 {
@@ -198,13 +231,43 @@ namespace TestEducation.DataAcces.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserTest",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    TestId = table.Column<int>(type: "integer", nullable: false),
+                    StartedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserTest", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserTest_Test_TestId",
+                        column: x => x.TestId,
+                        principalTable: "Test",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserTest_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserQuestions",
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     QuestionId = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    UserTestId = table.Column<int>(type: "integer", nullable: false),
                     Order = table.Column<int>(type: "integer", nullable: false),
-                    AnsweredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    AnsweredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -213,6 +276,12 @@ namespace TestEducation.DataAcces.Migrations
                         name: "FK_UserQuestions_Question_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Question",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserQuestions_UserTest_UserTestId",
+                        column: x => x.UserTestId,
+                        principalTable: "UserTest",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -253,15 +322,6 @@ namespace TestEducation.DataAcces.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "Description", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Barcha tizimdi boshqaradiga admin rol", "Admin" },
-                    { 2, "Test yechish va natija korish", "Student" }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Answers_QuestionId",
                 table: "Answers",
@@ -278,15 +338,19 @@ namespace TestEducation.DataAcces.Migrations
                 column: "PermissionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subjects_Name",
-                table: "Subjects",
-                column: "Name",
-                unique: true);
+                name: "IX_Test_SubjectId",
+                table: "Test",
+                column: "SubjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserQuestions_QuestionId",
                 table: "UserQuestions",
                 column: "QuestionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserQuestions_UserTestId",
+                table: "UserQuestions",
+                column: "UserTestId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserQuestionsAnswer_AnswerId",
@@ -304,10 +368,14 @@ namespace TestEducation.DataAcces.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
-                table: "Users",
-                column: "Email",
-                unique: true);
+                name: "IX_UserTest_TestId",
+                table: "UserTest",
+                column: "TestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTest_UserId",
+                table: "UserTest",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserTestResult_SubjectId",
@@ -323,6 +391,9 @@ namespace TestEducation.DataAcces.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Orders");
+
             migrationBuilder.DropTable(
                 name: "RolePermissions");
 
@@ -349,6 +420,12 @@ namespace TestEducation.DataAcces.Migrations
 
             migrationBuilder.DropTable(
                 name: "Question");
+
+            migrationBuilder.DropTable(
+                name: "UserTest");
+
+            migrationBuilder.DropTable(
+                name: "Test");
 
             migrationBuilder.DropTable(
                 name: "Users");

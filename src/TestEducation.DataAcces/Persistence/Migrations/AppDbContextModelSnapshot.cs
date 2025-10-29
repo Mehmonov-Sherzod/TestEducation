@@ -8,7 +8,7 @@ using TestEducation.Data;
 
 #nullable disable
 
-namespace TestEducation.DataAcces.Migrations
+namespace TestEducation.DataAcces.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -195,19 +195,19 @@ namespace TestEducation.DataAcces.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Barcha tizimdi boshqaradiga admin rol",
+                            Description = "Barcha tizimni boshqaradigan admin rol",
                             Name = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Test yechish va natija korish",
+                            Description = "Test yechish va natija ko‘rish",
                             Name = "Student"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "Test yaratish, update qilish",
+                            Description = "Test yaratish va tahrirlash",
                             Name = "Creator"
                         });
                 });
@@ -240,6 +240,9 @@ namespace TestEducation.DataAcces.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Subjects");
                 });
@@ -274,6 +277,9 @@ namespace TestEducation.DataAcces.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

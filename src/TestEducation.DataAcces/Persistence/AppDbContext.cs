@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using TestEducation.DataAcces.Persistence.Configurations;
 using TestEducation.Domain.Entities;
 using TestEducation.Models;
 
@@ -26,14 +27,10 @@ namespace TestEducation.Data
  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-       //     modelBuilder.Entity<Question>()
-       //.HasMany(q => q.Answers)
-       //.WithOne(a => a.Question)
-       //.HasForeignKey(a => a.QuestionId)
-       //.OnDelete(DeleteBehavior.Cascade);
-       //     modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
 
             modelBuilder.Entity<RolePermission>()
                 .HasKey(rp => new { rp.RoleId, rp.PermissionId });
@@ -43,31 +40,6 @@ namespace TestEducation.Data
 
             modelBuilder.Entity<UserQuestion>()
                 .HasKey(rp => new { rp.UserId, rp.QuestionId });
-
-            //bu qismida Question ochkandan keyin avtomadtik unga boglangan savollar ham ochadi
-            //modelBuilder.Entity<Answer>()
-            //   .HasOne(a => a.Question)
-            //   .WithMany(q => q.AnswerOptions)
-            //   .HasForeignKey(a => a.QuestionId)
-            //   .OnDelete(DeleteBehavior.Cascade);
-
-
-            // deletebehavior  nimaar qiladi   
-            // 1].cascade primary key ochkandan keyin primary key ochadi
-            // 2].settnull primary key ochkandan keyin forenkey null boladi
-            // 3].restrict forenkey bolsa primary key ochmaydi oldin forenkey ochish kere
-
-
-            modelBuilder.Entity<Question>()
-          .Property(q => q.Level)
-          .HasConversion<string>();
-
-            modelBuilder.Entity<Role>()
-                .HasData(
-                new Role { Id = 1, Name = "Admin", Description = "Barcha tizimdi boshqaradiga admin rol" },
-                new Role { Id = 2, Name = "Student", Description = "Test yechish va natija korish" },
-                new Role { Id = 3, Name = "Creator", Description = "Test yaratish, update qilish" }
-                );
 
         }
 

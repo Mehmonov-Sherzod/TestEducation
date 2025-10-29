@@ -8,8 +8,8 @@ namespace TestEducation.Aplication.Validators.QuestionValidator
         public QuestionCreateValidator()
         {
             RuleFor(q => q.QuestionText)
-                .MinimumLength(5).WithMessage("Question title should have minimum 5 characters")
-                .MaximumLength(100).WithMessage("Question title should have maximum 100 characters");
+                .MinimumLength(100).WithMessage("Question title should have minimum 100 characters")
+                .MaximumLength(200).WithMessage("Question title should have maximum 200 characters");
         }
     }
 }

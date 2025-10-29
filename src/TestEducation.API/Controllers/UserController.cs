@@ -78,11 +78,10 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<PaginationResult<CreateUserModel>>.Success(result));
         }
 
-        [HttpGet("{id}sadad")]
-
-        public async Task<IActionResult> GetUserPermission(int Id)
+        [HttpGet("{id}-Get-ById-Permission-User")]
+        public async Task<IActionResult> GetUserPermission(int id)
         {
-            var result = await _userService.GetUserPermission(Id);
+            var result = await _userService.GetUserPermission(id);
             return Ok(ApiResult<List<string>>.Success(result));
         }
     }

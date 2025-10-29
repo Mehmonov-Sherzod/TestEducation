@@ -10,6 +10,7 @@ namespace TestEducation.DataAcces.Persistence.Configurations
         {
             // user emaili bir xil bolmaydi
             builder.HasIndex(x => x.Email).IsUnique();
+
         }
 
     }
