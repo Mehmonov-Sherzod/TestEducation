@@ -8,6 +8,6 @@ namespace TestEducation.Aplication.Models.Question
         public string QuestionText { get; set; }
         public string Image { get; set; }
         public QuestionLevel QuestionLevel { get; set; }    
-        public List<AnswerGetAllDTO> Answers { get; set; }
+        public List<AnswerResponseModel> Answers { get; set; }
     }
 }

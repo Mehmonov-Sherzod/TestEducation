@@ -51,14 +51,14 @@ namespace TestEducation.API.Controllers
 
             return Ok(ApiResult<UserResponseModel>.Success(result));
         }
-        [Authorize]
+        //[Authorize]
         //[RequirePermission(PermissionEnum.ManageStudents)]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserModel userDTO)
         {
-           var result =  await _userService.UpdateUser(id, userDTO);
+            var result = await _userService.UpdateUser(id, userDTO);
 
-           return Ok(ApiResult<UpdateUserResponseModel>.Success(result));
+            return Ok(ApiResult<UpdateUserResponseModel>.Success(result));
 
         }
 
@@ -71,11 +71,19 @@ namespace TestEducation.API.Controllers
         }
 
         [HttpPost("get-all-page")]
-        public async Task<IActionResult> CreateUserPage(UserPageModel model)
+        public async Task<IActionResult> CreateUserPage(PageOption model)
         {
             var result = await _userService.CreateUserPage(model);
 
             return Ok(ApiResult<PaginationResult<CreateUserModel>>.Success(result));
+        }
+
+        [HttpGet("{id}sadad")]
+
+        public async Task<IActionResult> GetUserPermission(int Id)
+        {
+            var result = await _userService.GetUserPermission(Id);
+            return Ok(ApiResult<List<string>>.Success(result));
         }
     }
 }

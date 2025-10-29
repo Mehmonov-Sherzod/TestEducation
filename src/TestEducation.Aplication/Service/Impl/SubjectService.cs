@@ -97,7 +97,7 @@ namespace TestEducation.Service.SubjectService
 
 
         }
-        public async Task<PaginationResult<SubjectResponsModel>> CreateSubjectPage(SubjectPageModel model)
+        public async Task<PaginationResult<SubjectResponsModel>> CreateSubjectPage(PageOption model)
         {
             var query = _appDbContext.Subjects.AsQueryable();
 

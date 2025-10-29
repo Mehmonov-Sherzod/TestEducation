@@ -59,7 +59,7 @@ namespace TestEducation.Controllers
         }
 
         [HttpPost("get-all-page")]
-        public async Task<IActionResult> GetAllPage(SubjectPageModel model)
+        public async Task<IActionResult> GetAllPage(PageOption model)
         {
             var result = await _IsubjectServise.CreateSubjectPage(model);     
 

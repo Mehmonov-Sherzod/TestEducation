@@ -89,7 +89,7 @@ namespace TestEducation.Controllers
         }
 
         [HttpPost("get-all-page")]
-        public async Task<IActionResult> GetAllQuestionAnswerPage(QuesstionAnswerPageModel model)
+        public async Task<IActionResult> GetAllQuestionAnswerPage(PageOption  model)
         {
             var result = await _questionAnswerService.CreateQuestionAnswerPage(model);
 

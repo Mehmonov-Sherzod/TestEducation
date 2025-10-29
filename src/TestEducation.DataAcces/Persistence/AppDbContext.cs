@@ -65,8 +65,8 @@ namespace TestEducation.Data
             modelBuilder.Entity<Role>()
                 .HasData(
                 new Role { Id = 1, Name = "Admin", Description = "Barcha tizimdi boshqaradiga admin rol" },
-                new Role { Id = 2, Name = "Student", Description = "Test yechish va natija korish" }
-
+                new Role { Id = 2, Name = "Student", Description = "Test yechish va natija korish" },
+                new Role { Id = 3, Name = "Creator", Description = "Test yaratish, update qilish" }
                 );
 
         }

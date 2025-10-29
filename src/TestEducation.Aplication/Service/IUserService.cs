@@ -9,7 +9,8 @@ namespace TestEducation.Service.UserService
         Task<UserResponseModel> GetByIdUser(int id);
         Task<UpdateUserResponseModel> UpdateUser(int id, UpdateUserModel userDTO);
         Task<string> DeleteByIdUser(int id);
-        Task<PaginationResult<CreateUserModel>> CreateUserPage(UserPageModel model);
+        Task<PaginationResult<CreateUserModel>> CreateUserPage(PageOption model);
         Task<LoginResponseModel> LoginAsync(LoginUserModel loginUserModel);
+        Task<List<string>> GetUserPermission(int Id);
     }
 }

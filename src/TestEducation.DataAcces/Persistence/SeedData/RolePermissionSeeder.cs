@@ -1,5 +1,4 @@
-﻿
-using TestEducation.Data;
+﻿using TestEducation.Data;
 using TestEducation.Domain.Enums;
 using TestEducation.Models;
 
@@ -8,16 +7,12 @@ namespace TestEducation.Aplication.Helpers.SeedData
     public class RolePermissionSeeder
     {
         private readonly AppDbContext _appDbContext;
-
         public RolePermissionSeeder(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
         }
-
-
         public void SeedMapping()
         {
-
             var permissions = Enum.GetValues(typeof(PermissionEnum))
                  .Cast<PermissionEnum>()
                  .Select(p => new Permission
@@ -25,7 +20,6 @@ namespace TestEducation.Aplication.Helpers.SeedData
                      Name = p.ToString(),
                      Description = p + " permission"
                  }).ToList();
-
 
             var dbPermissions = _appDbContext.Permissions.ToList();
 
@@ -35,7 +29,6 @@ namespace TestEducation.Aplication.Helpers.SeedData
                 if (!result)
                 {
                     _appDbContext.Permissions.Remove(dbPerm);
-
                 }
             }
 
@@ -49,44 +42,53 @@ namespace TestEducation.Aplication.Helpers.SeedData
 
             List<int> role = _appDbContext.Roles.Select(x => x.Id).ToList();
             List<int> Permissions = _appDbContext.Permissions.Select(x => x.Id).ToList();
-            HashSet<int> RolePermission = _appDbContext.RolePermissions.Select(x => x.RoleId).ToHashSet();
+            HashSet<int> PermissionId1 = _appDbContext.RolePermissions.Where(x => x.RoleId == 1).Select(x => x.PermissionId).ToHashSet();
+            HashSet<int> PermissionId2 = _appDbContext.RolePermissions.Where(x => x.RoleId == 2).Select(x => x.PermissionId).ToHashSet();
 
             foreach (var roles in role)
             {
-                if (!RolePermission.Contains(roles))
+                if (roles == 1)
                 {
-                    if (roles == 1)
+                    foreach (var permission in Permissions)
                     {
-                        foreach (var permission in Permissions)
+                        RolePermission rolePermission = new RolePermission
+                        {
+                            RoleId = roles,
+                            PermissionId = permission,
+                        };
+                        if (!PermissionId1.Contains(permission))
+                        {
+                            _appDbContext.RolePermissions.Add(rolePermission);
+                        }
+                    }
+                }
+
+                if (roles == 2)
+                {
+                    var allPermissions = _appDbContext.Permissions.ToList();
+                    foreach (var permission in allPermissions)
+                    {
+                        if (permission.Name == "ViewResult" ||
+                            permission.Name == "TakeTest" ||
+                            permission.Name == "ViewTests" ||
+                            permission.Name == "ViewSubjects"
+                            )
                         {
                             RolePermission rolePermission = new RolePermission
                             {
                                 RoleId = roles,
-                                PermissionId = permission,
+                                PermissionId = permission.Id,
                             };
-                            _appDbContext.RolePermissions.Add(rolePermission);
-                        }
-                    }
-
-                    if (roles == 2)
-                    {
-                        foreach (var permission in Permissions)
-                        {
-
-                            if (permission >= 6 && permission <= 10)
+                            if (!PermissionId2.Contains(permission.Id))
                             {
-                                RolePermission rolePermission = new RolePermission
-                                {
-                                    RoleId = roles,
-                                    PermissionId = permission,
-                                };
-
                                 _appDbContext.RolePermissions.Add(rolePermission);
                             }
                         }
                     }
                 }
+                _appDbContext.SaveChanges();
             }
         }
     }
 }
+

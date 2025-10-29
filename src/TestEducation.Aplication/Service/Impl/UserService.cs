@@ -25,7 +25,6 @@ namespace TestEducation.Service.UserService
 
             if (users)
                 throw new BadRequestException("Bunday email bilan foydalanuvchi allaqachon mavjud");
-            
 
             string salt = Guid.NewGuid().ToString();
             var hashPass = passwordHelper.Incrypt(userDTO.Password, salt);
@@ -127,9 +126,9 @@ namespace TestEducation.Service.UserService
 
             return "Malumot o'chirildi";
         }
-        public async Task<PaginationResult<CreateUserModel>> CreateUserPage(UserPageModel model)
+        public async Task<PaginationResult<CreateUserModel>> CreateUserPage(PageOption model)
         {
-            var query =  _appDbContext.Users.AsQueryable();
+            var query = _appDbContext.Users.AsQueryable();
 
             if (!string.IsNullOrEmpty(model.Search))
             {
@@ -159,7 +158,11 @@ namespace TestEducation.Service.UserService
         public async Task<LoginResponseModel> LoginAsync(LoginUserModel loginUserModel)
         {
             var user = await _appDbContext.Users
-                 .FirstOrDefaultAsync(u => u.Email == loginUserModel.Email);
+                .Include(x => x.UserRoles)
+                  .ThenInclude(y => y.Role)
+                     .ThenInclude(z => z.RolePermissions)
+                        .ThenInclude(a => a.Permission)
+                           .FirstOrDefaultAsync(u => u.Email == loginUserModel.Email);
 
             if (user == null)
                 throw new NotFoundException("Username or Email is incorrect");
@@ -173,8 +176,21 @@ namespace TestEducation.Service.UserService
             {
                 Username = user.FullName,
                 Email = user.Email,
-                Token = token
+                Token = token,
+                //Roles = user.UserRoles.Select(x => x.Role.Name).ToList(),
+                //Permissions = user.UserRoles.SelectMany(y => y.Role.RolePermissions)
+                //.Select(z => z.Permission.Name)
+                //.ToList()
             };
+        }
+        public Task<List<string>> GetUserPermission(int Id)
+
+        {
+            return _appDbContext.UserRoles
+                .Where(x => x.UserId == Id)
+                .SelectMany(r => r.Role.RolePermissions)
+                .Select(p => p.Permission.Name)
+                .ToListAsync();
         }
     }
 }

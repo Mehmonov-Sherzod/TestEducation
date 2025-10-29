@@ -1,6 +1,6 @@
 ﻿namespace TestEducation.Aplication.Models.Answer
 {
-    public class AnswerGetAllDTO
+    public class AnswerResponseModel
     {
         public string AnswerText { get; set; }
     }

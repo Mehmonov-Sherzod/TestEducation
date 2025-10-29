@@ -43,4 +43,4 @@ namespace TestEducation.API.Middleware
             return context.Response.WriteAsync(result);
         }
     }
-    }
+}

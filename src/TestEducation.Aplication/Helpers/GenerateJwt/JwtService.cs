@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using TestEducation.Aplication.Helpers.GenerateJwt;
 using TestEducation.Models;
 
 namespace TestEducation.Service
@@ -18,12 +19,30 @@ namespace TestEducation.Service
 
         public string GenerateToken(User user)
         {
-            Claim[] claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FullName),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
+
+
             };
+
+            if (user.UserRoles != null)
+            {
+                foreach (var userRole in user.UserRoles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
+
+                    if (userRole.Role.RolePermissions != null)
+                    {
+                        foreach (var rolePermission in userRole.Role.RolePermissions)
+                        {
+                            claims.Add(new Claim(CustomClaimNames.Permissions, rolePermission.Permission.Name));
+                        }
+                    }
+                }
+            }
 
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration["JwtOption:SecretKey"]));
@@ -37,7 +56,5 @@ namespace TestEducation.Service
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-
     }
 }

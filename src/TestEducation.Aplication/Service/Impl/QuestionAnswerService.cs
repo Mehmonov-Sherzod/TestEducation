@@ -80,7 +80,7 @@ namespace TestEducation.Service.QuestionAnswerService
                     Image = x.ImageUrl,
                     QuestionLevel = x.Level,
                     Answers = x.Answers.
-                    Select(n => new AnswerGetAllDTO
+                    Select(n => new AnswerResponseModel
                     {
                         AnswerText = n.AnswerText,
                     }).ToList()
@@ -100,7 +100,7 @@ namespace TestEducation.Service.QuestionAnswerService
                         Image = x.ImageUrl,
                         QuestionLevel = x.Level,
                         Answers = x.Answers
-                                  .Select(n => new AnswerGetAllDTO
+                                  .Select(n => new AnswerResponseModel
                                   {
                                       AnswerText = n.AnswerText,
                                   }).ToList()
@@ -220,7 +220,7 @@ namespace TestEducation.Service.QuestionAnswerService
             memoryStream1.Position = 0; // Streamni boshiga qaytarish, chunki undan o'qish mumkin bo'lishi uchun
             return memoryStream1;
         }
-        public async Task<PaginationResult<QuestionAnswerResponseModel>> CreateQuestionAnswerPage(QuesstionAnswerPageModel model)
+        public async Task<PaginationResult<QuestionAnswerResponseModel>> CreateQuestionAnswerPage(PageOption model)
         {
             var query = _appDbContext.Question.AsQueryable();
 
@@ -238,7 +238,7 @@ namespace TestEducation.Service.QuestionAnswerService
                     Image = x.ImageUrl,
                     QuestionLevel = x.Level,
                     Answers = x.Answers.
-                    Select(n => new AnswerGetAllDTO
+                    Select(n => new AnswerResponseModel
                     {
                         AnswerText = n.AnswerText,
                     }).ToList()
