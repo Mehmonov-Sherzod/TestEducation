@@ -4,6 +4,7 @@ using TestEducation.API;
 using TestEducation.API.Filter;
 using TestEducation.API.Middleware;
 using TestEducation.Aplication;
+using TestEducation.Aplication.Helpers.GenerateJwt;
 using TestEducation.Aplication.Helpers.SeedData;
 using TestEducation.Aplication.Models.Question;
 using TestEducation.Aplication.Models.Subject;
@@ -16,22 +17,13 @@ using TestEducation.DataAcces;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-// Add services to the container.
-//service.AddControllers()
-//                .AddJsonOptions(options =>
-//                {
-//                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-//                });
-
 builder.Services.AddControllers(
     config => config.Filters.Add(typeof(ValidateModelAttribute))
     );
 
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddScoped<IValidator<CreateQuestionModel>, QuestionCreateValidator>();
-builder.Services.AddScoped<IValidator<CreateUserModel>, UserCreateValidator>();
-builder.Services.AddScoped<IValidator<CreateSubjectModel>, SubjectCreateValidator>();
 
+builder.Services.Configure<JwtOption>(builder.Configuration.GetSection("JwtOption"));
 builder.Services.AddJwtAuth(builder.Configuration);
 builder.Services.AddSwagger(builder.Configuration);
 

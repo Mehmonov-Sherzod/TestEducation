@@ -27,10 +27,5 @@ namespace TestEducation.Aplication.Models
         {
             return new ApiResult<T>(false, default, errors);
         }
-
-        public static object? Success(string result)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

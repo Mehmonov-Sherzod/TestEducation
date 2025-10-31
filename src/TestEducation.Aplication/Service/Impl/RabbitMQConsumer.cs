@@ -115,7 +115,7 @@ namespace TestEducation.Aplication.Service.Impl
                     _logger.LogInformation("Xabar qabul qilindi: {Message}", message);
 
                     // 7.2. JSON string ni OrderCreatedDto obyektiga aylantirish (deserializatsiya)
-                    var orderDto = JsonSerializer.Deserialize<LoginDTO>(message);
+                    var orderDto = JsonSerializer.Deserialize<Order>(message);
 
                     // 7.3. Scoped service (DbContext) yaratish
                     // Background thread da to'g'ridan-to'g'ri DbContext inject qilib bo'lmaydi,
@@ -129,7 +129,7 @@ namespace TestEducation.Aplication.Service.Impl
                         // 7.4. DTO dan yangi Order entitisini yaratish
                         var newOrder = new Order
                         {
-                            ProductName = orderDto.Email
+                            ProductName = orderDto.ProductName
                             // Id ni belgilamaymiz, chunki baza avtomatik generatsiya qiladi
                         };
 

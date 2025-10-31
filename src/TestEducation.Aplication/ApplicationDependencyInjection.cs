@@ -1,11 +1,18 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FluentValidation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Minio;
 using TestEducation.Aplication.Common;
+using TestEducation.Aplication.Helpers.PasswordHashers;
+using TestEducation.Aplication.Models.Question;
+using TestEducation.Aplication.Models.Subject;
+using TestEducation.Aplication.Models.Users;
 using TestEducation.Aplication.Service;
 using TestEducation.Aplication.Service.Impl;
 using TestEducation.Aplication.Validators.QuestionValidator;
+using TestEducation.Aplication.Validators.SubjectValidator;
+using TestEducation.Aplication.Validators.UserValidatoe;
 using TestEducation.Data;
 using TestEducation.Service;
 using TestEducation.Service.FileStoreageService;
@@ -21,9 +28,9 @@ namespace TestEducation.Aplication
         {
             services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
             services.AddServices();
+            services.AddValidators();
             return services;
         }
-
         private static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<JwtService>();
@@ -33,13 +40,12 @@ namespace TestEducation.Aplication
             services.AddScoped<IQuestionAnswerService, QuestionAnswerService>();
             services.AddScoped<IFileStoreageService, MinioFileStorageService>();
             services.AddScoped<PasswordHelper>();
+            services.AddScoped<VerifyPassword>();
             services.AddSingleton<IRabbitMQproducer, RabbitMQProducer>();
             services.AddScoped<QuestionCreateValidator>();
             services.AddScoped<IPermissionService, PermissionService>();
 
             // services.AddHostedService<RabbitMQConsumer>();
-
-
 
             services.AddSingleton<IMinioClient>(sp =>
             {
@@ -59,6 +65,13 @@ namespace TestEducation.Aplication
             });
         }
 
+        public static IServiceCollection AddValidators(this IServiceCollection services)
+        {
+            services.AddScoped<IValidator<CreateQuestionModel>, QuestionCreateValidator>();
+            services.AddScoped<IValidator<CreateUserModel>, UserCreateValidator>();
+            services.AddScoped<IValidator<CreateSubjectModel>, SubjectCreateValidator>();
 
+            return services;
+        }
     }
 }

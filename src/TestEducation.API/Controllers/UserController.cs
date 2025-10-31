@@ -18,22 +18,12 @@ namespace TestEducation.API.Controllers
             _userService = userService;
         }
 
-
-        [HttpPost("Register")]
-        public async Task<IActionResult> CreateUser(CreateUserModel userDTO)
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreateAdmin(CreateUserByAdminModel createUserByAdminModel)
         {
-            var result = await _userService.CreateUser(userDTO);
+            var result = await _userService.AdminCreateUserAsync(createUserByAdminModel);
 
-            return Ok(ApiResult<CreateUserResponseModel>.Success(result));
-
-        }
-
-        [HttpPost("Login")]
-        public async Task<IActionResult> LoginAsync(LoginUserModel loginUserModel)
-        {
-            var result = await _userService.LoginAsync(loginUserModel);
-
-            return Ok(ApiResult<LoginResponseModel>.Success(result));
+            return Ok(ApiResult<CreateAdminResponseModel>.Success(result));
         }
 
         [HttpGet("User-GetAll")]
@@ -51,8 +41,7 @@ namespace TestEducation.API.Controllers
 
             return Ok(ApiResult<UserResponseModel>.Success(result));
         }
-        //[Authorize]
-        //[RequirePermission(PermissionEnum.ManageStudents)]
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserModel userDTO)
         {
@@ -62,6 +51,7 @@ namespace TestEducation.API.Controllers
 
         }
 
+        //[Authorize(Roles = "Admin,SuperAdmin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -83,6 +73,15 @@ namespace TestEducation.API.Controllers
         {
             var result = await _userService.GetUserPermission(id);
             return Ok(ApiResult<List<string>>.Success(result));
+        }
+
+        [HttpPut("{id}-Update-password")]
+
+        public async Task<IActionResult> UpdateUserPassword(UpdateUserPassword updateUserPassword, int id)
+        {
+            var result = await _userService.UpdateUserPassword(updateUserPassword, id);
+
+            return Ok(ApiResult<UpdateUserPasswordResponseModel>.Success(result));
         }
     }
 }

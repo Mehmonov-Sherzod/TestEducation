@@ -19,3 +19,4 @@ namespace TestEducation.DataAcces.Persistence.Configurations
         }
     }
 }
+

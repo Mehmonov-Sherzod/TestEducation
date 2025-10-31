@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using TestEducation.DataAcces.Persistence.Configurations;
+﻿using Microsoft.EntityFrameworkCore;
 using TestEducation.Domain.Entities;
 using TestEducation.Models;
 
@@ -10,7 +7,6 @@ namespace TestEducation.Data
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Question> Question { get; set; }
@@ -24,13 +20,11 @@ namespace TestEducation.Data
         public DbSet<UserQuestionAnswer> UserQuestionsAnswer { get; set; }
         public DbSet<UserTestResult> UserTestResult { get; set; }
 
- 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-
 
             modelBuilder.Entity<RolePermission>()
                 .HasKey(rp => new { rp.RoleId, rp.PermissionId });
@@ -40,9 +34,7 @@ namespace TestEducation.Data
 
             modelBuilder.Entity<UserQuestion>()
                 .HasKey(rp => new { rp.UserId, rp.QuestionId });
-
         }
-
     }
 }
 

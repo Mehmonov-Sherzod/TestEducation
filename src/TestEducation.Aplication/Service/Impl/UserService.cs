@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TestEducation.Aplication.Exceptions;
+using TestEducation.Aplication.Helpers.PasswordHashers;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Users;
 using TestEducation.Data;
@@ -12,12 +13,13 @@ namespace TestEducation.Service.UserService
         private readonly AppDbContext _appDbContext;
         private readonly PasswordHelper passwordHelper;
         private readonly JwtService _jwtService;
-
-        public UserService(AppDbContext appDbContext, PasswordHelper passwordHelper, JwtService jwtService)
+        private readonly VerifyPassword _verifyPassword;
+        public UserService(AppDbContext appDbContext, PasswordHelper passwordHelper, JwtService jwtService, VerifyPassword verifyPassword)
         {
             _appDbContext = appDbContext;
             this.passwordHelper = passwordHelper;
             _jwtService = jwtService;
+            _verifyPassword = verifyPassword;
         }
         public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
         {
@@ -27,7 +29,7 @@ namespace TestEducation.Service.UserService
                 throw new BadRequestException("Bunday email bilan foydalanuvchi allaqachon mavjud");
 
             string salt = Guid.NewGuid().ToString();
-            var hashPass = passwordHelper.Incrypt(userDTO.Password, salt);
+            var hashPass = passwordHelper.Encrypt(userDTO.Password, salt);
 
             var user = new User
             {
@@ -77,6 +79,7 @@ namespace TestEducation.Service.UserService
 
             return users;
         }
+
         public async Task<UserResponseModel> GetByIdUser(int id)
         {
             var user = await _appDbContext.Users
@@ -95,17 +98,24 @@ namespace TestEducation.Service.UserService
 
             return user;
         }
+
         public async Task<UpdateUserResponseModel> UpdateUser(int id, UpdateUserModel userDTO)
         {
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
 
+            string salt = Guid.NewGuid().ToString();
+            var hashPass = passwordHelper.Encrypt(userDTO.Password, salt);
+
             if (user == null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
-
             user.FullName = userDTO.FullName;
             user.Email = userDTO.Email;
-            user.Password = userDTO.Password;
+
+            var password = user.Password;
+
+            if (password == hashPass)
+                user.Password = hashPass;
 
             await _appDbContext.SaveChangesAsync();
 
@@ -114,18 +124,28 @@ namespace TestEducation.Service.UserService
                 Id = user.Id,
             };
         }
+
         public async Task<string> DeleteByIdUser(int id)
         {
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _appDbContext.Users
+                        .Include(u => u.UserRoles)
+                        .ThenInclude(ur => ur.Role)
+                        .FirstOrDefaultAsync(x => x.Id == id);
 
             if (user == null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
+            bool isSuperAdmin = user.UserRoles.Any(x => x.Role.Name == "SuperAdmin");
+
+            if (isSuperAdmin)
+                throw new BadRequestException("SuperAdmin foydalanuvchisini o‘chirish mumkin emas");
+
             _appDbContext.Users.Remove(user);
             await _appDbContext.SaveChangesAsync();
 
-            return "Malumot o'chirildi";
+            return "Foydalanuvchi o‘chirildi.";
         }
+
         public async Task<PaginationResult<CreateUserModel>> CreateUserPage(PageOption model)
         {
             var query = _appDbContext.Users.AsQueryable();
@@ -155,6 +175,7 @@ namespace TestEducation.Service.UserService
                 TotalCount = total
             };
         }
+
         public async Task<LoginResponseModel> LoginAsync(LoginUserModel loginUserModel)
         {
             var user = await _appDbContext.Users
@@ -177,12 +198,9 @@ namespace TestEducation.Service.UserService
                 Username = user.FullName,
                 Email = user.Email,
                 Token = token,
-                //Roles = user.UserRoles.Select(x => x.Role.Name).ToList(),
-                //Permissions = user.UserRoles.SelectMany(y => y.Role.RolePermissions)
-                //.Select(z => z.Permission.Name)
-                //.ToList()
             };
         }
+
         public Task<List<string>> GetUserPermission(int Id)
         {
             return _appDbContext.UserRoles
@@ -190,6 +208,68 @@ namespace TestEducation.Service.UserService
                 .SelectMany(r => r.Role.RolePermissions)
                 .Select(p => p.Permission.Name)
                 .ToListAsync();
+        }
+
+        public async Task<CreateAdminResponseModel> AdminCreateUserAsync(CreateUserByAdminModel createUserByAdmin)
+        {
+            var users = await _appDbContext.Users
+                .Include(x => x.UserRoles)
+                .AnyAsync(e => e.Email == createUserByAdmin.Email);
+
+            string salt = Guid.NewGuid().ToString();
+            var hashPass = passwordHelper.Encrypt(createUserByAdmin.Password, salt);
+
+            var user = new User
+            {
+                FullName = createUserByAdmin.FullName,
+                Email = createUserByAdmin.Email,
+                Password = hashPass,
+                Salt = salt
+            };
+
+            _appDbContext.Users.Add(user);
+            await _appDbContext.SaveChangesAsync();
+
+            foreach (var RoleId in createUserByAdmin.RoleIds)
+            {
+                UserRole userRole = new UserRole
+                {
+                    UserId = user.Id,
+                    RoleId = RoleId,
+                };
+
+                _appDbContext.UserRoles.Add(userRole);
+            }
+            await _appDbContext.SaveChangesAsync();
+
+            return new CreateAdminResponseModel
+            {
+                Id = user.Id,
+            };
+        }
+
+        public async Task<UpdateUserPasswordResponseModel> UpdateUserPassword(UpdateUserPassword password, int Id)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == Id);
+
+           
+
+            if (_verifyPassword.Verify(password.OldPassword , user.Salt, user.Password))
+            {
+                user.Password = passwordHelper.Encrypt(password.NewPassword, user.Salt);
+
+                 _appDbContext.Update(user);
+                _appDbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new BadRequestException("Eski Parol Hato");
+            }
+
+            return new UpdateUserPasswordResponseModel
+            {
+                Id = user.Id,
+            };
         }
     }
 }

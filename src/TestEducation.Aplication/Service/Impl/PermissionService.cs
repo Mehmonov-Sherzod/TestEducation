@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using TestEducation.Data;
 
 namespace TestEducation.Aplication.Service.Impl
@@ -6,10 +7,10 @@ namespace TestEducation.Aplication.Service.Impl
     public class PermissionService : IPermissionService
     {
         private readonly AppDbContext _appDbContext;
-
         public PermissionService(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
+
         }
         public async Task<bool> HasPermissionAsync(int userId, string permissionName)
         {

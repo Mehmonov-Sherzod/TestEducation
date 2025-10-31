@@ -4,7 +4,7 @@
     public class PasswordHelper
     {
 
-        public string Incrypt(string password, string salt)
+        public string Encrypt(string password, string salt)
         {
             using var algorithm = new Rfc2898DeriveBytes(
             password: password,
@@ -17,7 +17,7 @@
 
         public bool Verify(string password, string salt, string hash)
         {
-            var newHash = Incrypt(password, salt);
+            var newHash = Encrypt(password, salt);
             return newHash == hash;
         }
 

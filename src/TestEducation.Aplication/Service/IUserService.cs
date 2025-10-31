@@ -12,5 +12,8 @@ namespace TestEducation.Service.UserService
         Task<PaginationResult<CreateUserModel>> CreateUserPage(PageOption model);
         Task<LoginResponseModel> LoginAsync(LoginUserModel loginUserModel);
         Task<List<string>> GetUserPermission(int Id);
+        Task<CreateAdminResponseModel> AdminCreateUserAsync(CreateUserByAdminModel createUserByAdminModel);
+
+        Task<UpdateUserPasswordResponseModel> UpdateUserPassword(UpdateUserPassword password, int Id);
     }
 }

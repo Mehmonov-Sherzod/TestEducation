@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using TestEducation.Aplication.Helpers.GenerateJwt;
 using TestEducation.Models;
@@ -10,11 +11,10 @@ namespace TestEducation.Service
 {
     public class JwtService
     {
-        private readonly IConfiguration _configuration;
-
-        public JwtService(IConfiguration configuration)
+        private readonly JwtOption _jwtOption;
+        public JwtService(IOptions<JwtOption> jwtOption)
         {
-            _configuration = configuration;
+            _jwtOption = jwtOption.Value;
         }
 
         public string GenerateToken(User user)
@@ -24,8 +24,6 @@ namespace TestEducation.Service
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FullName),
                 new Claim(ClaimTypes.Email, user.Email),
-
-
             };
 
             if (user.UserRoles != null)
@@ -44,13 +42,13 @@ namespace TestEducation.Service
                 }
             }
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["JwtOption:SecretKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOption.SecretKey));
+
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddHours(int.Parse(_configuration["JwtOption:ExpireOnHours"])),
+                expires: DateTime.Now.AddSeconds(_jwtOption.ExpirationInSeconds),
                 signingCredentials: creds
             );
 
