@@ -83,6 +83,14 @@ namespace TestEducation.API.Controllers
 
             return Ok(ApiResult<UpdateUserPasswordResponseModel>.Success(result));
         }
+
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtpAsync([FromBody] OtpVerificationModel model)
+        {
+            var result = await _userService.VerifyOtpAsync(model);
+
+            return Ok(ApiResult<string>.Success(result));
+        }
     }
 }
 

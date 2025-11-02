@@ -19,6 +19,7 @@ namespace TestEducation.Data
         public DbSet<UserQuestion> UserQuestions { get; set; }
         public DbSet<UserQuestionAnswer> UserQuestionsAnswer { get; set; }
         public DbSet<UserTestResult> UserTestResult { get; set; }
+        public DbSet<UserOTPs> userOTPs  { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

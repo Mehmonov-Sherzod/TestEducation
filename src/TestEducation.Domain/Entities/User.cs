@@ -10,6 +10,7 @@ namespace TestEducation.Models
         public string Password { get; set; }
         public string? Salt { get; set; }
         public bool IsActive { get; set; } = true;
+        public bool IsVerified { get; set; } = false;
         public List<UserTest> UserTests { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public List<UserQuestion> userQuestions { get; set; }

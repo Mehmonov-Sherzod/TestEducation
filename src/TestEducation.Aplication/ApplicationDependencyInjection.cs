@@ -44,6 +44,8 @@ namespace TestEducation.Aplication
             services.AddSingleton<IRabbitMQproducer, RabbitMQProducer>();
             services.AddScoped<QuestionCreateValidator>();
             services.AddScoped<IPermissionService, PermissionService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IOtpService, OtpService>();
 
             // services.AddHostedService<RabbitMQConsumer>();
 

@@ -4,6 +4,7 @@ using TestEducation.API;
 using TestEducation.API.Filter;
 using TestEducation.API.Middleware;
 using TestEducation.Aplication;
+using TestEducation.Aplication.Common;
 using TestEducation.Aplication.Helpers.GenerateJwt;
 using TestEducation.Aplication.Helpers.SeedData;
 using TestEducation.Aplication.Models.Question;
@@ -24,6 +25,7 @@ builder.Services.AddControllers(
 builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.Configure<JwtOption>(builder.Configuration.GetSection("JwtOption"));
+builder.Services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
 builder.Services.AddJwtAuth(builder.Configuration);
 builder.Services.AddSwagger(builder.Configuration);
 

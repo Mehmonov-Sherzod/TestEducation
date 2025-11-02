@@ -3,6 +3,8 @@ using TestEducation.Aplication.Exceptions;
 using TestEducation.Aplication.Helpers.PasswordHashers;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Users;
+using TestEducation.Aplication.Service;
+using TestEducation.Aplication.Service.Impl;
 using TestEducation.Data;
 using TestEducation.Models;
 
@@ -14,12 +16,20 @@ namespace TestEducation.Service.UserService
         private readonly PasswordHelper passwordHelper;
         private readonly JwtService _jwtService;
         private readonly VerifyPassword _verifyPassword;
-        public UserService(AppDbContext appDbContext, PasswordHelper passwordHelper, JwtService jwtService, VerifyPassword verifyPassword)
+        private readonly IOtpService _otpService;
+
+        public UserService(AppDbContext appDbContext,
+            PasswordHelper passwordHelper,
+            JwtService jwtService,
+            VerifyPassword verifyPassword,
+            IOtpService otpService )
         {
             _appDbContext = appDbContext;
             this.passwordHelper = passwordHelper;
             _jwtService = jwtService;
             _verifyPassword = verifyPassword;
+            _otpService = otpService;
+
         }
         public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
         {
@@ -40,8 +50,11 @@ namespace TestEducation.Service.UserService
                 Salt = salt
 
             };
+
             _appDbContext.Users.Add(user);
             await _appDbContext.SaveChangesAsync();
+
+
 
             var studentRole = await _appDbContext.Roles.FirstOrDefaultAsync(r => r.Name == "Student");
             if (studentRole != null)
@@ -270,6 +283,22 @@ namespace TestEducation.Service.UserService
             {
                 Id = user.Id,
             };
+        }
+
+        public async Task<string> VerifyOtpAsync(OtpVerificationModel model)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            if (user == null)
+                throw new BadRequestException("Foydalanuvchi topilmadi.");
+
+            var otp = await _otpService.GetLatestOtpAsync(user.Id, model.Code);
+            if (otp is null || otp.ExpiredAt < DateTime.Now)
+                throw new BadRequestException("Kod noto‘g‘ri yoki muddati tugagan.");
+
+            user.IsVerified = true;
+            await _appDbContext.SaveChangesAsync();
+
+            return "OTP muvaffaqiyatli tasdiqlandi.";
         }
     }
 }
