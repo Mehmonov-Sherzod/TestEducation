@@ -91,6 +91,23 @@ namespace TestEducation.API.Controllers
 
             return Ok(ApiResult<string>.Success(result));
         }
+
+        [HttpPost("Forgot-Password")]
+
+        public async Task<IActionResult> ForgotPassword(UserEmailForgot userEmailForgot)
+        {
+            var result = await _userService.ForgotPassword(userEmailForgot);
+
+            return Ok(ApiResult<bool>.Success(result));
+        }
+
+        [HttpPost("Reset-Password")]
+        public async Task<IActionResult> ResetPassword(UserEmailReset userEmailReset)
+        {
+            var result = await _userService.ResetPassword(userEmailReset);
+
+            return Ok(ApiResult<string>.Success(result));
+        }
     }
 }
 

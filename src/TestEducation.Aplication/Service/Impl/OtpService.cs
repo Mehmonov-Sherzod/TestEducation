@@ -27,8 +27,8 @@ namespace TestEducation.Aplication.Service.Impl
             {
                 UserId = userId,
                 Code = otpCode,
-                CreatedAt = DateTime.Now,
-                ExpiredAt = DateTime.Now.AddMinutes(5)
+                CreatedAt = DateTime.UtcNow,
+                ExpiredAt = DateTime.UtcNow.AddMinutes(5)
             };
 
             await _context.userOTPs.AddAsync(otp);

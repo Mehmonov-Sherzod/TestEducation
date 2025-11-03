@@ -15,5 +15,9 @@ namespace TestEducation.Service.UserService
         Task<CreateAdminResponseModel> AdminCreateUserAsync(CreateUserByAdminModel createUserByAdminModel);
         Task<UpdateUserPasswordResponseModel> UpdateUserPassword(UpdateUserPassword password, int Id);
         Task<string> VerifyOtpAsync(OtpVerificationModel model);
+        Task<bool> ForgotPassword(UserEmailForgot userEmailForgot);
+        Task<string> ResetPassword(UserEmailReset userEmailReset);
+
+
     }
 }

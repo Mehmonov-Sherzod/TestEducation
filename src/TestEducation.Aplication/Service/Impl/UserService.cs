@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Minio.DataModel.Replication;
 using TestEducation.Aplication.Exceptions;
 using TestEducation.Aplication.Helpers.PasswordHashers;
 using TestEducation.Aplication.Models;
@@ -17,18 +18,21 @@ namespace TestEducation.Service.UserService
         private readonly JwtService _jwtService;
         private readonly VerifyPassword _verifyPassword;
         private readonly IOtpService _otpService;
+        private readonly IEmailService _emailService; 
 
         public UserService(AppDbContext appDbContext,
             PasswordHelper passwordHelper,
             JwtService jwtService,
             VerifyPassword verifyPassword,
-            IOtpService otpService )
+            IOtpService otpService,
+            IEmailService emailService)
         {
             _appDbContext = appDbContext;
             this.passwordHelper = passwordHelper;
             _jwtService = jwtService;
             _verifyPassword = verifyPassword;
             _otpService = otpService;
+            _emailService = emailService;
 
         }
         public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
@@ -75,6 +79,7 @@ namespace TestEducation.Service.UserService
             };
 
         }
+
         public async Task<List<UserResponseModel>> GetAllUsers()
         {
             var users = await _appDbContext.Users
@@ -299,6 +304,43 @@ namespace TestEducation.Service.UserService
             await _appDbContext.SaveChangesAsync();
 
             return "OTP muvaffaqiyatli tasdiqlandi.";
+        }
+
+        public async Task<bool> ForgotPassword(UserEmailForgot userEmailForgot)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Email == userEmailForgot.Email);
+
+            if (user == null)
+                throw new BadRequestException(" Bunday email biln Foydalanuvchi topilmadi.");
+
+          var otp = await  _otpService.GenerateAndSaveOtpAsync(user.Id);
+
+            _emailService.SendOtpAsync(user.Email , otp);
+
+            return true;   
+        }
+
+        public async Task<string> ResetPassword(UserEmailReset userEmailReset)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Email == userEmailReset.Email);
+
+            if(user == null)
+                throw new BadRequestException(" Bunday email biln Foydalanuvchi topilmadi.");
+
+            var UserOtp = await _appDbContext.userOTPs
+                .Where(x =>x.Code == userEmailReset.OtpCode)
+                .OrderByDescending(x => x.CreatedAt)
+                .FirstOrDefaultAsync();
+
+            if (UserOtp.ExpiredAt < DateTime.UtcNow)
+                throw new BadRequestException("Muddati tugagan");
+
+                user.Password = passwordHelper.Encrypt(userEmailReset.NewPassword, user.Salt);
+
+                _appDbContext.Update(user);
+                _appDbContext.SaveChangesAsync();
+
+            return "Parol O'zgardi";
         }
     }
 }

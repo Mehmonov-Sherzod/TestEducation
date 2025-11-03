@@ -65,13 +65,29 @@ namespace TestEducation.Aplication.Service.Impl
         private string GenerateBody(string otp)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("<html><body style='font-family:sans-serif;'>");
-            sb.AppendLine("<h3>Welcome to SecureLoginApp!</h3>");
-            sb.AppendLine("<p>Your one-time verification code is:</p>");
-            sb.AppendLine($"<div style='font-size: 24px; font-weight: bold; margin: 20px 0;'>{otp}</div>");
-            sb.AppendLine("<p>Please do not share this code with anyone. It will expire in 5 minutes.</p>");
-            sb.AppendLine("<p>If you did not request this, please ignore.</p>");
-            sb.AppendLine("<br/><small>&copy; 2025 SecureLoginApp</small>");
+            sb.AppendLine("<!DOCTYPE html>");
+            sb.AppendLine("<html lang='uz'>");
+            sb.AppendLine("<head>");
+            sb.AppendLine("<meta charset='UTF-8' />");
+            sb.AppendLine("<meta name='viewport' content='width=device-width, initial-scale=1.0' />");
+            sb.AppendLine("<title>Test Yechish Sayti</title>");
+            sb.AppendLine("<style>");
+            sb.AppendLine("body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f7fa; margin: 0; padding: 0; }");
+            sb.AppendLine(".container { max-width: 500px; margin: 40px auto; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 30px; text-align: center; }");
+            sb.AppendLine(".title { font-size: 22px; color: #2d3748; margin-bottom: 10px; }");
+            sb.AppendLine(".subtitle { color: #4a5568; margin-bottom: 25px; }");
+            sb.AppendLine(".otp-box { background: #edf2f7; color: #2d3748; font-size: 32px; letter-spacing: 10px; font-weight: bold; border-radius: 8px; display: inline-block; padding: 15px 25px; }");
+            sb.AppendLine(".footer { font-size: 12px; color: #a0aec0; margin-top: 25px; }");
+            sb.AppendLine("</style>");
+            sb.AppendLine("</head>");
+            sb.AppendLine("<body>");
+            sb.AppendLine("<div class='container'>");
+            sb.AppendLine("<h2 class='title'>🧠 Test yechish saytiga xush kelibsiz!</h2>");
+            sb.AppendLine("<p class='subtitle'>Sizning 4 xonali tasdiqlash kodingiz quyida:</p>");
+            sb.AppendLine($"<div class='otp-box'>{otp}</div>");
+            sb.AppendLine("<p style='margin-top:20px; color:#718096;'>Bu kod 5 daqiqa davomida amal qiladi. Hech kimga ulashmang!</p>");
+            sb.AppendLine("<div class='footer'>&copy; 2025 TestEducation. Barcha huquqlar himoyalangan.</div>");
+            sb.AppendLine("</div>");
             sb.AppendLine("</body></html>");
             return sb.ToString();
         }
