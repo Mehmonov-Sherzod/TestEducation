@@ -1,13 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Minio.DataModel.Replication;
 using TestEducation.Aplication.Exceptions;
 using TestEducation.Aplication.Helpers.PasswordHashers;
 using TestEducation.Aplication.Models;
+using TestEducation.Aplication.Models.UserEmail;
 using TestEducation.Aplication.Models.Users;
 using TestEducation.Aplication.Service;
 using TestEducation.Aplication.Service.Impl;
 using TestEducation.Data;
 using TestEducation.Models;
+using System.Security.Claims;
 
 namespace TestEducation.Service.UserService
 {
@@ -18,7 +22,8 @@ namespace TestEducation.Service.UserService
         private readonly JwtService _jwtService;
         private readonly VerifyPassword _verifyPassword;
         private readonly IOtpService _otpService;
-        private readonly IEmailService _emailService; 
+        private readonly IEmailService _emailService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UserService(AppDbContext appDbContext,
             PasswordHelper passwordHelper,
@@ -121,19 +126,12 @@ namespace TestEducation.Service.UserService
         {
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
 
-            string salt = Guid.NewGuid().ToString();
-            var hashPass = passwordHelper.Encrypt(userDTO.Password, salt);
 
             if (user == null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
             user.FullName = userDTO.FullName;
             user.Email = userDTO.Email;
-
-            var password = user.Password;
-
-            if (password == hashPass)
-                user.Password = hashPass;
 
             await _appDbContext.SaveChangesAsync();
 
@@ -270,8 +268,6 @@ namespace TestEducation.Service.UserService
         {
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == Id);
 
-           
-
             if (_verifyPassword.Verify(password.OldPassword , user.Salt, user.Password))
             {
                 user.Password = passwordHelper.Encrypt(password.NewPassword, user.Salt);
@@ -306,7 +302,7 @@ namespace TestEducation.Service.UserService
             return "OTP muvaffaqiyatli tasdiqlandi.";
         }
 
-        public async Task<bool> ForgotPassword(UserEmailForgot userEmailForgot)
+        public async Task<bool> SendOtpByEmail(UserEmailForgot userEmailForgot)
         {
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Email == userEmailForgot.Email);
 
@@ -320,7 +316,7 @@ namespace TestEducation.Service.UserService
             return true;   
         }
 
-        public async Task<string> ResetPassword(UserEmailReset userEmailReset)
+        public async Task<string> ForgotPassword(UserEmailReset userEmailReset)
         {
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Email == userEmailReset.Email);
 
@@ -338,9 +334,10 @@ namespace TestEducation.Service.UserService
                 user.Password = passwordHelper.Encrypt(userEmailReset.NewPassword, user.Salt);
 
                 _appDbContext.Update(user);
-                _appDbContext.SaveChangesAsync();
+              await  _appDbContext.SaveChangesAsync();
 
             return "Parol O'zgardi";
         }
+
     }
 }

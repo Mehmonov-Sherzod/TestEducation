@@ -34,7 +34,6 @@ namespace TestEducation.Aplication.Service.Impl
             await _context.userOTPs.AddAsync(otp);
             await _context.SaveChangesAsync();
 
-            await _emailService.SendOtpAsync(user.Email, otpCode);
             return otpCode;
         }
 

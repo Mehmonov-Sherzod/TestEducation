@@ -31,7 +31,7 @@ namespace TestEducation.Aplication.Service.Impl
                 var message = new MailMessage
                 {
                     From = new MailAddress(_config.DefaultFromEmail, _config.DefaultFromName),
-                    Subject = "SecureLoginApp: OTP Verification Code",
+                    Subject = "TestEducation: OTP Verification Code",
                     Body = GenerateBody(otp),
                     IsBodyHtml = true
                 };

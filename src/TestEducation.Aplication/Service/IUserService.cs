@@ -1,5 +1,7 @@
 ﻿using TestEducation.Aplication.Models;
+using TestEducation.Aplication.Models.UserEmail;
 using TestEducation.Aplication.Models.Users;
+using TestEducation.Models;
 namespace TestEducation.Service.UserService
 {
     public interface IUserService
@@ -15,8 +17,9 @@ namespace TestEducation.Service.UserService
         Task<CreateAdminResponseModel> AdminCreateUserAsync(CreateUserByAdminModel createUserByAdminModel);
         Task<UpdateUserPasswordResponseModel> UpdateUserPassword(UpdateUserPassword password, int Id);
         Task<string> VerifyOtpAsync(OtpVerificationModel model);
-        Task<bool> ForgotPassword(UserEmailForgot userEmailForgot);
-        Task<string> ResetPassword(UserEmailReset userEmailReset);
+        Task<bool> SendOtpByEmail(UserEmailForgot userEmailForgot);
+        Task<string> ForgotPassword(UserEmailReset userEmailReset);
+
 
 
     }

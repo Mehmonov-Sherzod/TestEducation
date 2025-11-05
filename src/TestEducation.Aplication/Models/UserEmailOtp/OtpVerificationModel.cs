@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestEducation.Aplication.Models.Users
+namespace TestEducation.Aplication.Models.UserEmail
 {
     public class OtpVerificationModel
     {

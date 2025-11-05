@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
+using TestEducation.Aplication.Models.UserEmail;
 using TestEducation.Aplication.Models.Users;
 using TestEducation.Domain.Enums;
 using TestEducation.Filter;
@@ -92,19 +93,19 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<string>.Success(result));
         }
 
-        [HttpPost("Forgot-Password")]
+        [HttpPost("Send-otp-code")]
 
         public async Task<IActionResult> ForgotPassword(UserEmailForgot userEmailForgot)
         {
-            var result = await _userService.ForgotPassword(userEmailForgot);
+            var result = await _userService.SendOtpByEmail(userEmailForgot);
 
             return Ok(ApiResult<bool>.Success(result));
         }
 
-        [HttpPost("Reset-Password")]
+        [HttpPost("Forget-Password")]
         public async Task<IActionResult> ResetPassword(UserEmailReset userEmailReset)
         {
-            var result = await _userService.ResetPassword(userEmailReset);
+            var result = await _userService.ForgotPassword(userEmailReset);
 
             return Ok(ApiResult<string>.Success(result));
         }

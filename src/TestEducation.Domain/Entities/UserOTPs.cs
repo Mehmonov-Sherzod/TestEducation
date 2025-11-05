@@ -15,6 +15,5 @@ namespace TestEducation.Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? ExpiredAt { get; set; }
         public User User { get; set; } = null!;
-        public ICollection<UserOTPs> OtpCodes { get; set; } = new List<UserOTPs>();
     }
 }
