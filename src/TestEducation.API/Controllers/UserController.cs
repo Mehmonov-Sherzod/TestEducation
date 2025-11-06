@@ -10,7 +10,7 @@ using TestEducation.Service.UserService;
 namespace TestEducation.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private IUserService _userService;
@@ -78,9 +78,9 @@ namespace TestEducation.API.Controllers
 
         [HttpPut("{id}-Update-password")]
 
-        public async Task<IActionResult> UpdateUserPassword(UpdateUserPassword updateUserPassword, int id)
+        public async Task<IActionResult> ResetPassword(UpdateUserPassword updateUserPassword, int id)
         {
-            var result = await _userService.UpdateUserPassword(updateUserPassword, id);
+            var result = await _userService.ResetPassword(updateUserPassword, id);
 
             return Ok(ApiResult<UpdateUserPasswordResponseModel>.Success(result));
         }
@@ -103,7 +103,7 @@ namespace TestEducation.API.Controllers
         }
 
         [HttpPost("Forget-Password")]
-        public async Task<IActionResult> ResetPassword(UserEmailReset userEmailReset)
+        public async Task<IActionResult> SendOtp(UserEmailReset userEmailReset)
         {
             var result = await _userService.ForgotPassword(userEmailReset);
 

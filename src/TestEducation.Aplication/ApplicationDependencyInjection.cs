@@ -46,6 +46,7 @@ namespace TestEducation.Aplication
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IOtpService, OtpService>();
+            services.AddScoped<UserLogiPassword>();
 
             // services.AddHostedService<RabbitMQConsumer>();
 

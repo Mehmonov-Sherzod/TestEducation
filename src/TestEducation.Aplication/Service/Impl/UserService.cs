@@ -1,17 +1,12 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Minio.DataModel.Replication;
+﻿using Microsoft.EntityFrameworkCore;
 using TestEducation.Aplication.Exceptions;
 using TestEducation.Aplication.Helpers.PasswordHashers;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.UserEmail;
 using TestEducation.Aplication.Models.Users;
 using TestEducation.Aplication.Service;
-using TestEducation.Aplication.Service.Impl;
 using TestEducation.Data;
 using TestEducation.Models;
-using System.Security.Claims;
 
 namespace TestEducation.Service.UserService
 {
@@ -23,14 +18,15 @@ namespace TestEducation.Service.UserService
         private readonly VerifyPassword _verifyPassword;
         private readonly IOtpService _otpService;
         private readonly IEmailService _emailService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserLogiPassword _userLogiPassword;
 
         public UserService(AppDbContext appDbContext,
             PasswordHelper passwordHelper,
             JwtService jwtService,
             VerifyPassword verifyPassword,
             IOtpService otpService,
-            IEmailService emailService)
+            IEmailService emailService,
+            UserLogiPassword userLogiPassword)
         {
             _appDbContext = appDbContext;
             this.passwordHelper = passwordHelper;
@@ -38,7 +34,7 @@ namespace TestEducation.Service.UserService
             _verifyPassword = verifyPassword;
             _otpService = otpService;
             _emailService = emailService;
-
+            _userLogiPassword = userLogiPassword;
         }
         public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
         {
@@ -55,6 +51,7 @@ namespace TestEducation.Service.UserService
                 FullName = userDTO.FullName,
                 Email = userDTO.Email,
                 Password = hashPass,
+                PhoneNumber = userDTO.PhoneNumber,
                 CreatedAt = DateTime.UtcNow,
                 Salt = salt
 
@@ -93,6 +90,8 @@ namespace TestEducation.Service.UserService
                     FullName = x.FullName,
                     Email = x.Email,
                     Password = x.Password,
+                    PhoneNumber = x.PhoneNumber,
+                    
 
                 })
                 .ToListAsync();
@@ -112,6 +111,7 @@ namespace TestEducation.Service.UserService
                          FullName = x.FullName,
                          Email = x.Email,
                          Password = x.Password,
+                         PhoneNumber = x.PhoneNumber,
 
                      })
                      .FirstOrDefaultAsync();
@@ -132,6 +132,7 @@ namespace TestEducation.Service.UserService
 
             user.FullName = userDTO.FullName;
             user.Email = userDTO.Email;
+            user.PhoneNumber = userDTO.PhoneNumber;
 
             await _appDbContext.SaveChangesAsync();
 
@@ -179,6 +180,7 @@ namespace TestEducation.Service.UserService
                     FullName = x.FullName,
                     Email = x.Email,
                     Password = x.Password,
+                    PhoneNumber = x.PhoneNumber,
                 }).ToListAsync();
 
             int total = _appDbContext.Users.Count();
@@ -194,18 +196,34 @@ namespace TestEducation.Service.UserService
 
         public async Task<LoginResponseModel> LoginAsync(LoginUserModel loginUserModel)
         {
+
             var user = await _appDbContext.Users
-                .Include(x => x.UserRoles)
-                  .ThenInclude(y => y.Role)
-                     .ThenInclude(z => z.RolePermissions)
-                        .ThenInclude(a => a.Permission)
-                           .FirstOrDefaultAsync(u => u.Email == loginUserModel.Email);
+                    .Include(x => x.UserRoles)
+                      .ThenInclude(y => y.Role)
+                         .ThenInclude(z => z.RolePermissions)
+                            .ThenInclude(a => a.Permission)
+                               .FirstOrDefaultAsync(u => u.Email == loginUserModel.Email);
 
             if (user == null)
+            {
+
                 throw new NotFoundException("Username or Email is incorrect");
+            }
 
             if (!passwordHelper.Verify(loginUserModel.Password, user.Salt, user.Password))
+            {
+                _userLogiPassword.Count++;
+
+                if (_userLogiPassword.Count >= 5)
+                {
+                    _userLogiPassword.DataLogin = DateTime.Now.AddMinutes(5);
+                    throw new BadRequestException("5 minutdan keyin urunib koring");
+                }
+
                 throw new BadRequestException("Email or Password not correct");
+            }
+
+
 
             string token = _jwtService.GenerateToken(user);
 
@@ -240,6 +258,7 @@ namespace TestEducation.Service.UserService
                 FullName = createUserByAdmin.FullName,
                 Email = createUserByAdmin.Email,
                 Password = hashPass,
+                PhoneNumber = createUserByAdmin.PhoneNumber,
                 Salt = salt
             };
 
@@ -264,15 +283,15 @@ namespace TestEducation.Service.UserService
             };
         }
 
-        public async Task<UpdateUserPasswordResponseModel> UpdateUserPassword(UpdateUserPassword password, int Id)
+        public async Task<UpdateUserPasswordResponseModel> ResetPassword(UpdateUserPassword password, int Id)
         {
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == Id);
 
-            if (_verifyPassword.Verify(password.OldPassword , user.Salt, user.Password))
+            if (_verifyPassword.Verify(password.OldPassword, user.Salt, user.Password))
             {
                 user.Password = passwordHelper.Encrypt(password.NewPassword, user.Salt);
 
-                 _appDbContext.Update(user);
+                _appDbContext.Update(user);
                 _appDbContext.SaveChangesAsync();
             }
             else
@@ -309,32 +328,32 @@ namespace TestEducation.Service.UserService
             if (user == null)
                 throw new BadRequestException(" Bunday email biln Foydalanuvchi topilmadi.");
 
-          var otp = await  _otpService.GenerateAndSaveOtpAsync(user.Id);
+            var otp = await _otpService.GenerateAndSaveOtpAsync(user.Id);
 
-            _emailService.SendOtpAsync(user.Email , otp);
+            _emailService.SendOtpAsync(user.Email, otp);
 
-            return true;   
+            return true;
         }
 
         public async Task<string> ForgotPassword(UserEmailReset userEmailReset)
         {
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Email == userEmailReset.Email);
 
-            if(user == null)
+            if (user == null)
                 throw new BadRequestException(" Bunday email biln Foydalanuvchi topilmadi.");
 
             var UserOtp = await _appDbContext.userOTPs
-                .Where(x =>x.Code == userEmailReset.OtpCode)
+                .Where(x => x.Code == userEmailReset.OtpCode)
                 .OrderByDescending(x => x.CreatedAt)
                 .FirstOrDefaultAsync();
 
             if (UserOtp.ExpiredAt < DateTime.UtcNow)
                 throw new BadRequestException("Muddati tugagan");
 
-                user.Password = passwordHelper.Encrypt(userEmailReset.NewPassword, user.Salt);
+            user.Password = passwordHelper.Encrypt(userEmailReset.NewPassword, user.Salt);
 
-                _appDbContext.Update(user);
-              await  _appDbContext.SaveChangesAsync();
+            _appDbContext.Update(user);
+            await _appDbContext.SaveChangesAsync();
 
             return "Parol O'zgardi";
         }

@@ -20,6 +20,8 @@ namespace TestEducation.Data
         public DbSet<UserQuestionAnswer> UserQuestionsAnswer { get; set; }
         public DbSet<UserTestResult> UserTestResult { get; set; }
         public DbSet<UserOTPs> userOTPs  { get; set; }
+        public DbSet<Test> tests { get; set; }
+        public DbSet<UserTest> userTests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

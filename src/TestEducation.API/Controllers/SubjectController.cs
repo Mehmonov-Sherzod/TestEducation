@@ -9,7 +9,7 @@ using TestEducation.Service.SubjectService;
 namespace TestEducation.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class SubjectController : ControllerBase
     {
         public readonly ISubjectServise _IsubjectServise;

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestEducation.Data;
@@ -11,9 +12,11 @@ using TestEducation.Data;
 namespace TestEducation.DataAcces.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251105165905_UserPhone")]
+    partial class UserPhone
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,7 +67,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("tests");
+                    b.ToTable("Test");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.UserOTPs", b =>
@@ -121,7 +124,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("userTests");
+                    b.ToTable("UserTest");
                 });
 
             modelBuilder.Entity("TestEducation.Models.Answer", b =>

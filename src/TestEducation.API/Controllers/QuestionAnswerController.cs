@@ -11,7 +11,7 @@ using TestEducation.Service.SubjectService;
 namespace TestEducation.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class QuestionAnswerController : ControllerBase
     {
         private readonly IQuestionAnswerService _questionAnswerService;
