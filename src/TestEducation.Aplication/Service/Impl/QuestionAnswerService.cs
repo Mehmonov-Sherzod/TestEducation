@@ -143,7 +143,6 @@ namespace TestEducation.Service.QuestionAnswerService
             //question.ImageUrl = urlImage;
          
             HashSet<int> mySet = new HashSet<int>();
-            List<Answer> answersToAssign = new List<Answer>();
 
             for (int j = 0; j < questionUpdateDTO.Answers.Count(); j++)
             {
@@ -174,7 +173,6 @@ namespace TestEducation.Service.QuestionAnswerService
             {
                 if (!mySet.Contains(question.Answers[i].Id))
                 {
-
                     question.Answers.Remove(question.Answers[i]);
                     i--;
                 }

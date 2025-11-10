@@ -23,6 +23,8 @@ namespace TestEducation.Data
         public DbSet<Test> tests { get; set; }
         public DbSet<UserTest> userTests { get; set; }
 
+        public DbSet<SubjectTranslate> subjectTranslates { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

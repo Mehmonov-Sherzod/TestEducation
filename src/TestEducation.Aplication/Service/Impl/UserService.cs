@@ -18,15 +18,13 @@ namespace TestEducation.Service.UserService
         private readonly VerifyPassword _verifyPassword;
         private readonly IOtpService _otpService;
         private readonly IEmailService _emailService;
-        private readonly UserLogiPassword _userLogiPassword;
 
         public UserService(AppDbContext appDbContext,
             PasswordHelper passwordHelper,
             JwtService jwtService,
             VerifyPassword verifyPassword,
             IOtpService otpService,
-            IEmailService emailService,
-            UserLogiPassword userLogiPassword)
+            IEmailService emailService)
         {
             _appDbContext = appDbContext;
             this.passwordHelper = passwordHelper;
@@ -34,7 +32,6 @@ namespace TestEducation.Service.UserService
             _verifyPassword = verifyPassword;
             _otpService = otpService;
             _emailService = emailService;
-            _userLogiPassword = userLogiPassword;
         }
         public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
         {
@@ -91,7 +88,7 @@ namespace TestEducation.Service.UserService
                     Email = x.Email,
                     Password = x.Password,
                     PhoneNumber = x.PhoneNumber,
-                    
+
 
                 })
                 .ToListAsync();
@@ -196,13 +193,12 @@ namespace TestEducation.Service.UserService
 
         public async Task<LoginResponseModel> LoginAsync(LoginUserModel loginUserModel)
         {
-
             var user = await _appDbContext.Users
                     .Include(x => x.UserRoles)
-                      .ThenInclude(y => y.Role)
-                         .ThenInclude(z => z.RolePermissions)
-                            .ThenInclude(a => a.Permission)
-                               .FirstOrDefaultAsync(u => u.Email == loginUserModel.Email);
+                     .ThenInclude(y => y.Role)
+                       .ThenInclude(z => z.RolePermissions)
+                         .ThenInclude(a => a.Permission)
+                           .FirstOrDefaultAsync(u => u.Email == loginUserModel.Email);
 
             if (user == null)
             {
@@ -212,18 +208,42 @@ namespace TestEducation.Service.UserService
 
             if (!passwordHelper.Verify(loginUserModel.Password, user.Salt, user.Password))
             {
-                _userLogiPassword.Count++;
+                user.Count++;
 
-                if (_userLogiPassword.Count >= 5)
+                if (user.Count <= 5)
                 {
-                    _userLogiPassword.DataLogin = DateTime.Now.AddMinutes(5);
-                    throw new BadRequestException("5 minutdan keyin urunib koring");
+                    _appDbContext.Update(user);
+                    await _appDbContext.SaveChangesAsync();
+                }
+
+                if (user.Count == 5)
+                {
+                    if (user.ExpiredAt == default || user.ExpiredAt < DateTime.UtcNow)
+                    {
+                        user.ExpiredAt = DateTime.UtcNow.AddMinutes(5);
+
+                        _appDbContext.Attach(user);
+                        _appDbContext.Entry(user).Property(x => x.ExpiredAt).IsModified = true;
+                        await _appDbContext.SaveChangesAsync();
+                    }
+
+                    throw new BadRequestException("5 daqiqadan keyin urunib koring");
                 }
 
                 throw new BadRequestException("Email or Password not correct");
             }
 
-
+            if (user.ExpiredAt < DateTime.UtcNow)
+            {
+                user.Count = 0;
+                user.ExpiredAt = null;
+                _appDbContext.Update(user);
+                _appDbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new BadRequestException("Vaqt tugamadi");
+            }
 
             string token = _jwtService.GenerateToken(user);
 

@@ -3,6 +3,7 @@ using TestEducation.Aplication.Exceptions;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Subject;
 using TestEducation.Data;
+using TestEducation.Domain.Entities;
 using TestEducation.Models;
 
 namespace TestEducation.Service.SubjectService
@@ -25,6 +26,13 @@ namespace TestEducation.Service.SubjectService
             var result = new Subject
             {
                 Name = subjectDTO.Name,
+                SubjectTranslates = subjectDTO.SubjectTranslates
+                .Select(x => new SubjectTranslate
+                {
+                    LanguageId = x.LanguageId,
+                    ColumnName = x.ColumnName,
+                    TranslateText = x.TranslateText,
+                }).ToList()
             };
 
             _appDbContext.Subjects.Add(result);
@@ -41,7 +49,14 @@ namespace TestEducation.Service.SubjectService
             var subjects = await _appDbContext.Subjects
                 .Select(s => new SubjectResponsModel
                 {
-                    SubjectName = s.Name
+                    SubjectName = s.Name,
+                    SubjectTranslateResponseModels = s.SubjectTranslates
+                   .Select(x => new SubjectTranslateResponseModel
+                   {
+                       ColumnName = x.ColumnName,
+                       TranslateText = x.TranslateText,
+                   }).ToList()
+
                 })
                 .ToListAsync();
 
@@ -54,6 +69,12 @@ namespace TestEducation.Service.SubjectService
                 .Select(x => new SubjectResponsModel
                 {
                     SubjectName = x.Name,
+                    SubjectTranslateResponseModels = x.SubjectTranslates
+                   .Select(s => new SubjectTranslateResponseModel
+                   {
+                       ColumnName = s.ColumnName,
+                       TranslateText = s.TranslateText,
+                   }).ToList()
                 }).FirstOrDefaultAsync();
 
             if (subject == null)
@@ -65,12 +86,52 @@ namespace TestEducation.Service.SubjectService
         public async Task<UpdateSubjectResponseModel> UpdateSubject(int Id, UpdateSubjectModel subjectDTO)
         {
             var subject = await _appDbContext.Subjects
+                .Include(y => y.SubjectTranslates)
                 .FirstOrDefaultAsync(x => x.Id == Id);
 
             if (subject == null)
                 throw new NotFoundException("subject topilmadi.");
 
             subject.Name = subjectDTO.SubjectNmae;
+
+            HashSet<int> mySet = new HashSet<int>();
+
+
+            for (int j = 0; j < subjectDTO.UpdateSubjectTranslateModels.Count(); j++)
+            {
+                mySet.Add(subjectDTO.UpdateSubjectTranslateModels[j].Id);
+
+                if (subjectDTO.UpdateSubjectTranslateModels[j].Id == 0)
+                {
+                    SubjectTranslate NewsubjectTranslate = new SubjectTranslate
+                    {
+                        ColumnName = subjectDTO.UpdateSubjectTranslateModels[j].ColumnName,
+                        TranslateText = subjectDTO.UpdateSubjectTranslateModels[j].TranslateText,
+                    };
+
+                    subject.SubjectTranslates.Add(NewsubjectTranslate);
+                }
+                else
+                {
+                    for(int i = 0; i < subject.SubjectTranslates.Count(); i++)
+                    {
+                        if (subject.SubjectTranslates[i].id == subjectDTO.UpdateSubjectTranslateModels[j].Id)
+                        {
+                            subject.SubjectTranslates[i].ColumnName = subjectDTO.UpdateSubjectTranslateModels[j].ColumnName;
+                            subject.SubjectTranslates[i].TranslateText = subjectDTO.UpdateSubjectTranslateModels[j].TranslateText;
+                        }
+                    }
+                }
+            }
+
+            for(int i = 0; i < subject.SubjectTranslates.Count(); i++)
+            {
+                if (!mySet.Contains(subject.SubjectTranslates[i].id))
+                {
+                    subject.SubjectTranslates.Remove(subject.SubjectTranslates[i]);
+                    i--;
+                }
+            }
 
             _appDbContext.Subjects.Add(subject);
             await _appDbContext.SaveChangesAsync();
@@ -112,6 +173,12 @@ namespace TestEducation.Service.SubjectService
                 .Select(s => new SubjectResponsModel
                 {
                     SubjectName = s.Name,
+                    SubjectTranslateResponseModels = s.SubjectTranslates
+                   .Select(s => new SubjectTranslateResponseModel
+                    {
+                        ColumnName = s.ColumnName,
+                        TranslateText = s.TranslateText,
+                    }).ToList()
                 }).ToListAsync();
 
             int total = _appDbContext.Subjects.Count();

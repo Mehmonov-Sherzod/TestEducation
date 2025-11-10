@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestEducation.Data;
@@ -11,9 +12,11 @@ using TestEducation.Data;
 namespace TestEducation.DataAcces.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251108085321_UserCountLoginPassword")]
+    partial class UserCountLoginPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,35 +43,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("TestEducation.Domain.Entities.SubjectTranslate", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("ColumnName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("TranslateText")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("SubjectId");
-
-                    b.ToTable("subjectTranslates");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.Test", b =>
@@ -483,17 +457,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.ToTable("UserTestResult");
                 });
 
-            modelBuilder.Entity("TestEducation.Domain.Entities.SubjectTranslate", b =>
-                {
-                    b.HasOne("TestEducation.Models.Subject", "Subject")
-                        .WithMany("SubjectTranslates")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subject");
-                });
-
             modelBuilder.Entity("TestEducation.Domain.Entities.Test", b =>
                 {
                     b.HasOne("TestEducation.Models.Subject", "Subject")
@@ -644,7 +607,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
             modelBuilder.Entity("TestEducation.Models.UserTestResult", b =>
                 {
                     b.HasOne("TestEducation.Models.Subject", "Subject")
-                        .WithMany("UserTestResult")
+                        .WithMany("userTestResult")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -698,11 +661,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 {
                     b.Navigation("Questions");
 
-                    b.Navigation("SubjectTranslates");
-
                     b.Navigation("Tests");
 
-                    b.Navigation("UserTestResult");
+                    b.Navigation("userTestResult");
                 });
 
             modelBuilder.Entity("TestEducation.Models.User", b =>

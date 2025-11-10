@@ -3,6 +3,8 @@
     public  class UpdateSubjectModel 
     {
         public string SubjectNmae { get; set; }
+
+        public List<UpdateSubjectTranslateModel> UpdateSubjectTranslateModels { get; set; }
     }
     public class UpdateSubjectResponseModel
     {

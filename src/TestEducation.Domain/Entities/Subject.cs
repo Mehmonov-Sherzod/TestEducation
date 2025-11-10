@@ -8,6 +8,7 @@ namespace TestEducation.Models
         public string Name { get; set; }
         public List<Test> Tests { get; set; }
         public List<Question> Questions { get; set; }
-        public List<UserTestResult> userTestResult { get; set; }
+        public List<UserTestResult> UserTestResult { get; set; }
+        public List<SubjectTranslate> SubjectTranslates { get; set; }
     }
 }

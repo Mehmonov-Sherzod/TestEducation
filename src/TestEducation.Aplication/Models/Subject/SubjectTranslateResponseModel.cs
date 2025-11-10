@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace TestEducation.Aplication.Models.Subject
 {
-    public class SubjectResponsModel
+    public class SubjectTranslateResponseModel
     {
-        public string SubjectName { get; set; }
+        public string ColumnName { get; set; }
 
-        public List<SubjectTranslateResponseModel> SubjectTranslateResponseModels { get; set; }
+        public string TranslateText { get; set; }
     }
 }

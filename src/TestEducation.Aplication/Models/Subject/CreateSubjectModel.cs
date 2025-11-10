@@ -4,7 +4,7 @@ public class CreateSubjectModel
 {
     public string Name { get; set; }
 
-  //  public List<QuestionDTO> questions { get; set; }    
+    public List<CreateSubjectTranslateModel> SubjectTranslates { get; set; }
 
 }
 
