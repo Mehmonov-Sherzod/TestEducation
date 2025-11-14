@@ -4,6 +4,7 @@ using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Subject;
 using TestEducation.Data;
 using TestEducation.Domain.Entities;
+using TestEducation.Domain.Enums;
 using TestEducation.Models;
 
 namespace TestEducation.Service.SubjectService
@@ -16,6 +17,7 @@ namespace TestEducation.Service.SubjectService
         {
             _appDbContext = appDbContext;
         }
+
         public async Task<CreateSubjectResponseModel> CreateSubject(CreateSubjectModel subjectDTO)
         {
             var subject = await _appDbContext.Subjects.AnyAsync(x => x.Name == subjectDTO.Name);
@@ -27,9 +29,9 @@ namespace TestEducation.Service.SubjectService
             {
                 Name = subjectDTO.Name,
                 SubjectTranslates = subjectDTO.SubjectTranslates
-                .Select(x => new SubjectTranslate
+               .Select(x => new SubjectTranslate
                 {
-                    LanguageId = x.LanguageId,
+                    Language = x.LanguageId,
                     ColumnName = x.ColumnName,
                     TranslateText = x.TranslateText,
                 }).ToList()
@@ -44,32 +46,53 @@ namespace TestEducation.Service.SubjectService
             };
 
         }
-        public async Task<List<SubjectResponsModel>> GetaAllSubjects()
-        {
-            var subjects = await _appDbContext.Subjects
-                .Select(s => new SubjectResponsModel
-                {
-                    SubjectName = s.Name,
-                    SubjectTranslateResponseModels = s.SubjectTranslates
-                   .Select(x => new SubjectTranslateResponseModel
-                   {
-                       ColumnName = x.ColumnName,
-                       TranslateText = x.TranslateText,
-                   }).ToList()
 
-                })
-                .ToListAsync();
+        public async Task<List<SubjectResponsModel>> GetaAllSubjects(string lang)
+        {
+            Language userLanguage = Language.uz;
+
+            if (lang == "uz")
+                userLanguage = Language.uz;
+            else if (lang == "ru")
+                userLanguage = Language.rus;
+            else if (lang == "eng")
+                userLanguage = Language.eng;
+
+                var subjects = await _appDbContext.Subjects
+                    .Select(s => new SubjectResponsModel
+                    {
+                        SubjectName = s.Name,
+                        Translates = s.SubjectTranslates
+                            .Where(t => t.Language == userLanguage)
+                            .Select(x => new SubjectTranslateResponseModel
+                            {
+                                ColumnName = x.ColumnName,
+                                TranslateText = x.TranslateText,
+                            })
+                            .ToList()
+                    })
+                    .ToListAsync();
 
             return subjects;
         }
-        public async Task<SubjectResponsModel> GetByIdSubject(int id)
+        public async Task<SubjectResponsModel> GetByIdSubject(int id , string lang)
         {
+            Language userLanguage = Language.uz;
+
+            if (lang == "uz")
+                userLanguage = Language.uz;
+            else if (lang == "ru")
+                userLanguage = Language.rus;
+            else if (lang == "eng")
+                userLanguage = Language.eng;
+
             var subject = await _appDbContext.Subjects
                 .Where(x => x.Id == id)
                 .Select(x => new SubjectResponsModel
                 {
                     SubjectName = x.Name,
-                    SubjectTranslateResponseModels = x.SubjectTranslates
+                    Translates = x.SubjectTranslates
+                   .Where(t => t.Language == userLanguage)
                    .Select(s => new SubjectTranslateResponseModel
                    {
                        ColumnName = s.ColumnName,
@@ -158,9 +181,18 @@ namespace TestEducation.Service.SubjectService
 
 
         }
-        public async Task<PaginationResult<SubjectResponsModel>> CreateSubjectPage(PageOption model)
+        public async Task<PaginationResult<SubjectResponsModel>> CreateSubjectPage(PageOption model,  string lang)
         {
             var query = _appDbContext.Subjects.AsQueryable();
+
+            Language userLanguage = Language.uz;
+
+            if (lang == "uz")
+                userLanguage = Language.uz;
+            else if (lang == "ru")
+                userLanguage = Language.rus;
+            else if (lang == "eng")
+                userLanguage = Language.eng;
 
             if (!string.IsNullOrEmpty(model.Search))
             {
@@ -173,7 +205,8 @@ namespace TestEducation.Service.SubjectService
                 .Select(s => new SubjectResponsModel
                 {
                     SubjectName = s.Name,
-                    SubjectTranslateResponseModels = s.SubjectTranslates
+                    Translates = s.SubjectTranslates
+                   .Where(t => t.Language == userLanguage)
                    .Select(s => new SubjectTranslateResponseModel
                     {
                         ColumnName = s.ColumnName,

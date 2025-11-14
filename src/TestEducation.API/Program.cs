@@ -1,5 +1,7 @@
-﻿using FluentValidation;
+﻿using System.Globalization;
+using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Localization;
 using Telegram.Bot;
 using TestEducation.API;
 using TestEducation.API.Filter;
@@ -28,10 +30,7 @@ builder.Services.AddSingleton<ITelegramBotClient>(sp =>
 
 builder.Services.AddHostedService<TelegramServiceOtp>();
 
-
-builder.Services.AddControllers(
-    config => config.Filters.Add(typeof(ValidateModelAttribute))
-    );
+builder.Services.AddControllers(config => config.Filters.Add(typeof(ValidateModelAttribute)));
 
 builder.Services.AddFluentValidationAutoValidation();
 
@@ -43,11 +42,24 @@ builder.Services.AddSwagger(builder.Configuration);
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.OperationFilter<TestEducation.Aplication.AddRequiredHeaderParameter>();
+});
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+var supportedCultures = new[] { "en-US", "uz-Latn-UZ", "ru-RU" };
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture("uz-Latn-UZ")
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
 
 var app = builder.Build();
+
+app.UseRequestLocalization(localizationOptions);
+
 app.UseCors(corsPolicyBuilder =>
     corsPolicyBuilder.AllowAnyOrigin()
         .AllowAnyMethod()
@@ -60,7 +72,6 @@ using (var scope = app.Services.CreateScope())
     context.SeedMapping();
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

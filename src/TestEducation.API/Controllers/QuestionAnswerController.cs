@@ -31,17 +31,17 @@ namespace TestEducation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllQuestionAnswer()
+        public async Task<IActionResult> GetAllQuestionAnswer(string lang)
         {
-            var result = await _questionAnswerService.GetAllQuestionAnswer();
+            var result = await _questionAnswerService.GetAllQuestionAnswer(lang);
 
             return Ok(ApiResult<List<QuestionAnswerResponseModel>>.Success(result));
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdQuestionAnswer(int id)
+        public async Task<IActionResult> GetByIdQuestionAnswer(int id, string lang)
         {
-            var result = await _questionAnswerService.GetByIdQuestionAnswer(id);
+            var result = await _questionAnswerService.GetByIdQuestionAnswer(id, lang);
 
             return Ok(ApiResult<QuestionAnswerResponseModel>.Success(result));
         }
@@ -89,9 +89,9 @@ namespace TestEducation.Controllers
         }
 
         [HttpPost("get-all-page")]
-        public async Task<IActionResult> GetAllQuestionAnswerPage(PageOption  model)
+        public async Task<IActionResult> GetAllQuestionAnswerPage(PageOption  model, string lang)
         {
-            var result = await _questionAnswerService.CreateQuestionAnswerPage(model);
+            var result = await _questionAnswerService.CreateQuestionAnswerPage(model, lang);
 
             return Ok(ApiResult<PaginationResult<QuestionAnswerResponseModel>>.Success(result));
 

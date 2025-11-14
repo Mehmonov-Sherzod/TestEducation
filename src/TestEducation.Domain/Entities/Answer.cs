@@ -1,4 +1,6 @@
-﻿namespace TestEducation.Models
+﻿using TestEducation.Domain.Entities;
+
+namespace TestEducation.Models
 {
     public class Answer
     {
@@ -8,6 +10,8 @@
         public int QuestionId { get; set; }
         public Question Question { get; set; }
         public List<UserQuestionAnswer> UserAnswers { get; set; }
+
+        public List<AnswerTranslate> answerTranslates { get; set; }
 
     }
 }

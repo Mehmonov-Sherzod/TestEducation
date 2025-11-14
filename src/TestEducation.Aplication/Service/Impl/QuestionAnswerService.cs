@@ -7,6 +7,8 @@ using TestEducation.Aplication.Models.Answer;
 using TestEducation.Aplication.Models.Question;
 using TestEducation.Aplication.Validators.QuestionValidator;
 using TestEducation.Data;
+using TestEducation.Domain.Entities;
+using TestEducation.Domain.Enums;
 using TestEducation.Models;
 using TestEducation.Service.FileStoreageService;
 
@@ -50,15 +52,29 @@ namespace TestEducation.Service.QuestionAnswerService
             {
                 QuestionText = questionDTO.QuestionText,
                 SubjectId = questionDTO.SubjectId,
-                //ImageUrl = urlImage,
                 Level = questionDTO.Level,
-                Answers = questionDTO.Answers
-                .Select(a => new Answer
-                {
-                    AnswerText = a.Text,
-                    IsCorrect = a.IsCorrect,
+                QuestionTranslations = questionDTO.Translate
+               .Select(x => new QuestionTranslation
+               {
+                   LanguageId = x.LanguageId,
+                   ColumnName = x.ColumnName,
+                   TranslateText = x.TranslateText
 
-                }).ToList(),
+               }).ToList(),
+                Answers = questionDTO.Answers
+               .Select(a => new Answer
+               {
+                   AnswerText = a.Text,
+                   IsCorrect = a.IsCorrect,
+                   answerTranslates = a.Translate
+                    .Select(x => new AnswerTranslate
+                    {
+                        LanguageId = x.LanguageId,
+                        ColumnName = x.ColumnName,
+                        TranslateText = x.TranslateText
+                    }).ToList(),
+
+               }).ToList(),
             };
 
 
@@ -71,27 +87,58 @@ namespace TestEducation.Service.QuestionAnswerService
             };
 
         }
-        public async Task<List<QuestionAnswerResponseModel>> GetAllQuestionAnswer()
+        public async Task<List<QuestionAnswerResponseModel>> GetAllQuestionAnswer(string lang)
         {
+            Language QuestionLanguage = Language.uz;
+
+            if (lang == "uz")
+                QuestionLanguage = Language.uz;
+            else if (lang == "ru")
+                QuestionLanguage = Language.rus;
+            else if (lang == "eng")
+                QuestionLanguage = Language.eng;
+
             var question = await _appDbContext.Question
                 .Select(x => new QuestionAnswerResponseModel
                 {
                     QuestionText = x.QuestionText,
                     Image = x.ImageUrl,
                     QuestionLevel = x.Level,
-                    Answers = x.Answers.
-                    Select(n => new AnswerResponseModel
-                    {
-                        AnswerText = n.AnswerText,
-                    }).ToList()
-
+                    Translate = x.QuestionTranslations
+                           .Where(x => x.LanguageId == QuestionLanguage)
+                           .Select(x => new QuestionTranslateResponseModel
+                           {
+                               ColumnName = x.ColumnName,
+                               TranslateText = x.TranslateText,
+                           }).ToList(),
+                           Answers = x.Answers
+                                  .Select(n => new AnswerResponseModel
+                                  {
+                                      AnswerText = n.AnswerText,
+                                      Translate = n.answerTranslates
+                                      .Where(x => x.LanguageId == QuestionLanguage)
+                                      .Select(e => new AnswerTranslateResponseModel
+                                      {
+                                          ColumnName = e.ColumnName,
+                                          TranslateText = e.TranslateText,
+                                      }).ToList()
+                                  }).ToList()
                 }).ToListAsync();
 
             return question;
         }
-        public async Task<QuestionAnswerResponseModel> GetByIdQuestionAnswer(int Id)
-
+        public async Task<QuestionAnswerResponseModel> GetByIdQuestionAnswer(int Id, string lang)
         {
+            Language QuestionLanguage = Language.uz;
+
+            if (lang == "uz")
+                QuestionLanguage = Language.uz;
+            else if (lang == "ru")
+                QuestionLanguage = Language.rus;
+            else if (lang == "eng")
+                QuestionLanguage = Language.eng;
+
+
             var question = await _appDbContext.Question
                     .Where(x => x.Id == Id)
                     .Select(x => new QuestionAnswerResponseModel
@@ -99,13 +146,26 @@ namespace TestEducation.Service.QuestionAnswerService
                         QuestionText = x.QuestionText,
                         Image = x.ImageUrl,
                         QuestionLevel = x.Level,
+                        Translate = x.QuestionTranslations
+                        .Where(x => x.LanguageId == QuestionLanguage)
+                           .Select(x => new QuestionTranslateResponseModel
+                           {
+                               ColumnName = x.ColumnName,
+                               TranslateText = x.TranslateText,
+                           }).ToList(),
                         Answers = x.Answers
                                   .Select(n => new AnswerResponseModel
                                   {
                                       AnswerText = n.AnswerText,
+                                      Translate = n.answerTranslates
+                                      .Where(x => x.LanguageId == QuestionLanguage)
+                                      .Select(e => new AnswerTranslateResponseModel
+                                      {
+                                          ColumnName = e.ColumnName,
+                                          TranslateText = e.TranslateText,
+                                      }).ToList()
                                   }).ToList()
-                    })
-                      .FirstOrDefaultAsync();
+                    }).FirstOrDefaultAsync();
 
             if (question == null)
                 throw new NotFoundException("Question topilmadi.");
@@ -141,7 +201,7 @@ namespace TestEducation.Service.QuestionAnswerService
 
             question.QuestionText = questionUpdateDTO.QuestionText;
             //question.ImageUrl = urlImage;
-         
+
             HashSet<int> mySet = new HashSet<int>();
 
             for (int j = 0; j < questionUpdateDTO.Answers.Count(); j++)
@@ -169,7 +229,7 @@ namespace TestEducation.Service.QuestionAnswerService
                 }
             }
 
-            for(int i = 0; i < question.Answers.Count(); i++)
+            for (int i = 0; i < question.Answers.Count(); i++)
             {
                 if (!mySet.Contains(question.Answers[i].Id))
                 {
@@ -177,7 +237,7 @@ namespace TestEducation.Service.QuestionAnswerService
                     i--;
                 }
             }
-            
+
             _appDbContext.Update(question);
             _appDbContext.SaveChanges();
 
@@ -218,8 +278,17 @@ namespace TestEducation.Service.QuestionAnswerService
             memoryStream1.Position = 0; // Streamni boshiga qaytarish, chunki undan o'qish mumkin bo'lishi uchun
             return memoryStream1;
         }
-        public async Task<PaginationResult<QuestionAnswerResponseModel>> CreateQuestionAnswerPage(PageOption model)
+        public async Task<PaginationResult<QuestionAnswerResponseModel>> CreateQuestionAnswerPage(PageOption model,string lang)
         {
+            Language QuestionLanguage = Language.uz;
+
+            if (lang == "uz")
+                QuestionLanguage = Language.uz;
+            else if (lang == "ru")
+                QuestionLanguage = Language.rus;
+            else if (lang == "eng")
+                QuestionLanguage = Language.eng;
+
             var query = _appDbContext.Question.AsQueryable();
 
             if (!string.IsNullOrEmpty(model.Search))
@@ -235,11 +304,25 @@ namespace TestEducation.Service.QuestionAnswerService
                     QuestionText = x.QuestionText,
                     Image = x.ImageUrl,
                     QuestionLevel = x.Level,
-                    Answers = x.Answers.
-                    Select(n => new AnswerResponseModel
-                    {
-                        AnswerText = n.AnswerText,
-                    }).ToList()
+                    Translate = x.QuestionTranslations
+                        .Where(x => x.LanguageId == QuestionLanguage)
+                           .Select(x => new QuestionTranslateResponseModel
+                           {
+                               ColumnName = x.ColumnName,
+                               TranslateText = x.TranslateText,
+                           }).ToList(),
+                    Answers = x.Answers
+                                  .Select(n => new AnswerResponseModel
+                                  {
+                                      AnswerText = n.AnswerText,
+                                      Translate = n.answerTranslates
+                                      .Where(x => x.LanguageId == QuestionLanguage)
+                                      .Select(e => new AnswerTranslateResponseModel
+                                      {
+                                          ColumnName = e.ColumnName,
+                                          TranslateText = e.TranslateText,
+                                      }).ToList()
+                                  }).ToList()
                 }).ToListAsync();
 
 

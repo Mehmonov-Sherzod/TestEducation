@@ -8,15 +8,15 @@ using TestEducation.Models;
 
 namespace TestEducation.Domain.Entities
 {
-    public class SubjectTranslate
+    public class AnswerTranslate
     {
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        public Subject Subject { get; set; }
+        public Answer answer { get; set; }
 
-        public int SubjectId { get; set; }
+        public int AnswerId { get; set; }
 
-        public Language Language { get; set; }
+        public Language LanguageId { get; set; }
 
         public string ColumnName { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using TestEducation.Aplication.Exceptions;
 using TestEducation.Aplication.Helpers.PasswordHashers;
 using TestEducation.Aplication.Models;
@@ -18,13 +19,17 @@ namespace TestEducation.Service.UserService
         private readonly VerifyPassword _verifyPassword;
         private readonly IOtpService _otpService;
         private readonly IEmailService _emailService;
+        private readonly IStringLocalizer<UserService> _localizer;
 
+
+  
         public UserService(AppDbContext appDbContext,
             PasswordHelper passwordHelper,
             JwtService jwtService,
             VerifyPassword verifyPassword,
             IOtpService otpService,
-            IEmailService emailService)
+            IEmailService emailService,
+            IStringLocalizer<UserService> localizer)
         {
             _appDbContext = appDbContext;
             this.passwordHelper = passwordHelper;
@@ -32,13 +37,15 @@ namespace TestEducation.Service.UserService
             _verifyPassword = verifyPassword;
             _otpService = otpService;
             _emailService = emailService;
+            _localizer = localizer;
         }
         public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
         {
             var users = await _appDbContext.Users.AnyAsync(x => x.Email == userDTO.Email);
 
             if (users)
-                throw new BadRequestException("Bunday email bilan foydalanuvchi allaqachon mavjud");
+                throw new BadRequestException(_localizer["EmailExists"]);
+
 
             string salt = Guid.NewGuid().ToString();
             var hashPass = passwordHelper.Encrypt(userDTO.Password, salt);
@@ -210,15 +217,15 @@ namespace TestEducation.Service.UserService
             {
                 user.Count++;
 
-                if (user.Count <= 5)
+                if (user.Count != 5)
                 {
-                    _appDbContext.Update(user);
+                    //_appDbContext.Update(user);
                     await _appDbContext.SaveChangesAsync();
                 }
 
                 if (user.Count == 5)
                 {
-                    if (user.ExpiredAt == default || user.ExpiredAt < DateTime.UtcNow)
+                    if (user.ExpiredAt == null || user.ExpiredAt < DateTime.UtcNow)
                     {
                         user.ExpiredAt = DateTime.UtcNow.AddMinutes(5);
 

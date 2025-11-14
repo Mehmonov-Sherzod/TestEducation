@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestEducation.Data;
@@ -11,9 +12,11 @@ using TestEducation.Data;
 namespace TestEducation.DataAcces.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251112100822_QuestionTRanslate")]
+    partial class QuestionTRanslate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,35 +24,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("TestEducation.Domain.Entities.AnswerTranslate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AnswerId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ColumnName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("TranslateText")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnswerId");
-
-                    b.ToTable("AnswerTranslate");
-                });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.Order", b =>
                 {
@@ -97,7 +71,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("questionTranslations");
+                    b.ToTable("QuestionTranslation");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.SubjectTranslate", b =>
@@ -112,7 +86,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Language")
+                    b.Property<int>("LanguageId")
                         .HasColumnType("integer");
 
                     b.Property<int>("SubjectId")
@@ -541,17 +515,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.ToTable("UserTestResult");
                 });
 
-            modelBuilder.Entity("TestEducation.Domain.Entities.AnswerTranslate", b =>
-                {
-                    b.HasOne("TestEducation.Models.Answer", "answer")
-                        .WithMany("answerTranslates")
-                        .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("answer");
-                });
-
             modelBuilder.Entity("TestEducation.Domain.Entities.QuestionTranslation", b =>
                 {
                     b.HasOne("TestEducation.Models.Question", "Question")
@@ -753,8 +716,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
             modelBuilder.Entity("TestEducation.Models.Answer", b =>
                 {
                     b.Navigation("UserAnswers");
-
-                    b.Navigation("answerTranslates");
                 });
 
             modelBuilder.Entity("TestEducation.Models.Permission", b =>

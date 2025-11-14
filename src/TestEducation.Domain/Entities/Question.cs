@@ -1,4 +1,5 @@
-﻿using TestEducation.Domain.Enums;
+﻿using TestEducation.Domain.Entities;
+using TestEducation.Domain.Enums;
 
 namespace TestEducation.Models
 {
@@ -12,5 +13,6 @@ namespace TestEducation.Models
         public QuestionLevel Level { get; set; }
         public List<UserQuestion> UserQuestions { get; set; }          
         public List<Answer> Answers { get; set; }
+        public List<QuestionTranslation> QuestionTranslations { get; set; }
     }
 }

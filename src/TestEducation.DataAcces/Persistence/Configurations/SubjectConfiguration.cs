@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TestEducation.Data;
 using TestEducation.Models;
 
 namespace TestEducation.DataAcces.Persistence.Configurations
@@ -15,6 +16,7 @@ namespace TestEducation.DataAcces.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Subject> builder)
         {
+
             // Subject modelida Name Uniq Boladi
             builder.HasIndex(x=>x.Name)
                 .IsUnique();

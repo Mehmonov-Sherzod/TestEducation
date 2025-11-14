@@ -8,8 +8,24 @@ namespace TestEducation.DataAcces.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            // user emaili bir xil bolmaydi
             builder.HasIndex(x => x.Email).IsUnique();
+
+            //builder.HasData(
+            //    new User
+            //    {
+            //        Id = 1,
+            //        FullName = "Sherzod",
+            //        Email = "mehmovovsherzod@gmail.com",
+            //        PhoneNumber = "+998901537776",
+            //        Password = "",
+            //        Salt = "",
+            //        IsActive = true,
+            //        CreatedAt = DateTime.UtcNow,
+            //        IsVerified = false,
+            //        Count = 0,
+            //        ExpiredAt = default,
+            //    }
+            //);
 
         }
 

@@ -27,17 +27,19 @@ namespace TestEducation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllSubject()
+        public async Task<IActionResult> GetAllSubject([FromHeader] string lang)
         {
-            var result = await _IsubjectServise.GetaAllSubjects();
+            var result = await _IsubjectServise.GetaAllSubjects(lang);
 
             return Ok(ApiResult<List<SubjectResponsModel>>.Success(result));
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdSubject(int id)
+        public async Task<IActionResult> GetByIdSubject(
+            [FromRoute] int id, 
+            [FromHeader] string lang)
         {
-            var result = await _IsubjectServise.GetByIdSubject(id);
+            var result = await _IsubjectServise.GetByIdSubject(id, lang);
 
             return Ok(ApiResult<SubjectResponsModel>.Success(result));
         }
@@ -59,9 +61,9 @@ namespace TestEducation.Controllers
         }
 
         [HttpPost("get-all-page")]
-        public async Task<IActionResult> GetAllPage(PageOption model)
+        public async Task<IActionResult> GetAllPage(PageOption model, string lang)
         {
-            var result = await _IsubjectServise.CreateSubjectPage(model);     
+            var result = await _IsubjectServise.CreateSubjectPage(model, lang);     
 
             return Ok(ApiResult<PaginationResult<SubjectResponsModel>>.Success(result));
         }

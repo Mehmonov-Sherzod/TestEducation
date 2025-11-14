@@ -10,6 +10,6 @@ namespace TestEducation.Aplication.Models.Subject
     {
         public string SubjectName { get; set; }
 
-        public List<SubjectTranslateResponseModel> SubjectTranslateResponseModels { get; set; }
+        public List<SubjectTranslateResponseModel> Translates { get; set; }
     }
 }
