@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Question;
-using TestEducation.Aplication.Models.Subject;
 using TestEducation.Service.FileStoreageService;
 using TestEducation.Service.QuestionAnswerService;
-using TestEducation.Service.SubjectService;
 
 namespace TestEducation.Controllers
 {
@@ -23,7 +19,7 @@ namespace TestEducation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuestionAnswer( CreateQuestionModel questionDTO)
+        public async Task<IActionResult> CreateQuestionAnswer(CreateQuestionModel questionDTO)
         {
             var result = await _questionAnswerService.CreateQuestionAnswer(questionDTO);
 
@@ -47,9 +43,9 @@ namespace TestEducation.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateQuestionAnswer(  int id, UpdateQuestionAnswerModel questionUpdateDTO)
+        public async Task<IActionResult> UpdateQuestionAnswer(int id, UpdateQuestionAnswerModel questionUpdateDTO)
         {
-            var result = await _questionAnswerService.UpdateQuestionAnswer(id , questionUpdateDTO);
+            var result = await _questionAnswerService.UpdateQuestionAnswer(id, questionUpdateDTO);
 
             return Ok(ApiResult<UpdateQuestionAnswerResponseModel>.Success(result));
         }
@@ -89,7 +85,7 @@ namespace TestEducation.Controllers
         }
 
         [HttpPost("get-all-page")]
-        public async Task<IActionResult> GetAllQuestionAnswerPage(PageOption  model, string lang)
+        public async Task<IActionResult> GetAllQuestionAnswerPage(PageOption model, string lang)
         {
             var result = await _questionAnswerService.CreateQuestionAnswerPage(model, lang);
 

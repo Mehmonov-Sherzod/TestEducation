@@ -54,27 +54,28 @@ namespace TestEducation.Service.QuestionAnswerService
                 SubjectId = questionDTO.SubjectId,
                 Level = questionDTO.Level,
                 QuestionTranslations = questionDTO.Translate
-               .Select(x => new QuestionTranslation
-               {
-                   LanguageId = x.LanguageId,
-                   ColumnName = x.ColumnName,
-                   TranslateText = x.TranslateText
-
-               }).ToList(),
+                   .Select(x => new QuestionTranslation
+                   {
+                       LanguageId = x.LanguageId,
+                       ColumnName = x.ColumnName,
+                       TranslateText = x.TranslateText
+                   })
+                   .ToList(),
                 Answers = questionDTO.Answers
-               .Select(a => new Answer
-               {
-                   AnswerText = a.Text,
-                   IsCorrect = a.IsCorrect,
-                   answerTranslates = a.Translate
-                    .Select(x => new AnswerTranslate
-                    {
-                        LanguageId = x.LanguageId,
-                        ColumnName = x.ColumnName,
-                        TranslateText = x.TranslateText
-                    }).ToList(),
+                   .Select(a => new Answer
+                   {
+                       AnswerText = a.Text,
+                       IsCorrect = a.IsCorrect,
+                       answerTranslates = a.Translate
+                        .Select(x => new AnswerTranslate
+                        {
+                            LanguageId = x.LanguageId,
+                            ColumnName = x.ColumnName,
+                            TranslateText = x.TranslateText
+                        }).ToList(),
 
-               }).ToList(),
+                   })
+                   .ToList(),
             };
 
 
@@ -111,7 +112,7 @@ namespace TestEducation.Service.QuestionAnswerService
                                ColumnName = x.ColumnName,
                                TranslateText = x.TranslateText,
                            }).ToList(),
-                           Answers = x.Answers
+                    Answers = x.Answers
                                   .Select(n => new AnswerResponseModel
                                   {
                                       AnswerText = n.AnswerText,
@@ -278,7 +279,7 @@ namespace TestEducation.Service.QuestionAnswerService
             memoryStream1.Position = 0; // Streamni boshiga qaytarish, chunki undan o'qish mumkin bo'lishi uchun
             return memoryStream1;
         }
-        public async Task<PaginationResult<QuestionAnswerResponseModel>> CreateQuestionAnswerPage(PageOption model,string lang)
+        public async Task<PaginationResult<QuestionAnswerResponseModel>> CreateQuestionAnswerPage(PageOption model, string lang)
         {
             Language QuestionLanguage = Language.uz;
 

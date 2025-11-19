@@ -64,13 +64,10 @@ namespace TestEducation.Service.UserService
             _appDbContext.Users.Add(user);
             await _appDbContext.SaveChangesAsync();
 
-
-
             var studentRole = await _appDbContext.Roles.FirstOrDefaultAsync(r => r.Name == "Student");
             if (studentRole != null)
             {
                 var userRole = new UserRole
-
                 {
                     UserId = user.Id,
                     RoleId = studentRole.Id
@@ -240,7 +237,7 @@ namespace TestEducation.Service.UserService
                 throw new BadRequestException("Email or Password not correct");
             }
 
-            if (user.ExpiredAt < DateTime.UtcNow)
+            if (user.ExpiredAt == null || user.ExpiredAt < DateTime.UtcNow)
             {
                 user.Count = 0;
                 user.ExpiredAt = null;
@@ -312,6 +309,7 @@ namespace TestEducation.Service.UserService
 
         public async Task<UpdateUserPasswordResponseModel> ResetPassword(UpdateUserPassword password, int Id)
         {
+
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == Id);
 
             if (_verifyPassword.Verify(password.OldPassword, user.Salt, user.Password))

@@ -10,22 +10,22 @@ namespace TestEducation.DataAcces.Persistence.Configurations
         {
             builder.HasIndex(x => x.Email).IsUnique();
 
-            //builder.HasData(
-            //    new User
-            //    {
-            //        Id = 1,
-            //        FullName = "Sherzod",
-            //        Email = "mehmovovsherzod@gmail.com",
-            //        PhoneNumber = "+998901537776",
-            //        Password = "",
-            //        Salt = "",
-            //        IsActive = true,
-            //        CreatedAt = DateTime.UtcNow,
-            //        IsVerified = false,
-            //        Count = 0,
-            //        ExpiredAt = default,
-            //    }
-            //);
+            builder.HasData(
+                new User
+                {
+                    Id = 1,
+                    FullName = "Sherzod",
+                    Email = "mehmovovsherzod@gmail.com",
+                    PhoneNumber = "+998901537776",
+                    Password = "XeASJOgK7h7Lk0XkPOlOq0LfqTu9bA93NrmMHnm3/mY=",
+                    Salt = "8a68becd-d900-4835-b809-d728ac097656",
+                    IsActive = true,
+                    CreatedAt = new DateTime(2025, 11, 14, 14, 31, 0, DateTimeKind.Utc),
+                    IsVerified = false,
+                    Count = 0,
+                    ExpiredAt = null,
+                }
+            );
 
         }
 

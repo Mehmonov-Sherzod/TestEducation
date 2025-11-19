@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Subject;
-using TestEducation.Domain.Enums;
-using TestEducation.Filter;
 using TestEducation.Service.SubjectService;
 
 namespace TestEducation.Controllers
@@ -36,7 +33,7 @@ namespace TestEducation.Controllers
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdSubject(
-            [FromRoute] int id, 
+            [FromRoute] int id,
             [FromHeader] string lang)
         {
             var result = await _IsubjectServise.GetByIdSubject(id, lang);
@@ -47,7 +44,7 @@ namespace TestEducation.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSubject(int Id, UpdateSubjectModel subjectDTO)
         {
-            var result = await _IsubjectServise.UpdateSubject(Id , subjectDTO);
+            var result = await _IsubjectServise.UpdateSubject(Id, subjectDTO);
 
             return Ok(ApiResult<UpdateSubjectResponseModel>.Success(result));
         }
@@ -63,7 +60,7 @@ namespace TestEducation.Controllers
         [HttpPost("get-all-page")]
         public async Task<IActionResult> GetAllPage(PageOption model, string lang)
         {
-            var result = await _IsubjectServise.CreateSubjectPage(model, lang);     
+            var result = await _IsubjectServise.CreateSubjectPage(model, lang);
 
             return Ok(ApiResult<PaginationResult<SubjectResponsModel>>.Success(result));
         }

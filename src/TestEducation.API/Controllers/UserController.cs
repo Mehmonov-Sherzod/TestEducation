@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.UserEmail;
 using TestEducation.Aplication.Models.Users;
-using TestEducation.Domain.Enums;
-using TestEducation.Filter;
 using TestEducation.Service.UserService;
 
 namespace TestEducation.API.Controllers

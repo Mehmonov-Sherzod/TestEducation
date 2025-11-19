@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Localization;
+﻿using FluentValidation.AspNetCore;
 using Telegram.Bot;
 using TestEducation.API;
 using TestEducation.API.Filter;
@@ -10,13 +7,7 @@ using TestEducation.Aplication;
 using TestEducation.Aplication.Common;
 using TestEducation.Aplication.Helpers.GenerateJwt;
 using TestEducation.Aplication.Helpers.SeedData;
-using TestEducation.Aplication.Models.Question;
-using TestEducation.Aplication.Models.Subject;
-using TestEducation.Aplication.Models.Users;
 using TestEducation.Aplication.Service.Impl;
-using TestEducation.Aplication.Validators.QuestionValidator;
-using TestEducation.Aplication.Validators.SubjectValidator;
-using TestEducation.Aplication.Validators.UserValidatoe;
 using TestEducation.DataAcces;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +18,7 @@ builder.Services.AddSingleton<ITelegramBotClient>(sp =>
     var token = builder.Configuration["TelegramBot:Token"];
     return new TelegramBotClient(token);
 });
+var passwordHelper = new PasswordHelper();
 
 builder.Services.AddHostedService<TelegramServiceOtp>();
 
@@ -66,16 +58,18 @@ app.UseCors(corsPolicyBuilder =>
         .AllowAnyHeader()
 );
 
+
+if (app.Environment.IsDevelopment())
+{
+    app.ApplyMigrations();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<RolePermissionSeeder>();
     context.SeedMapping();
-}
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

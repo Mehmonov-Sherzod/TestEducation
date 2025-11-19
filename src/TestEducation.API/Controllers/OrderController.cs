@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
-using TestEducation.Aplication.Models.Users;
 using TestEducation.Aplication.Service;
 
 namespace TestEducation.API.Controllers
@@ -9,7 +8,7 @@ namespace TestEducation.API.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly IRabbitMQproducer  _producer;
+        private readonly IRabbitMQproducer _producer;
         private readonly ILogger<OrderController> _logger;
 
         public OrderController(IRabbitMQproducer producer, ILogger<OrderController> logger)
@@ -19,7 +18,7 @@ namespace TestEducation.API.Controllers
         }
 
         [HttpPost("send")]
-        public IActionResult Send([FromBody] OrderCreatedDto createdDto )
+        public IActionResult Send([FromBody] OrderCreatedDto createdDto)
         {
             try
             {
