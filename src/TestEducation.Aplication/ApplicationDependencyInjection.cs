@@ -46,13 +46,16 @@ namespace TestEducation.Aplication
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IOtpService, OtpService>();
+            services.AddScoped<IClaimService, ClaimService>();
+            services.AddHttpContextAccessor();
 
             // services.AddHostedService<RabbitMQConsumer>();
 
             services.AddSingleton<IMinioClient>(sp =>
             {
                 var minioSettings = sp.GetRequiredService<IOptions<MinioSettings>>().Value;
-
+                Console.WriteLine(minioSettings.AccessKey);
+                Console.WriteLine(minioSettings.SecretKey);
                 // MinioClient obyektini yaratish
                 var client = new MinioClient()
                     .WithEndpoint(minioSettings.Endpoint)

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
+using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
-using Minio;
-using TestEducation.Service.FileStoreageService;
 using TestEducation.Aplication.Common;
+using TestEducation.Service.FileStoreageService;
 
 public class MinioFileStorageService : IFileStoreageService
 {
@@ -11,7 +11,9 @@ public class MinioFileStorageService : IFileStoreageService
     private readonly MinioSettings _minioSettings;
 
     // Dependency Injection orqali IMinioClient va MinioSettings ni qabul qiladi
-    public MinioFileStorageService(IMinioClient minioClient, IOptions<MinioSettings> minioSettings)
+    public MinioFileStorageService(
+        IMinioClient minioClient,
+        IOptions<MinioSettings> minioSettings)
     {
         _minioClient = minioClient;
         _minioSettings = minioSettings.Value;

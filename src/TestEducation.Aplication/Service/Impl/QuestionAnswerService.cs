@@ -31,20 +31,20 @@ namespace TestEducation.Service.QuestionAnswerService
         }
         public async Task<CreateQuestionAnswerResponseModel> CreateQuestionAnswer(CreateQuestionModel questionDTO)
         {
-            //string? urlImage = null;
+            string? urlImage = null;
 
-            //if (questionDTO.Image != null && questionDTO.Image.Length > 0)
-            //{
-            //    var extension = Path.GetExtension(questionDTO.Image.FileName);
-            //    var objectName = $"{Guid.NewGuid()}{extension}";
-            //    using var mystream = questionDTO.Image.OpenReadStream();
-            //    urlImage = await _fileStorageService.UploadFileAsync(
-            //        "questions-image",
-            //        objectName,
-            //        mystream,
-            //        questionDTO.Image.ContentType
-            //    );
-            //}
+            if (questionDTO.Image != null && questionDTO.Image.Length > 0)
+            {
+                var extension = Path.GetExtension(questionDTO.Image.FileName);
+                var objectName = $"{Guid.NewGuid()}{extension}";
+                using var mystream = questionDTO.Image.OpenReadStream();
+                urlImage = await _fileStorageService.UploadFileAsync(
+                    "questions-image",
+                    objectName,
+                    mystream,
+                    questionDTO.Image.ContentType
+                );
+            }
 
             var result = _validationRules.Validate(questionDTO);
 
@@ -52,6 +52,7 @@ namespace TestEducation.Service.QuestionAnswerService
             {
                 QuestionText = questionDTO.QuestionText,
                 SubjectId = questionDTO.SubjectId,
+                ImageUrl = urlImage,
                 Level = questionDTO.Level,
                 QuestionTranslations = questionDTO.Translate
                    .Select(x => new QuestionTranslation

@@ -9,7 +9,7 @@ namespace TestEducation.Aplication.Models.Question
     {
         public string QuestionText { get; set; }
         public int SubjectId { get; set; }
-        //public IFormFile? Image { get; set; }
+        public IFormFile? Image { get; set; }
         public QuestionLevel Level { get; set; }
 
         public List<CreateQuestionTranslateModel> Translate { get; set; }

@@ -20,9 +20,7 @@ namespace TestEducation.Service.UserService
         private readonly IOtpService _otpService;
         private readonly IEmailService _emailService;
         private readonly IStringLocalizer<UserService> _localizer;
-
-
-  
+        //private readonly IClaimService _claimService;
         public UserService(AppDbContext appDbContext,
             PasswordHelper passwordHelper,
             JwtService jwtService,
@@ -30,6 +28,7 @@ namespace TestEducation.Service.UserService
             IOtpService otpService,
             IEmailService emailService,
             IStringLocalizer<UserService> localizer)
+            //IClaimService claimService)
         {
             _appDbContext = appDbContext;
             this.passwordHelper = passwordHelper;
@@ -38,7 +37,9 @@ namespace TestEducation.Service.UserService
             _otpService = otpService;
             _emailService = emailService;
             _localizer = localizer;
+            //_claimService = claimService;
         }
+
         public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
         {
             var users = await _appDbContext.Users.AnyAsync(x => x.Email == userDTO.Email);
@@ -309,6 +310,7 @@ namespace TestEducation.Service.UserService
 
         public async Task<UpdateUserPasswordResponseModel> ResetPassword(UpdateUserPassword password, int Id)
         {
+            //var UserId = _claimService.ClaimGetUserId();
 
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == Id);
 

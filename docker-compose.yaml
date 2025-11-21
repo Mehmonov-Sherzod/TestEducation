@@ -1,17 +1,15 @@
 services:
   # Application
   testeducation_api:
-    image: testeducation_api:dev
+    image: testeducation_api
     container_name: testeducation_api
     build:
-      context: .
-      dockerfile: src/TestEducation.API/Dockerfile     
+      context: ./src/TestEducation.API
+      dockerfile: Dockerfile        
     ports:
-      - "8080"
-      - "8081"
+      - "5050:5050"
     depends_on:
       - testeducation_database
-      - testeducation_minio    
     networks:
       - testeducation_network
 
@@ -31,27 +29,9 @@ services:
       - testeducation_network
     restart: unless-stopped
 
-  # MinIO Object Storage
-  testeducation_minio:
-    image: minio/minio
-    container_name: testeducation_minio
-    environment:
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=minioadmin
-    command: server /data --console-address ":9001"
-    networks:
-      - testeducation_network
-    volumes:
-      - minio_data:/data
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-
 volumes:
   testeducation_database:
     name: testeducation_database
-  minio_data:
-    name: minio_data
     
 networks:
   testeducation_network:

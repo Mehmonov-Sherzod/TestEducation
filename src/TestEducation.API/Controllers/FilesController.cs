@@ -28,6 +28,7 @@ namespace TestEducation.Controllers
 
             using (var stream = file.OpenReadStream()) // Fayl streamini ochish
             {
+
                 var fileUrl = await _fileStoreageService.UploadFileAsync(bucketName, objectName, stream, file.ContentType);
                 return Ok(new { Message = "Fayl muvaffaqiyatli yuklandi.", FileUrl = fileUrl });
             }
