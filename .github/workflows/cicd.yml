@@ -1,0 +1,28 @@
+name: .NET 8 CI/CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore TestEducation.sln   
+
+      - name: Build project
+        run: dotnet build TestEducation.sln --configuration Release
+
+      - name: Publish project
+        run: dotnet publish TestEducation.sln -c Release -o ./publish
