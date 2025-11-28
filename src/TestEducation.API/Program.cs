@@ -51,6 +51,7 @@ var localizationOptions = new RequestLocalizationOptions()
 
 var app = builder.Build();
 
+
 app.UseRequestLocalization(localizationOptions);
 
 app.UseCors(corsPolicyBuilder =>
