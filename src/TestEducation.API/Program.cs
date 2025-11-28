@@ -47,7 +47,7 @@ var supportedCultures = new[] { "en-US", "uz-Latn-UZ", "ru-RU" };
 var localizationOptions = new RequestLocalizationOptions()
     .SetDefaultCulture("uz-Latn-UZ")
     .AddSupportedCultures(supportedCultures)
-    .AddSupportedUICultures(supportedCultures);
+    .AddSupportedUICultures(supportedCultures)
 
 var app = builder.Build();
 
