@@ -42,6 +42,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
+
 var supportedCultures = new[] { "en-US", "uz-Latn-UZ", "ru-RU" };
 var localizationOptions = new RequestLocalizationOptions()
     .SetDefaultCulture("uz-Latn-UZ")
