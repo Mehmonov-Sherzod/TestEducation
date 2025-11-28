@@ -42,7 +42,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/testeducation:latest .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/testeducation:latest ./docker
 
       - name: Push Docker image
         run: |
