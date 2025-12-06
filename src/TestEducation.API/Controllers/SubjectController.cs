@@ -23,7 +23,9 @@ namespace TestEducation.Controllers
             return Ok(ApiResult<CreateSubjectResponseModel>.Success(result));
         }
 
+        
         [HttpGet]
+        [ResponseCache(Duration = 40)]
         public async Task<IActionResult> GetAllSubject([FromHeader] string lang)
         {
             var result = await _IsubjectServise.GetaAllSubjects(lang);

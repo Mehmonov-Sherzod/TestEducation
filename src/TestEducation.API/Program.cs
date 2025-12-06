@@ -24,6 +24,9 @@ builder.Services.AddHostedService<TelegramServiceOtp>();
 
 builder.Services.AddControllers(config => config.Filters.Add(typeof(ValidateModelAttribute)));
 
+builder.Services.AddResponseCaching(); // Responce cashe
+builder.Services.AddOutputCache(); // OutputCach cashe
+
 builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.Configure<JwtOption>(builder.Configuration.GetSection("JwtOption"));
@@ -47,7 +50,7 @@ var supportedCultures = new[] { "en-US", "uz-Latn-UZ", "ru-RU" };
 var localizationOptions = new RequestLocalizationOptions()
     .SetDefaultCulture("uz-Latn-UZ")
     .AddSupportedCultures(supportedCultures)
-    .AddSupportedUICultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
 
 var app = builder.Build();
 
@@ -79,6 +82,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseResponseCaching(); // Responce cashe Middlware 
+app.UseOutputCache(); // OutputCache Middlware 
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

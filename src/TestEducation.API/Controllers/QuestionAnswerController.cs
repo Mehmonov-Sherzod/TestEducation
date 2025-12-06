@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Question;
 using TestEducation.Service.FileStoreageService;
@@ -27,6 +28,7 @@ namespace TestEducation.Controllers
         }
 
         [HttpGet]
+        [OutputCache(Duration = 60)]
         public async Task<IActionResult> GetAllQuestionAnswer(string lang)
         {
             var result = await _questionAnswerService.GetAllQuestionAnswer(lang);

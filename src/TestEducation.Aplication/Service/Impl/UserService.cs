@@ -44,8 +44,10 @@ namespace TestEducation.Service.UserService
         {
             var users = await _appDbContext.Users.AnyAsync(x => x.Email == userDTO.Email);
 
+            var error = _localizer["EmailExists"];
+
             if (users)
-                throw new BadRequestException(_localizer["EmailExists"]);
+                throw new BadRequestException(error);
 
 
             string salt = Guid.NewGuid().ToString();
@@ -136,6 +138,7 @@ namespace TestEducation.Service.UserService
             user.Email = userDTO.Email;
             user.PhoneNumber = userDTO.PhoneNumber;
 
+            _appDbContext.Update(user);
             await _appDbContext.SaveChangesAsync();
 
             return new UpdateUserResponseModel
