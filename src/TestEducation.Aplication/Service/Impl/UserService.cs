@@ -28,7 +28,7 @@ namespace TestEducation.Service.UserService
             IOtpService otpService,
             IEmailService emailService,
             IStringLocalizer<UserService> localizer)
-            //IClaimService claimService)
+        //IClaimService claimService)
         {
             _appDbContext = appDbContext;
             this.passwordHelper = passwordHelper;
@@ -208,9 +208,14 @@ namespace TestEducation.Service.UserService
                          .ThenInclude(a => a.Permission)
                            .FirstOrDefaultAsync(u => u.Email == loginUserModel.Email);
 
+
+            if (DateTime.UtcNow < user.ExpiredAt)
+            {
+                throw new NotFoundException($"Please try after {user.ExpiredAt}");
+            }
+
             if (user == null)
             {
-
                 throw new NotFoundException("Username or Email is incorrect");
             }
 
@@ -218,9 +223,8 @@ namespace TestEducation.Service.UserService
             {
                 user.Count++;
 
-                if (user.Count != 5)
+                if (user.Count <= 5)
                 {
-                    //_appDbContext.Update(user);
                     await _appDbContext.SaveChangesAsync();
                 }
 
@@ -248,10 +252,7 @@ namespace TestEducation.Service.UserService
                 _appDbContext.Update(user);
                 _appDbContext.SaveChangesAsync();
             }
-            else
-            {
-                throw new BadRequestException("Vaqt tugamadi");
-            }
+
 
             string token = _jwtService.GenerateToken(user);
 
