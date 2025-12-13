@@ -12,8 +12,8 @@ using TestEducation.Data;
 namespace TestEducation.DataAcces.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251114145952_HasDataUser1")]
-    partial class HasDataUser1
+    [Migration("20251212215623_SeddRoleUser")]
+    partial class SeddRoleUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -431,7 +431,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                             IsActive = true,
                             IsVerified = false,
                             Password = "XeASJOgK7h7Lk0XkPOlOq0LfqTu9bA93NrmMHnm3/mY=",
-                            PhoneNumber = "+998901537776",
+                            PhoneNumber = "+901537776",
                             Salt = "8a68becd-d900-4835-b809-d728ac097656"
                         });
                 });
@@ -513,6 +513,13 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserTestResult", b =>

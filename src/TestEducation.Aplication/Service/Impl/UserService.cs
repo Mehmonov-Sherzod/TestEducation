@@ -6,6 +6,7 @@ using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.UserEmail;
 using TestEducation.Aplication.Models.Users;
 using TestEducation.Aplication.Service;
+using TestEducation.Aplication.Service.Impl;
 using TestEducation.Data;
 using TestEducation.Models;
 
@@ -20,6 +21,7 @@ namespace TestEducation.Service.UserService
         private readonly IOtpService _otpService;
         private readonly IEmailService _emailService;
         private readonly IStringLocalizer<UserService> _localizer;
+        private readonly IClaimService _claimService;
         //private readonly IClaimService _claimService;
         public UserService(AppDbContext appDbContext,
             PasswordHelper passwordHelper,
@@ -27,8 +29,8 @@ namespace TestEducation.Service.UserService
             VerifyPassword verifyPassword,
             IOtpService otpService,
             IEmailService emailService,
-            IStringLocalizer<UserService> localizer)
-        //IClaimService claimService)
+            IStringLocalizer<UserService> localizer,
+            IClaimService claimService)
         {
             _appDbContext = appDbContext;
             this.passwordHelper = passwordHelper;
@@ -37,7 +39,7 @@ namespace TestEducation.Service.UserService
             _otpService = otpService;
             _emailService = emailService;
             _localizer = localizer;
-            //_claimService = claimService;
+            _claimService = claimService;
         }
 
         public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
@@ -91,12 +93,11 @@ namespace TestEducation.Service.UserService
             var users = await _appDbContext.Users
                 .Select(x => new UserResponseModel
                 {
+                    Id = x.Id,
                     FullName = x.FullName,
                     Email = x.Email,
                     Password = x.Password,
                     PhoneNumber = x.PhoneNumber,
-
-
                 })
                 .ToListAsync();
 
@@ -112,11 +113,11 @@ namespace TestEducation.Service.UserService
                      .Where(x => x.Id == id)
                      .Select(x => new UserResponseModel
                      {
+                         Id = x.Id,
                          FullName = x.FullName,
                          Email = x.Email,
                          Password = x.Password,
                          PhoneNumber = x.PhoneNumber,
-
                      })
                      .FirstOrDefaultAsync();
 
@@ -126,10 +127,35 @@ namespace TestEducation.Service.UserService
             return user;
         }
 
-        public async Task<UpdateUserResponseModel> UpdateUser(int id, UpdateUserModel userDTO)
+        public async Task<UserResponseModel> GetCurrentUser()
         {
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var currentUserId = int.Parse(_claimService.ClaimGetUserId()
+                             ?? throw new NotFoundException("Foydalanuvchi topilmadi"));
 
+            var user = await _appDbContext.Users
+                     .Where(x => x.Id == currentUserId)
+                     .Select(x => new UserResponseModel
+                     {
+                         Id = x.Id,
+                         FullName = x.FullName,
+                         Email = x.Email,
+                         Password = x.Password,
+                         PhoneNumber = x.PhoneNumber,
+                     })
+                     .FirstOrDefaultAsync();
+
+            if (user == null)
+                throw new NotFoundException("Foydalanuvchi topilmadi.");
+
+            return user;
+        }
+
+        public async Task<UpdateUserResponseModel> UpdateUser(UpdateUserModel userDTO)
+        {
+            var currentUserId = int.Parse(_claimService.ClaimGetUserId()
+                             ?? throw new NotFoundException("Foydalanuvchi topilmadi"));
+
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);
 
             if (user == null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
@@ -208,16 +234,16 @@ namespace TestEducation.Service.UserService
                          .ThenInclude(a => a.Permission)
                            .FirstOrDefaultAsync(u => u.Email == loginUserModel.Email);
 
+            if (user == null)
+            {
+                throw new NotFoundException("Username or Email is incorrect");
+            }
 
             if (DateTime.UtcNow < user.ExpiredAt)
             {
                 throw new NotFoundException($"Please try after {user.ExpiredAt}");
             }
 
-            if (user == null)
-            {
-                throw new NotFoundException("Username or Email is incorrect");
-            }
 
             if (!passwordHelper.Verify(loginUserModel.Password, user.Salt, user.Password))
             {
@@ -256,11 +282,25 @@ namespace TestEducation.Service.UserService
 
             string token = _jwtService.GenerateToken(user);
 
+            // Get user roles
+            var roles = user.UserRoles
+                .Select(ur => ur.Role.Name)
+                .ToList();
+
+            // Get user permissions
+            var permissions = user.UserRoles
+                .SelectMany(ur => ur.Role.RolePermissions)
+                .Select(rp => rp.Permission.Name)
+                .Distinct()
+                .ToList();
+
             return new LoginResponseModel
             {
                 Username = user.FullName,
                 Email = user.Email,
                 Token = token,
+                Roles = roles,
+                Permissions = permissions,
             };
         }
 
@@ -312,11 +352,12 @@ namespace TestEducation.Service.UserService
             };
         }
 
-        public async Task<UpdateUserPasswordResponseModel> ResetPassword(UpdateUserPassword password, int Id)
+        public async Task<UpdateUserPasswordResponseModel> ResetPassword(UpdateUserPassword password)
         {
-            //var UserId = _claimService.ClaimGetUserId();
+            var currentUserId = int.Parse(_claimService.ClaimGetUserId()
+                            ?? throw new NotFoundException("Foydalanuvchi topilmadi"));
 
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == Id);
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);
 
             if (_verifyPassword.Verify(password.OldPassword, user.Salt, user.Password))
             {
@@ -361,7 +402,10 @@ namespace TestEducation.Service.UserService
 
             var otp = await _otpService.GenerateAndSaveOtpAsync(user.Id);
 
-            _emailService.SendOtpAsync(user.Email, otp);
+            var emailSent = await _emailService.SendOtpAsync(user.Email, otp);
+
+            if (!emailSent)
+                throw new BadRequestException("Email yuborishda xatolik yuz berdi. Iltimos qaytadan urinib ko'ring.");
 
             return true;
         }

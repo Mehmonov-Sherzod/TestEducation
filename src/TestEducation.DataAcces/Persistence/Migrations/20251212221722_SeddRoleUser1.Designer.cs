@@ -12,8 +12,8 @@ using TestEducation.Data;
 namespace TestEducation.DataAcces.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251102123938_UserOtp")]
-    partial class UserOtp
+    [Migration("20251212221722_SeddRoleUser1")]
+    partial class SeddRoleUser1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,35 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.AnswerTranslate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AnswerId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ColumnName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TranslateText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnswerId");
+
+                    b.ToTable("AnswerTranslate");
+                });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.Order", b =>
                 {
@@ -43,6 +72,64 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.QuestionTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ColumnName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TranslateText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("questionTranslations");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.SubjectTranslate", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("ColumnName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Language")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TranslateText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("subjectTranslates");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.Test", b =>
@@ -67,7 +154,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Test");
+                    b.ToTable("tests");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.UserOTPs", b =>
@@ -91,14 +178,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("UserOTPsId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserOTPsId");
 
                     b.ToTable("userOTPs");
                 });
@@ -129,7 +211,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserTest");
+                    b.ToTable("userTests");
                 });
 
             modelBuilder.Entity("TestEducation.Models.Answer", b =>
@@ -237,7 +319,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         new
                         {
                             Id = 2,
-                            Description = "faqat student va creatordi boshqaradigan admin rol",
+                            Description = "faqat student ustidan barcha ishlat test , subject , question yaratishlar",
                             Name = "Admin"
                         },
                         new
@@ -245,12 +327,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                             Id = 3,
                             Description = "Test yechish va natija ko‘rish",
                             Name = "Student"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Test yaratish va tahrirlash",
-                            Name = "Creator"
                         });
                 });
 
@@ -297,12 +373,18 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Count")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("ExpiredAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -311,7 +393,14 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -324,6 +413,21 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Count = 0,
+                            CreatedAt = new DateTime(2025, 11, 14, 14, 31, 0, 0, DateTimeKind.Utc),
+                            Email = "mehmovovsherzod@gmail.com",
+                            FullName = "Sherzod",
+                            IsActive = true,
+                            IsVerified = false,
+                            Password = "XeASJOgK7h7Lk0XkPOlOq0LfqTu9bA93NrmMHnm3/mY=",
+                            PhoneNumber = "+901537776",
+                            Salt = "8a68becd-d900-4835-b809-d728ac097656"
+                        });
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserQuestion", b =>
@@ -403,6 +507,13 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserTestResult", b =>
@@ -449,6 +560,39 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.ToTable("UserTestResult");
                 });
 
+            modelBuilder.Entity("TestEducation.Domain.Entities.AnswerTranslate", b =>
+                {
+                    b.HasOne("TestEducation.Models.Answer", "answer")
+                        .WithMany("answerTranslates")
+                        .HasForeignKey("AnswerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("answer");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.QuestionTranslation", b =>
+                {
+                    b.HasOne("TestEducation.Models.Question", "Question")
+                        .WithMany("QuestionTranslations")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.SubjectTranslate", b =>
+                {
+                    b.HasOne("TestEducation.Models.Subject", "Subject")
+                        .WithMany("SubjectTranslates")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
+                });
+
             modelBuilder.Entity("TestEducation.Domain.Entities.Test", b =>
                 {
                     b.HasOne("TestEducation.Models.Subject", "Subject")
@@ -467,10 +611,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("TestEducation.Domain.Entities.UserOTPs", null)
-                        .WithMany("OtpCodes")
-                        .HasForeignKey("UserOTPsId");
 
                     b.Navigation("User");
                 });
@@ -603,7 +743,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
             modelBuilder.Entity("TestEducation.Models.UserTestResult", b =>
                 {
                     b.HasOne("TestEducation.Models.Subject", "Subject")
-                        .WithMany("userTestResult")
+                        .WithMany("UserTestResult")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -624,11 +764,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Navigation("UserTests");
                 });
 
-            modelBuilder.Entity("TestEducation.Domain.Entities.UserOTPs", b =>
-                {
-                    b.Navigation("OtpCodes");
-                });
-
             modelBuilder.Entity("TestEducation.Domain.Entities.UserTest", b =>
                 {
                     b.Navigation("UserQuestions");
@@ -637,6 +772,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
             modelBuilder.Entity("TestEducation.Models.Answer", b =>
                 {
                     b.Navigation("UserAnswers");
+
+                    b.Navigation("answerTranslates");
                 });
 
             modelBuilder.Entity("TestEducation.Models.Permission", b =>
@@ -647,6 +784,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
             modelBuilder.Entity("TestEducation.Models.Question", b =>
                 {
                     b.Navigation("Answers");
+
+                    b.Navigation("QuestionTranslations");
 
                     b.Navigation("UserQuestions");
                 });
@@ -662,9 +801,11 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 {
                     b.Navigation("Questions");
 
+                    b.Navigation("SubjectTranslates");
+
                     b.Navigation("Tests");
 
-                    b.Navigation("userTestResult");
+                    b.Navigation("UserTestResult");
                 });
 
             modelBuilder.Entity("TestEducation.Models.User", b =>

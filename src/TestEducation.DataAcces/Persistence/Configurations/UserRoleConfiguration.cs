@@ -8,9 +8,9 @@ namespace TestEducation.DataAcces.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<UserRole> builder)
         {
-            //builder.HasData(
-            //    new UserRole { UserId = 1, RoleId = 1 }
-            //    );
+            builder.HasData(
+                new UserRole { UserId = 1, RoleId = 1 }
+                );
         }
     }
 }

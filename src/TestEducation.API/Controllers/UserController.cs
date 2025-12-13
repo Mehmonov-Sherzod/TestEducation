@@ -2,6 +2,8 @@
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.UserEmail;
 using TestEducation.Aplication.Models.Users;
+using TestEducation.Domain.Enums;
+using TestEducation.Filter;
 using TestEducation.Service.UserService;
 
 namespace TestEducation.API.Controllers
@@ -16,6 +18,7 @@ namespace TestEducation.API.Controllers
             _userService = userService;
         }
 
+        [RequirePermission(PermissionEnum.ManageAdmins)]
         [HttpPost("Create")]
         public async Task<IActionResult> CreateAdmin(CreateUserByAdminModel createUserByAdminModel)
         {
@@ -24,6 +27,7 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<CreateAdminResponseModel>.Success(result));
         }
 
+        [RequirePermission(PermissionEnum.ManageUsers , PermissionEnum.ManageUsersStudent)]
         [HttpGet("User-GetAll")]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -32,6 +36,8 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<List<UserResponseModel>>.Success(result));
         }
 
+
+        [RequirePermission(PermissionEnum.ManageUsersStudent)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdUser(int id)
         {
@@ -40,16 +46,24 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<UserResponseModel>.Success(result));
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UpdateUserModel userDTO)
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
         {
-            var result = await _userService.UpdateUser(id, userDTO);
+            var result = await _userService.GetCurrentUser();
+
+            return Ok(ApiResult<UserResponseModel>.Success(result));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(UpdateUserModel userDTO)
+        {
+            var result = await _userService.UpdateUser(userDTO);
 
             return Ok(ApiResult<UpdateUserResponseModel>.Success(result));
 
         }
 
-        //[Authorize(Roles = "Admin,SuperAdmin")]
+        [RequirePermission(PermissionEnum.ManageAdmins , PermissionEnum.ManageUsersStudent)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -58,6 +72,7 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<string>.Success(result));
         }
 
+        [RequirePermission(PermissionEnum.ManageAdmins , PermissionEnum.ManageUsersStudent)]
         [HttpPost("get-all-page")]
         public async Task<IActionResult> CreateUserPage(PageOption model)
         {
@@ -66,6 +81,7 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<PaginationResult<CreateUserModel>>.Success(result));
         }
 
+        [RequirePermission(PermissionEnum.ManageAdmins)]
         [HttpGet("{id}-Get-ById-Permission-User")]
         public async Task<IActionResult> GetUserPermission(int id)
         {
@@ -74,10 +90,9 @@ namespace TestEducation.API.Controllers
         }
 
         [HttpPut("{id}-Update-password")]
-
         public async Task<IActionResult> ResetPassword(UpdateUserPassword updateUserPassword, int id)
         {
-            var result = await _userService.ResetPassword(updateUserPassword, id);
+            var result = await _userService.ResetPassword(updateUserPassword);
 
             return Ok(ApiResult<UpdateUserPasswordResponseModel>.Success(result));
         }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Subject;
+using TestEducation.Domain.Enums;
+using TestEducation.Filter;
 using TestEducation.Service.SubjectService;
 
 namespace TestEducation.Controllers
@@ -15,22 +17,13 @@ namespace TestEducation.Controllers
             _IsubjectServise = IsubjectServise;
         }
 
+        [RequirePermission(PermissionEnum.ManageSubjects)]
         [HttpPost]
         public async Task<IActionResult> CreateSubject(CreateSubjectModel subjectDTO)
         {
             var result = await _IsubjectServise.CreateSubject(subjectDTO);
 
             return Ok(ApiResult<CreateSubjectResponseModel>.Success(result));
-        }
-
-        
-        [HttpGet]
-        [ResponseCache(Duration = 40)]
-        public async Task<IActionResult> GetAllSubject([FromHeader] string lang)
-        {
-            var result = await _IsubjectServise.GetaAllSubjects(lang);
-
-            return Ok(ApiResult<List<SubjectResponsModel>>.Success(result));
         }
 
         [HttpGet("{id}")]
@@ -43,6 +36,7 @@ namespace TestEducation.Controllers
             return Ok(ApiResult<SubjectResponsModel>.Success(result));
         }
 
+        [RequirePermission(PermissionEnum.ManageSubjects)]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSubject(int Id, UpdateSubjectModel subjectDTO)
         {
@@ -51,10 +45,11 @@ namespace TestEducation.Controllers
             return Ok(ApiResult<UpdateSubjectResponseModel>.Success(result));
         }
 
+        [RequirePermission(PermissionEnum.ManageSubjects)]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSubject(int Id)
+        public async Task<IActionResult> DeleteSubject(int id)
         {
-            var result = await _IsubjectServise.DeleteSubject(Id);
+            var result = await _IsubjectServise.DeleteSubject(id);
 
             return Ok(ApiResult<string>.Success(result));
         }
@@ -65,6 +60,14 @@ namespace TestEducation.Controllers
             var result = await _IsubjectServise.CreateSubjectPage(model, lang);
 
             return Ok(ApiResult<PaginationResult<SubjectResponsModel>>.Success(result));
+        }
+
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAll([FromHeader] string lang)
+        {
+            var result = await _IsubjectServise.GetAllSubjects(lang);
+
+            return Ok(ApiResult<List<SubjectResponsModel>>.Success(result));
         }
     }
 }

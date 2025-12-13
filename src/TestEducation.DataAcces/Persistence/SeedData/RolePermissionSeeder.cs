@@ -68,10 +68,14 @@ namespace TestEducation.Aplication.Helpers.SeedData
                     var allPermissions = _appDbContext.Permissions.ToList();
                     foreach (var permission in allPermissions)
                     {
-                        if (permission.Name == "ViewResult" ||
+                        if (permission.Name == "ManageUsersStudent" ||
+                            permission.Name == "ManageTests" ||
+                            permission.Name == "ManageSubjects" ||
+                            permission.Name == "ManageQuestions" ||
+                            permission.Name == "ViewResults" ||
                             permission.Name == "TakeTest" ||
-                            permission.Name == "ViewTests" ||
-                            permission.Name == "ViewSubjects"
+                            permission.Name == "ViewOwnResults" ||
+                            permission.Name == "ViewAvailableTests"
                             )
                         {
                             RolePermission rolePermission = new RolePermission

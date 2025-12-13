@@ -2,17 +2,21 @@
 {
     public enum  PermissionEnum
     {
-        // Admin huquqlari
-        ManageSubjects,
-        ManageTests,
-        ManageQuestions,
-        ManageAnswerOptions,
-        ManageStudents,
+        // SuperAdmin permissions
+        ManageUsers,
+        ManageAdmins,
+        SystemSettings,
 
-        // Student huquqlari
-        ViewSubjects,
-        ViewTests,
+        // Admin permissions
+        ManageUsersStudent,
+        ManageTests,
+        ManageSubjects,
+        ManageQuestions,
+        ViewResults,
+
+        // Student permissions
         TakeTest,
-        ViewResult
+        ViewOwnResults,
+        ViewAvailableTests
     }
 }

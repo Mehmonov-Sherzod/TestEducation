@@ -316,7 +316,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         new
                         {
                             Id = 2,
-                            Description = "faqat student va creatordi boshqaradigan admin rol",
+                            Description = "faqat student ustidan barcha ishlat test , subject , question yaratishlar",
                             Name = "Admin"
                         },
                         new
@@ -324,12 +324,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                             Id = 3,
                             Description = "Test yechish va natija ko‘rish",
                             Name = "Student"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Test yaratish va tahrirlash",
-                            Name = "Creator"
                         });
                 });
 
@@ -428,7 +422,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                             IsActive = true,
                             IsVerified = false,
                             Password = "XeASJOgK7h7Lk0XkPOlOq0LfqTu9bA93NrmMHnm3/mY=",
-                            PhoneNumber = "+998901537776",
+                            PhoneNumber = "+901537776",
                             Salt = "8a68becd-d900-4835-b809-d728ac097656"
                         });
                 });
@@ -510,6 +504,13 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserTestResult", b =>

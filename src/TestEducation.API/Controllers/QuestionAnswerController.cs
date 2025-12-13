@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.OutputCaching;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Question;
+using TestEducation.Domain.Enums;
+using TestEducation.Filter;
 using TestEducation.Service.FileStoreageService;
 using TestEducation.Service.QuestionAnswerService;
 
@@ -19,6 +21,7 @@ namespace TestEducation.Controllers
             _fileStoreageService = fileStorageService;
         }
 
+        [RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpPost]
         public async Task<IActionResult> CreateQuestionAnswer(CreateQuestionModel questionDTO)
         {
@@ -27,6 +30,7 @@ namespace TestEducation.Controllers
             return Ok(ApiResult<CreateQuestionAnswerResponseModel>.Success(result));
         }
 
+        [RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpGet]
         [OutputCache(Duration = 60)]
         public async Task<IActionResult> GetAllQuestionAnswer(string lang)
@@ -36,6 +40,7 @@ namespace TestEducation.Controllers
             return Ok(ApiResult<List<QuestionAnswerResponseModel>>.Success(result));
         }
 
+        [RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdQuestionAnswer(int id, string lang)
         {
@@ -44,6 +49,7 @@ namespace TestEducation.Controllers
             return Ok(ApiResult<QuestionAnswerResponseModel>.Success(result));
         }
 
+        [RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateQuestionAnswer(int id, UpdateQuestionAnswerModel questionUpdateDTO)
         {
@@ -52,6 +58,7 @@ namespace TestEducation.Controllers
             return Ok(ApiResult<UpdateQuestionAnswerResponseModel>.Success(result));
         }
 
+        [RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuestionAnswer(int id)
         {
@@ -86,6 +93,7 @@ namespace TestEducation.Controllers
             }
         }
 
+        [RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpPost("get-all-page")]
         public async Task<IActionResult> GetAllQuestionAnswerPage(PageOption model, string lang)
         {

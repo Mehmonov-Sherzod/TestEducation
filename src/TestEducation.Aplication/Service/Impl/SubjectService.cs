@@ -23,7 +23,7 @@ namespace TestEducation.Service.SubjectService
             var subject = await _appDbContext.Subjects.AnyAsync(x => x.Name == subjectDTO.Name);
 
             if (subject)
-                throw new BadRequestException("bunday kitob mavjud");
+                throw new BadRequestException("Bunday nomli subject allaqachon mavjud");
 
             var result = new Subject
             {
@@ -37,8 +37,15 @@ namespace TestEducation.Service.SubjectService
                 }).ToList()
             };
 
-            _appDbContext.Subjects.Add(result);
-            await _appDbContext.SaveChangesAsync();
+            try
+            {
+                await _appDbContext.Subjects.AddAsync(result);
+                await _appDbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new BadRequestException("Subject yaratishda xatolik yuz berdi. Subject nomi takrorlanishi mumkin.");
+            }
 
             return new CreateSubjectResponseModel
             {
@@ -46,42 +53,13 @@ namespace TestEducation.Service.SubjectService
             };
 
         }
-
-        public async Task<List<SubjectResponsModel>> GetaAllSubjects(string lang)
-        {
-            Language userLanguage = Language.uz;
-
-            if (lang == "uz")
-                userLanguage = Language.uz;
-            else if (lang == "ru")
-                userLanguage = Language.rus;
-            else if (lang == "eng")
-                userLanguage = Language.eng;
-
-                var subjects = await _appDbContext.Subjects
-                    .Select(s => new SubjectResponsModel
-                    {
-                        SubjectName = s.Name,
-                        Translates = s.SubjectTranslates
-                            .Where(t => t.Language == userLanguage)
-                            .Select(x => new SubjectTranslateResponseModel
-                            {
-                                ColumnName = x.ColumnName,
-                                TranslateText = x.TranslateText,
-                            })
-                            .ToList()
-                    })
-                    .ToListAsync();
-
-            return subjects;
-        }
         public async Task<SubjectResponsModel> GetByIdSubject(int id , string lang)
         {
             Language userLanguage = Language.uz;
 
             if (lang == "uz")
                 userLanguage = Language.uz;
-            else if (lang == "ru")
+            else if (lang == "ru" || lang == "rus")
                 userLanguage = Language.rus;
             else if (lang == "eng")
                 userLanguage = Language.eng;
@@ -90,6 +68,7 @@ namespace TestEducation.Service.SubjectService
                 .Where(x => x.Id == id)
                 .Select(x => new SubjectResponsModel
                 {
+                    Id = x.Id,
                     SubjectName = x.Name,
                     Translates = x.SubjectTranslates
                    .Where(t => t.Language == userLanguage)
@@ -117,46 +96,21 @@ namespace TestEducation.Service.SubjectService
 
             subject.Name = subjectDTO.SubjectNmae;
 
-            HashSet<int> mySet = new HashSet<int>();
+            // Remove all existing translations
+            subject.SubjectTranslates.Clear();
 
-
-            for (int j = 0; j < subjectDTO.UpdateSubjectTranslateModels.Count(); j++)
+            // Add new translations
+            foreach (var translateModel in subjectDTO.UpdateSubjectTranslateModels)
             {
-                mySet.Add(subjectDTO.UpdateSubjectTranslateModels[j].Id);
-
-                if (subjectDTO.UpdateSubjectTranslateModels[j].Id == 0)
+                subject.SubjectTranslates.Add(new SubjectTranslate
                 {
-                    SubjectTranslate NewsubjectTranslate = new SubjectTranslate
-                    {
-                        ColumnName = subjectDTO.UpdateSubjectTranslateModels[j].ColumnName,
-                        TranslateText = subjectDTO.UpdateSubjectTranslateModels[j].TranslateText,
-                    };
-
-                    subject.SubjectTranslates.Add(NewsubjectTranslate);
-                }
-                else
-                {
-                    for(int i = 0; i < subject.SubjectTranslates.Count(); i++)
-                    {
-                        if (subject.SubjectTranslates[i].id == subjectDTO.UpdateSubjectTranslateModels[j].Id)
-                        {
-                            subject.SubjectTranslates[i].ColumnName = subjectDTO.UpdateSubjectTranslateModels[j].ColumnName;
-                            subject.SubjectTranslates[i].TranslateText = subjectDTO.UpdateSubjectTranslateModels[j].TranslateText;
-                        }
-                    }
-                }
+                    Language = translateModel.LanguageId,
+                    ColumnName = translateModel.ColumnName,
+                    TranslateText = translateModel.TranslateText,
+                });
             }
 
-            for(int i = 0; i < subject.SubjectTranslates.Count(); i++)
-            {
-                if (!mySet.Contains(subject.SubjectTranslates[i].id))
-                {
-                    subject.SubjectTranslates.Remove(subject.SubjectTranslates[i]);
-                    i--;
-                }
-            }
-
-            _appDbContext.Subjects.Add(subject);
+            _appDbContext.Subjects.Update(subject);
             await _appDbContext.SaveChangesAsync();
 
             return new UpdateSubjectResponseModel
@@ -189,14 +143,15 @@ namespace TestEducation.Service.SubjectService
 
             if (lang == "uz")
                 userLanguage = Language.uz;
-            else if (lang == "ru")
+            else if (lang == "ru" || lang == "rus")
                 userLanguage = Language.rus;
             else if (lang == "eng")
                 userLanguage = Language.eng;
 
             if (!string.IsNullOrEmpty(model.Search))
             {
-                query = query.Where(s => s.Name.Contains(model.Search));
+                query = query.Where(s => s.Name.Contains(model.Search) ||
+                    s.SubjectTranslates.Any(t => t.TranslateText.Contains(model.Search)));
             }
             Console.WriteLine(query.ToQueryString());
             List<SubjectResponsModel> subjects = await query
@@ -204,7 +159,12 @@ namespace TestEducation.Service.SubjectService
                 .Take(model.PageSize)
                 .Select(s => new SubjectResponsModel
                 {
-                    SubjectName = s.Name,
+                    Id = s.Id,
+                    // Tanlangan tildagi SubjectName'ni olish
+                    SubjectName = s.SubjectTranslates
+                        .Where(t => t.Language == userLanguage && t.ColumnName == "SubjectName")
+                        .Select(t => t.TranslateText)
+                        .FirstOrDefault() ?? s.Name,
                     Translates = s.SubjectTranslates
                    .Where(t => t.Language == userLanguage)
                    .Select(s => new SubjectTranslateResponseModel
@@ -223,6 +183,37 @@ namespace TestEducation.Service.SubjectService
                 PageNumber = model.PageNumber,
                 TotalCount = total
             };
+        }
+
+        public async Task<List<SubjectResponsModel>> GetAllSubjects(string lang)
+        {
+            Language userLanguage = Language.uz;
+
+            if (lang == "uz")
+                userLanguage = Language.uz;
+            else if (lang == "ru" || lang == "rus")
+                userLanguage = Language.rus;
+            else if (lang == "eng")
+                userLanguage = Language.eng;
+
+            var subjects = await _appDbContext.Subjects
+                .Select(s => new SubjectResponsModel
+                {
+                    Id = s.Id,
+                    SubjectName = s.SubjectTranslates
+                        .Where(t => t.Language == userLanguage && t.ColumnName == "SubjectName")
+                        .Select(t => t.TranslateText)
+                        .FirstOrDefault() ?? s.Name,
+                    Translates = s.SubjectTranslates
+                       .Where(t => t.Language == userLanguage)
+                       .Select(st => new SubjectTranslateResponseModel
+                        {
+                            ColumnName = st.ColumnName,
+                            TranslateText = st.TranslateText,
+                        }).ToList()
+                }).ToListAsync();
+
+            return subjects;
         }
     }
 }
