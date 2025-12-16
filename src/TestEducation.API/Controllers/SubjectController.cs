@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Subject;
 using TestEducation.Domain.Enums;
@@ -54,6 +55,7 @@ namespace TestEducation.Controllers
             return Ok(ApiResult<string>.Success(result));
         }
 
+        [Authorize]
         [HttpPost("get-all-page")]
         public async Task<IActionResult> GetAllPage(PageOption model, string lang)
         {

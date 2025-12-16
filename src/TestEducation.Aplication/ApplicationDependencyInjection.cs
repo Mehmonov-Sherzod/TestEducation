@@ -27,18 +27,17 @@ namespace TestEducation.Aplication
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
-            services.AddServices();
             services.AddValidators();
+            services.AddServices(configuration);
             return services;
         }
-        private static void AddServices(this IServiceCollection services)
+        private static void AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<JwtService>();
             services.AddScoped<AppDbContext>();
             services.AddScoped<ISubjectServise, SubjectService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IQuestionAnswerService, QuestionAnswerService>();
-            services.AddScoped<IFileStoreageService, MinioFileStorageService>();
             services.AddScoped<PasswordHelper>();
             services.AddScoped<VerifyPassword>();
             services.AddSingleton<IRabbitMQproducer, RabbitMQProducer>();
@@ -47,26 +46,34 @@ namespace TestEducation.Aplication
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IOtpService, OtpService>();
             services.AddScoped<IClaimService, ClaimService>();
+            services.AddScoped<ITopicService, TopicService>();
             services.AddHttpContextAccessor();
 
-            // services.AddHostedService<RabbitMQConsumer>();
 
+            var minioSettings = configuration.GetSection("MinioSettings").Get<MinioSettings>();
+
+            if (minioSettings == null)
+                throw new Exception("MinioSettings section is missing from configuration.");
+
+            // Register MinioSettings as singleton
+            services.AddSingleton(minioSettings);
+
+            services.AddScoped<IFileStoreageService, MinioFileStorageService>();
+
+
+            // Register MinioClient
             services.AddSingleton<IMinioClient>(sp =>
             {
-                var minioSettings = sp.GetRequiredService<IOptions<MinioSettings>>().Value;
-                Console.WriteLine(minioSettings.AccessKey);
-                Console.WriteLine(minioSettings.SecretKey);
-                // MinioClient obyektini yaratish
                 var client = new MinioClient()
                     .WithEndpoint(minioSettings.Endpoint)
                     .WithCredentials(minioSettings.AccessKey, minioSettings.SecretKey);
 
-                // Agar SSL yoqilgan bo'lsa
                 if (minioSettings.UseSsl)
                 {
                     client = client.WithSSL();
                 }
-                return client.Build(); // MinioClient ni qurish
+
+                return client.Build();
             });
         }
 

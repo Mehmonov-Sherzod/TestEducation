@@ -40,7 +40,7 @@ namespace TestEducation.Aplication.Service.Impl
         public async Task<UserOTPs?> GetLatestOtpAsync(int userId, string code)
         {
             return await _context.userOTPs
-                .Where(o => o.UserId == userId && o.Code == code && o.ExpiredAt > DateTime.Now)
+                .Where(o => o.UserId == userId && o.Code == code && o.ExpiredAt > DateTime.UtcNow)
                 .OrderByDescending(o => o.CreatedAt)
                 .FirstOrDefaultAsync();
         }

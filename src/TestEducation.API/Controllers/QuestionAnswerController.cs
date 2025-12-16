@@ -31,16 +31,6 @@ namespace TestEducation.Controllers
         }
 
         [RequirePermission(PermissionEnum.ManageQuestions)]
-        [HttpGet]
-        [OutputCache(Duration = 60)]
-        public async Task<IActionResult> GetAllQuestionAnswer(string lang)
-        {
-            var result = await _questionAnswerService.GetAllQuestionAnswer(lang);
-
-            return Ok(ApiResult<List<QuestionAnswerResponseModel>>.Success(result));
-        }
-
-        [RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdQuestionAnswer(int id, string lang)
         {

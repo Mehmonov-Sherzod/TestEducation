@@ -8,7 +8,7 @@ namespace TestEducation.Aplication.Models.Question
     public class CreateQuestionModel
     {
         public string QuestionText { get; set; }
-        public int SubjectId { get; set; }
+        public int TopicId { get; set; }
         public IFormFile? Image { get; set; }
         public QuestionLevel Level { get; set; }
 

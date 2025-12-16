@@ -3,6 +3,9 @@ using TestEducation.Service.FileStoreageService;
 
 namespace TestEducation.Controllers
 {
+
+    [ApiController]
+    [Route("api/[controller]")]
     public class FilesController : ControllerBase
     {
         private readonly IFileStoreageService _fileStoreageService;

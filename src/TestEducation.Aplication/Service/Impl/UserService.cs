@@ -22,7 +22,6 @@ namespace TestEducation.Service.UserService
         private readonly IEmailService _emailService;
         private readonly IStringLocalizer<UserService> _localizer;
         private readonly IClaimService _claimService;
-        //private readonly IClaimService _claimService;
         public UserService(AppDbContext appDbContext,
             PasswordHelper passwordHelper,
             JwtService jwtService,
@@ -88,25 +87,6 @@ namespace TestEducation.Service.UserService
 
         }
 
-        public async Task<List<UserResponseModel>> GetAllUsers()
-        {
-            var users = await _appDbContext.Users
-                .Select(x => new UserResponseModel
-                {
-                    Id = x.Id,
-                    FullName = x.FullName,
-                    Email = x.Email,
-                    Password = x.Password,
-                    PhoneNumber = x.PhoneNumber,
-                })
-                .ToListAsync();
-
-            if (users == null)
-                throw new NotFoundException("Foydalanuvchilar topilmadi.");
-
-            return users;
-        }
-
         public async Task<UserResponseModel> GetByIdUser(int id)
         {
             var user = await _appDbContext.Users
@@ -155,6 +135,7 @@ namespace TestEducation.Service.UserService
             var currentUserId = int.Parse(_claimService.ClaimGetUserId()
                              ?? throw new NotFoundException("Foydalanuvchi topilmadi"));
 
+
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);
 
             if (user == null)
@@ -194,7 +175,7 @@ namespace TestEducation.Service.UserService
             return "Foydalanuvchi o‘chirildi.";
         }
 
-        public async Task<PaginationResult<CreateUserModel>> CreateUserPage(PageOption model)
+        public async Task<PaginationResult<UserResponseModel>> CreateUserPage(PageOption model)
         {
             var query = _appDbContext.Users.AsQueryable();
 
@@ -203,11 +184,12 @@ namespace TestEducation.Service.UserService
                 query = query.Where(s => s.FullName.Contains(model.Search));
             }
             Console.WriteLine(query.ToQueryString());
-            List<CreateUserModel> User = await query
+            List<UserResponseModel> User = await query
                 .Skip(model.PageSize * (model.PageNumber - 1))
                 .Take(model.PageSize)
-                .Select(x => new CreateUserModel
+                .Select(x => new UserResponseModel
                 {
+                    Id = x.Id,
                     FullName = x.FullName,
                     Email = x.Email,
                     Password = x.Password,
@@ -216,7 +198,7 @@ namespace TestEducation.Service.UserService
 
             int total = _appDbContext.Users.Count();
 
-            return new PaginationResult<CreateUserModel>
+            return new PaginationResult<UserResponseModel>
             {
                 Values = User,
                 PageSize = model.PageSize,
@@ -296,6 +278,7 @@ namespace TestEducation.Service.UserService
 
             return new LoginResponseModel
             {
+                UserId = user.Id,
                 Username = user.FullName,
                 Email = user.Email,
                 Token = token,
@@ -304,14 +287,6 @@ namespace TestEducation.Service.UserService
             };
         }
 
-        public Task<List<string>> GetUserPermission(int Id)
-        {
-            return _appDbContext.UserRoles
-                .Where(x => x.UserId == Id)
-                .SelectMany(r => r.Role.RolePermissions)
-                .Select(p => p.Permission.Name)
-                .ToListAsync();
-        }
 
         public async Task<CreateAdminResponseModel> AdminCreateUserAsync(CreateUserByAdminModel createUserByAdmin)
         {

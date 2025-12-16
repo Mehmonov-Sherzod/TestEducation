@@ -10,6 +10,7 @@
         // Admin permissions
         ManageUsersStudent,
         ManageTests,
+        ManageTopics,
         ManageSubjects,
         ManageQuestions,
         ViewResults,

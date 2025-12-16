@@ -75,7 +75,8 @@ namespace TestEducation.Aplication.Helpers.SeedData
                             permission.Name == "ViewResults" ||
                             permission.Name == "TakeTest" ||
                             permission.Name == "ViewOwnResults" ||
-                            permission.Name == "ViewAvailableTests"
+                            permission.Name == "ViewAvailableTests" ||
+                            permission.Name == "ManageTopics"
                             )
                         {
                             RolePermission rolePermission = new RolePermission

@@ -35,7 +35,8 @@ namespace TestEducation.API.Middleware
                 _ => code
             };
 
-            var result = JsonSerializer.Serialize(ApiResult<string>.Failure(errors));
+            var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = null };
+            var result = JsonSerializer.Serialize(ApiResult<string>.Failure(errors), jsonOptions);
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = code;

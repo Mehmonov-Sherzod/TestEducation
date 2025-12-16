@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TestEducation.DataAcces.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class SaddData : Migration
+    public partial class InitDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -116,28 +116,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Question",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    QuestionText = table.Column<string>(type: "text", nullable: false),
-                    ImageUrl = table.Column<string>(type: "text", nullable: true),
-                    SubjectId = table.Column<int>(type: "integer", nullable: false),
-                    Level = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Question", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Question_Subjects_SubjectId",
-                        column: x => x.SubjectId,
-                        principalTable: "Subjects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "subjectTranslates",
                 columns: table => new
                 {
@@ -174,6 +152,26 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     table.PrimaryKey("PK_tests", x => x.Id);
                     table.ForeignKey(
                         name: "FK_tests_Subjects_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "topics",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    SubjectId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_topics", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_topics_Subjects_SubjectId",
                         column: x => x.SubjectId,
                         principalTable: "Subjects",
                         principalColumn: "Id",
@@ -260,6 +258,56 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "userTests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    TestId = table.Column<int>(type: "integer", nullable: false),
+                    StartedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_userTests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_userTests_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_userTests_tests_TestId",
+                        column: x => x.TestId,
+                        principalTable: "tests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Question",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    QuestionText = table.Column<string>(type: "text", nullable: false),
+                    ImageUrl = table.Column<string>(type: "text", nullable: true),
+                    Level = table.Column<string>(type: "text", nullable: false),
+                    TopicId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Question", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Question_topics_TopicId",
+                        column: x => x.TopicId,
+                        principalTable: "topics",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Answers",
                 columns: table => new
                 {
@@ -303,56 +351,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "userTests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    TestId = table.Column<int>(type: "integer", nullable: false),
-                    StartedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_userTests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_userTests_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_userTests_tests_TestId",
-                        column: x => x.TestId,
-                        principalTable: "tests",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AnswerTranslate",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AnswerId = table.Column<int>(type: "integer", nullable: false),
-                    LanguageId = table.Column<int>(type: "integer", nullable: false),
-                    ColumnName = table.Column<string>(type: "text", nullable: false),
-                    TranslateText = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AnswerTranslate", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AnswerTranslate_Answers_AnswerId",
-                        column: x => x.AnswerId,
-                        principalTable: "Answers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserQuestions",
                 columns: table => new
                 {
@@ -382,6 +380,28 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         name: "FK_UserQuestions_userTests_UserTestId",
                         column: x => x.UserTestId,
                         principalTable: "userTests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AnswerTranslate",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AnswerId = table.Column<int>(type: "integer", nullable: false),
+                    LanguageId = table.Column<int>(type: "integer", nullable: false),
+                    ColumnName = table.Column<string>(type: "text", nullable: false),
+                    TranslateText = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnswerTranslate", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AnswerTranslate_Answers_AnswerId",
+                        column: x => x.AnswerId,
+                        principalTable: "Answers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -422,15 +442,19 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 values: new object[,]
                 {
                     { 1, "Barcha tizimni boshqaradigan SuperAdmin rol", "SuperAdmin" },
-                    { 2, "faqat student va creatordi boshqaradigan admin rol", "Admin" },
-                    { 3, "Test yechish va natija ko‘rish", "Student" },
-                    { 4, "Test yaratish va tahrirlash", "Creator" }
+                    { 2, "faqat student ustidan barcha ishlat test , subject , question yaratishlar", "Admin" },
+                    { 3, "Test yechish va natija ko‘rish", "Student" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Count", "CreatedAt", "Email", "ExpiredAt", "FullName", "IsActive", "IsVerified", "Password", "PhoneNumber", "Salt" },
                 values: new object[] { 1, 0, new DateTime(2025, 11, 14, 14, 31, 0, 0, DateTimeKind.Utc), "mehmovovsherzod@gmail.com", null, "Sherzod", true, false, "XeASJOgK7h7Lk0XkPOlOq0LfqTu9bA93NrmMHnm3/mY=", "+901537776", "8a68becd-d900-4835-b809-d728ac097656" });
+
+            migrationBuilder.InsertData(
+                table: "UserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { 1, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Answers_QuestionId",
@@ -443,9 +467,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 column: "AnswerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Question_SubjectId",
+                name: "IX_Question_TopicId",
                 table: "Question",
-                column: "SubjectId");
+                column: "TopicId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_questionTranslations_QuestionId",
@@ -471,6 +495,11 @@ namespace TestEducation.DataAcces.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_tests_SubjectId",
                 table: "tests",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_topics_SubjectId",
+                table: "topics",
                 column: "SubjectId");
 
             migrationBuilder.CreateIndex(
@@ -577,6 +606,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "userTests");
+
+            migrationBuilder.DropTable(
+                name: "topics");
 
             migrationBuilder.DropTable(
                 name: "Users");

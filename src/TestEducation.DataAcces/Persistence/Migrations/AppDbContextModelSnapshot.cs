@@ -154,6 +154,28 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.ToTable("tests");
                 });
 
+            modelBuilder.Entity("TestEducation.Domain.Entities.Topic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("topics");
+                });
+
             modelBuilder.Entity("TestEducation.Domain.Entities.UserOTPs", b =>
                 {
                     b.Property<int>("Id")
@@ -276,12 +298,12 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("SubjectId")
+                    b.Property<int>("TopicId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubjectId");
+                    b.HasIndex("TopicId");
 
                     b.ToTable("Question");
                 });
@@ -593,7 +615,18 @@ namespace TestEducation.DataAcces.Persistence.Migrations
             modelBuilder.Entity("TestEducation.Domain.Entities.Test", b =>
                 {
                     b.HasOne("TestEducation.Models.Subject", "Subject")
-                        .WithMany("Tests")
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.Topic", b =>
+                {
+                    b.HasOne("TestEducation.Models.Subject", "Subject")
+                        .WithMany()
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -644,13 +677,13 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.Question", b =>
                 {
-                    b.HasOne("TestEducation.Models.Subject", "Subject")
+                    b.HasOne("TestEducation.Domain.Entities.Topic", "Topic")
                         .WithMany("Questions")
-                        .HasForeignKey("SubjectId")
+                        .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Subject");
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("TestEducation.Models.RolePermission", b =>
@@ -740,7 +773,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
             modelBuilder.Entity("TestEducation.Models.UserTestResult", b =>
                 {
                     b.HasOne("TestEducation.Models.Subject", "Subject")
-                        .WithMany("UserTestResult")
+                        .WithMany()
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -759,6 +792,11 @@ namespace TestEducation.DataAcces.Persistence.Migrations
             modelBuilder.Entity("TestEducation.Domain.Entities.Test", b =>
                 {
                     b.Navigation("UserTests");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.Topic", b =>
+                {
+                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.UserTest", b =>
@@ -796,13 +834,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.Subject", b =>
                 {
-                    b.Navigation("Questions");
-
                     b.Navigation("SubjectTranslates");
-
-                    b.Navigation("Tests");
-
-                    b.Navigation("UserTestResult");
                 });
 
             modelBuilder.Entity("TestEducation.Models.User", b =>

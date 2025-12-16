@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.UserEmail;
 using TestEducation.Aplication.Models.Users;
@@ -27,15 +28,6 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<CreateAdminResponseModel>.Success(result));
         }
 
-        [RequirePermission(PermissionEnum.ManageUsers , PermissionEnum.ManageUsersStudent)]
-        [HttpGet("User-GetAll")]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            var result = await _userService.GetAllUsers();
-
-            return Ok(ApiResult<List<UserResponseModel>>.Success(result));
-        }
-
 
         [RequirePermission(PermissionEnum.ManageUsersStudent)]
         [HttpGet("{id}")]
@@ -46,14 +38,8 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<UserResponseModel>.Success(result));
         }
 
-        [HttpGet("me")]
-        public async Task<IActionResult> GetCurrentUser()
-        {
-            var result = await _userService.GetCurrentUser();
 
-            return Ok(ApiResult<UserResponseModel>.Success(result));
-        }
-
+        [RequirePermission(PermissionEnum.ManageAdmins, PermissionEnum.ManageUsersStudent)]
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UpdateUserModel userDTO)
         {
@@ -62,6 +48,7 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<UpdateUserResponseModel>.Success(result));
 
         }
+
 
         [RequirePermission(PermissionEnum.ManageAdmins , PermissionEnum.ManageUsersStudent)]
         [HttpDelete("{id}")]
@@ -78,17 +65,11 @@ namespace TestEducation.API.Controllers
         {
             var result = await _userService.CreateUserPage(model);
 
-            return Ok(ApiResult<PaginationResult<CreateUserModel>>.Success(result));
+            return Ok(ApiResult<PaginationResult<UserResponseModel>>.Success(result));
         }
 
-        [RequirePermission(PermissionEnum.ManageAdmins)]
-        [HttpGet("{id}-Get-ById-Permission-User")]
-        public async Task<IActionResult> GetUserPermission(int id)
-        {
-            var result = await _userService.GetUserPermission(id);
-            return Ok(ApiResult<List<string>>.Success(result));
-        }
 
+        [RequirePermission(PermissionEnum.ManageAdmins, PermissionEnum.ManageUsersStudent)]
         [HttpPut("{id}-Update-password")]
         public async Task<IActionResult> ResetPassword(UpdateUserPassword updateUserPassword, int id)
         {

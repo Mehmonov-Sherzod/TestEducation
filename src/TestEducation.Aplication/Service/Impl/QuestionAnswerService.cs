@@ -51,7 +51,7 @@ namespace TestEducation.Service.QuestionAnswerService
             Question question = new Question
             {
                 QuestionText = questionDTO.QuestionText,
-                SubjectId = questionDTO.SubjectId,
+                TopicId = questionDTO.TopicId,
                 ImageUrl = urlImage,
                 Level = questionDTO.Level,
                 QuestionTranslations = questionDTO.Translate
@@ -88,46 +88,6 @@ namespace TestEducation.Service.QuestionAnswerService
                 Id = question.Id,
             };
 
-        }
-        public async Task<List<QuestionAnswerResponseModel>> GetAllQuestionAnswer(string lang)
-        {
-            Language QuestionLanguage = Language.uz;
-
-            if (lang == "uz")
-                QuestionLanguage = Language.uz;
-            else if (lang == "ru")
-                QuestionLanguage = Language.rus;
-            else if (lang == "eng")
-                QuestionLanguage = Language.eng;
-
-            var question = await _appDbContext.Question
-                .Select(x => new QuestionAnswerResponseModel
-                {
-                    QuestionText = x.QuestionText,
-                    Image = x.ImageUrl,
-                    QuestionLevel = x.Level,
-                    Translate = x.QuestionTranslations
-                           .Where(x => x.LanguageId == QuestionLanguage)
-                           .Select(x => new QuestionTranslateResponseModel
-                           {
-                               ColumnName = x.ColumnName,
-                               TranslateText = x.TranslateText,
-                           }).ToList(),
-                    Answers = x.Answers
-                                  .Select(n => new AnswerResponseModel
-                                  {
-                                      AnswerText = n.AnswerText,
-                                      Translate = n.answerTranslates
-                                      .Where(x => x.LanguageId == QuestionLanguage)
-                                      .Select(e => new AnswerTranslateResponseModel
-                                      {
-                                          ColumnName = e.ColumnName,
-                                          TranslateText = e.TranslateText,
-                                      }).ToList()
-                                  }).ToList()
-                }).ToListAsync();
-
-            return question;
         }
         public async Task<QuestionAnswerResponseModel> GetByIdQuestionAnswer(int Id, string lang)
         {

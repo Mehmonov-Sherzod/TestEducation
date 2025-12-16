@@ -30,14 +30,22 @@ namespace TestEducation.Filter
 
             var permissionService = context.HttpContext.RequestServices.GetRequiredService<IPermissionService>();
 
+            // Check if user has ANY of the required permissions (OR logic)
+            bool hasAnyPermission = false;
             foreach (var requiredPermission in _permissions)
             {
                 bool hasPermission = permissionService.HasPermissionAsync(userId, requiredPermission.ToString()).Result;
-                if (!hasPermission)
+                if (hasPermission)
                 {
-                    context.Result = new ForbidResult();
-                    return;
+                    hasAnyPermission = true;
+                    break;
                 }
+            }
+
+            if (!hasAnyPermission)
+            {
+                context.Result = new ForbidResult();
+                return;
             }
         }
     }

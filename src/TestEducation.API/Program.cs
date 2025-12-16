@@ -22,7 +22,12 @@ var passwordHelper = new PasswordHelper();
 
 builder.Services.AddHostedService<TelegramServiceOtp>();
 
-builder.Services.AddControllers(config => config.Filters.Add(typeof(ValidateModelAttribute)));
+builder.Services.AddControllers(config => config.Filters.Add(typeof(ValidateModelAttribute)))
+    .AddJsonOptions(options =>
+    {
+        // Use PascalCase for JSON property names to match frontend expectations
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    });
 
 builder.Services.AddResponseCaching(); // Responce cashe
 builder.Services.AddOutputCache(); // OutputCach cashe
