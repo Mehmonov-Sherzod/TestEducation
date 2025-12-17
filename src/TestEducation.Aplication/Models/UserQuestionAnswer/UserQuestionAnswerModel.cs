@@ -5,9 +5,8 @@ namespace TestEducation.Aplication.Models.UserQuestionAnswer
 {
     public class UserQuestionAnswerModel
     {
-        public int Order { get; set; }
-        public int UserQuestionId { get; set; }
-        public int AnswerId { get; set; }
-        public CreateAnswerModel CreateAnswerModel { get; set; }
+        public bool IsCorrect { get; set; }
+        public bool IsMarked { get; set; } = false;
+        public string AnswerText { get; set; }
     }
 }

@@ -18,10 +18,8 @@ namespace TestEducation.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<UserQuestion> UserQuestions { get; set; }
         public DbSet<UserQuestionAnswer> UserQuestionsAnswer { get; set; }
-        public DbSet<UserTestResult> UserTestResult { get; set; }
+        public DbSet<TestProcess> testProcesses { get; set; }
         public DbSet<UserOTPs> userOTPs  { get; set; }
-        public DbSet<Test> tests { get; set; }
-        public DbSet<UserTest> userTests { get; set; }
         public DbSet<SubjectTranslate> subjectTranslates { get; set; }
         public DbSet<QuestionTranslation> questionTranslations { get; set; }
         public DbSet<Topic> topics { get; set; }    

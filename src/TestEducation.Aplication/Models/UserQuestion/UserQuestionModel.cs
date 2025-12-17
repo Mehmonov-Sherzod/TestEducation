@@ -1,4 +1,5 @@
-﻿using TestEducation.Aplication.Models.UserQuestionAnswer;
+﻿using TestEducation.Aplication.Models.TestProcess;
+using TestEducation.Aplication.Models.UserQuestionAnswer;
 
 namespace TestEducation.Aplication.Models.UserQuestion
 {
@@ -6,9 +7,9 @@ namespace TestEducation.Aplication.Models.UserQuestion
     {
         public int UserId { get; set; }
         public int QuestionId { get; set; }
-        public int Order { get; set; }  
-        public bool IsAnswer { get; set; }  
-        public DateTime AnsweredAt { get; set; }
+        public int Order { get; set; }
+        public int TextProcessId { get; set; }
+        public TestProcessModel TestProcess { get; set; }
         public List<UserQuestionAnswerModel> UserAnswers { get; set; }
     }
 }

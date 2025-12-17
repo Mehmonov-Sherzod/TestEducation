@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestEducation.Data;
@@ -11,9 +12,11 @@ using TestEducation.Data;
 namespace TestEducation.DataAcces.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251216130502_ErrorUpdate")]
+    partial class ErrorUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -439,6 +442,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime?>("AnsweredAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Id")
                         .HasColumnType("integer");
