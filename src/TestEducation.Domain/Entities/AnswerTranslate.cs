@@ -10,11 +10,11 @@ namespace TestEducation.Domain.Entities
 {
     public class AnswerTranslate
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; } 
 
         public Answer answer { get; set; }
 
-        public int AnswerId { get; set; }
+        public Guid AnswerId { get; set; }
 
         public Language LanguageId { get; set; }
 

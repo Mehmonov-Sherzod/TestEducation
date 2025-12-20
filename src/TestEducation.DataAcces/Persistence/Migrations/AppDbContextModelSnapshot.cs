@@ -24,14 +24,12 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Domain.Entities.AnswerTranslate", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AnswerId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("AnswerId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ColumnName")
                         .IsRequired()
@@ -53,11 +51,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Domain.Entities.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -73,11 +69,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Domain.Entities.QuestionTranslation", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ColumnName")
                         .IsRequired()
@@ -86,8 +80,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Property<int>("LanguageId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("TranslateText")
                         .IsRequired()
@@ -100,13 +94,34 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.ToTable("questionTranslations");
                 });
 
+            modelBuilder.Entity("TestEducation.Domain.Entities.SharedSource", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("sharedSources");
+                });
+
             modelBuilder.Entity("TestEducation.Domain.Entities.SubjectTranslate", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ColumnName")
                         .IsRequired()
@@ -115,14 +130,14 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Property<int>("Language")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("TranslateText")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.HasIndex("SubjectId");
 
@@ -131,11 +146,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Domain.Entities.TestProcess", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<int?>("CorrectAnswers")
                         .HasColumnType("integer");
@@ -158,8 +171,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Property<double>("TotalScore")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -168,18 +181,16 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Domain.Entities.Topic", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -190,11 +201,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Domain.Entities.UserOTPs", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -206,8 +215,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Property<DateTime?>("ExpiredAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -218,11 +227,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.Answer", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("AnswerText")
                         .IsRequired()
@@ -231,8 +238,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -243,11 +250,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.Permission", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -264,11 +269,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.Question", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
@@ -281,8 +284,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TopicId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("TopicId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -293,11 +296,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.Role", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -314,19 +315,19 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("00000011-0000-0000-0000-000000000001"),
                             Description = "Barcha tizimni boshqaradigan SuperAdmin rol",
                             Name = "SuperAdmin"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("00000012-0000-0000-0000-000000000001"),
                             Description = "faqat student ustidan barcha ishlat test , subject , question yaratishlar",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = new Guid("00000013-0000-0000-0000-000000000001"),
                             Description = "Test yechish va natija ko‘rish",
                             Name = "Student"
                         });
@@ -334,11 +335,11 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.RolePermission", b =>
                 {
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("PermissionId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("PermissionId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("RoleId", "PermissionId");
 
@@ -349,11 +350,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.Subject", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -369,11 +368,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Count")
                         .HasColumnType("integer");
@@ -419,7 +416,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("11111111-1111-1111-1111-111111111119"),
                             Count = 0,
                             CreatedAt = new DateTime(2025, 11, 14, 14, 31, 0, 0, DateTimeKind.Utc),
                             Email = "mehmovovsherzod@gmail.com",
@@ -434,23 +431,23 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.UserQuestion", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TestProcessId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("TestProcessId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("TextProcessId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("TextProcessId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("UserId", "QuestionId");
 
@@ -463,11 +460,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.UserQuestionAnswer", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("AnswerText")
                         .IsRequired()
@@ -479,14 +474,14 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Property<bool>("IsMarked")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("UserQuestionId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserQuestionId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("UserQuestionQuestionId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserQuestionQuestionId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("UserQuestionUserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserQuestionUserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -497,11 +492,11 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.UserRole", b =>
                 {
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("RoleId", "UserId");
 
@@ -512,18 +507,18 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            RoleId = 1,
-                            UserId = 1
+                            RoleId = new Guid("00000011-0000-0000-0000-000000000001"),
+                            UserId = new Guid("11111111-1111-1111-1111-111111111119")
                         });
                 });
 
             modelBuilder.Entity("TestProcessUser", b =>
                 {
-                    b.Property<int>("TestProcessesId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("TestProcessesId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("TestProcessesId", "UserId");
 
@@ -552,6 +547,17 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.SharedSource", b =>
+                {
+                    b.HasOne("TestEducation.Models.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.SubjectTranslate", b =>

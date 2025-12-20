@@ -5,6 +5,7 @@ namespace TestEducation.Aplication.Models.Question
 {
     public class QuestionAnswerResponseModel
     {
+        public Guid Id { get; set; } 
         public string QuestionText { get; set; }
         public string Image { get; set; }
         public QuestionLevel QuestionLevel { get; set; }    

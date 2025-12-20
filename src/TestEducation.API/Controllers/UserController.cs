@@ -31,7 +31,7 @@ namespace TestEducation.API.Controllers
 
         [RequirePermission(PermissionEnum.ManageUsersStudent)]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdUser(int id)
+        public async Task<IActionResult> GetByIdUser(Guid id)
         {
             var result = await _userService.GetByIdUser(id);
 
@@ -39,7 +39,7 @@ namespace TestEducation.API.Controllers
         }
 
 
-        [RequirePermission(PermissionEnum.ManageAdmins, PermissionEnum.ManageUsersStudent)]
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UpdateUserModel userDTO)
         {
@@ -50,9 +50,9 @@ namespace TestEducation.API.Controllers
         }
 
 
-        [RequirePermission(PermissionEnum.ManageAdmins , PermissionEnum.ManageUsersStudent)]
+        [RequirePermission(PermissionEnum.ManageAdmins, PermissionEnum.ManageUsersStudent)]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
             var result = await _userService.DeleteByIdUser(id);
 
@@ -69,9 +69,9 @@ namespace TestEducation.API.Controllers
         }
 
 
-        [RequirePermission(PermissionEnum.ManageAdmins, PermissionEnum.ManageUsersStudent)]
+        [Authorize]
         [HttpPut("{id}-Update-password")]
-        public async Task<IActionResult> ResetPassword(UpdateUserPassword updateUserPassword, int id)
+        public async Task<IActionResult> ResetPassword(UpdateUserPassword updateUserPassword, Guid id)
         {
             var result = await _userService.ResetPassword(updateUserPassword);
 
@@ -86,8 +86,8 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<string>.Success(result));
         }
 
-        [HttpPost("Send-otp-code")]
 
+        [HttpPost("Send-otp-code")]
         public async Task<IActionResult> ForgotPassword(UserEmailForgot userEmailForgot)
         {
             var result = await _userService.SendOtpByEmail(userEmailForgot);

@@ -26,7 +26,7 @@ namespace TestEducation.Filter
                 return;
             }
 
-            var userId = int.Parse(userIdClaim.Value);
+            var userId = Guid.Parse(userIdClaim.Value);
 
             var permissionService = context.HttpContext.RequestServices.GetRequiredService<IPermissionService>();
 

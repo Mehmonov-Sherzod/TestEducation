@@ -9,7 +9,7 @@ namespace TestEducation.Aplication.Models.Subject
 {
     public class SubjectTopicsResponse
     {
-        public int SubjectId { get; set; }
+        public Guid SubjectId { get; set; }
         public string SubjectName { get; set; }
         public List<TopicResponseModel> Topics { get; set; }
     }

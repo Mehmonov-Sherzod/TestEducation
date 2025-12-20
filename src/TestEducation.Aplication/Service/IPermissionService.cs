@@ -2,6 +2,6 @@
 {
     public interface IPermissionService
     {
-        Task<bool> HasPermissionAsync(int userId, string permissionName);
+        Task<bool> HasPermissionAsync(Guid userId, string permissionName);
     }
 }

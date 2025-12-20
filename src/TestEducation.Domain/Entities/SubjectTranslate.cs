@@ -10,11 +10,11 @@ namespace TestEducation.Domain.Entities
 {
     public class SubjectTranslate
     {
-        public int id { get; set; }
+        public Guid Id { get; set; } 
 
         public Subject Subject { get; set; }
 
-        public int SubjectId { get; set; }
+        public Guid SubjectId { get; set; }
 
         public Language Language { get; set; }
 

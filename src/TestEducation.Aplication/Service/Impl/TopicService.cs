@@ -43,7 +43,7 @@ namespace TestEducation.Aplication.Service.Impl
             };
         }
 
-        public async Task<string> DeleteTopic(int Id)
+        public async Task<string> DeleteTopic(Guid Id)
         {
             var topic = await _appDbContext.topics.FirstOrDefaultAsync(x => x.Id == Id);
 
@@ -59,18 +59,21 @@ namespace TestEducation.Aplication.Service.Impl
         public async Task<PaginationResult<SubjectTopicsResponse>> GetAllPageTopic(TopicPageModel model)
         {
             var query = _appDbContext.topics
-                .Include(t => t.Subject)
-                .AsQueryable();
+                        .Include(t => t.Subject)
+                        .Include(t => t.Questions)
+                        .AsQueryable();
 
             if (!string.IsNullOrEmpty(model.Search))
             {
                 query = query.Where(s => s.Name.Contains(model.Search));
             }
 
-            if (model.SubjectId > 0)
+            if (model.SubjectId != null) // yoki Nullable bo'lsa: model.SubjectId.HasValue
             {
                 query = query.Where(t => t.SubjectId == model.SubjectId);
             }
+
+            int total = await query.CountAsync();
 
             var groupedTopics = await query
                 .GroupBy(t => new { t.SubjectId, t.Subject.Name })
@@ -84,14 +87,12 @@ namespace TestEducation.Aplication.Service.Impl
                         TopicName = x.Name,
                         SubjectId = x.SubjectId,
                         SubjectName = g.Key.Name,
-                        QuestionCount = x.Questions != null ? x.Questions.Count : 0
+                        QuestionCount = x.Questions.Count
                     }).ToList()
                 })
                 .Skip((model.PageNumber - 1) * model.PageSize)
                 .Take(model.PageSize)
                 .ToListAsync();
-
-            int total = await _appDbContext.topics.CountAsync();
 
             return new PaginationResult<SubjectTopicsResponse>
             {
@@ -100,9 +101,10 @@ namespace TestEducation.Aplication.Service.Impl
                 PageNumber = model.PageNumber,
                 TotalCount = total
             };
+
         }
 
-        public async Task<UpdateTopicResponseModel> UpdateTopic(UpdateTopicModel model, int Id)
+        public async Task<UpdateTopicResponseModel> UpdateTopic(UpdateTopicModel model, Guid Id)
         {
             var topic = await _appDbContext.topics.FirstOrDefaultAsync(x => x.Id == Id);
 

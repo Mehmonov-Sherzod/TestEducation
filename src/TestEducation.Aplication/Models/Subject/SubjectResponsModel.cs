@@ -8,7 +8,7 @@ namespace TestEducation.Aplication.Models.Subject
 {
     public class SubjectResponsModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string SubjectName { get; set; }
 

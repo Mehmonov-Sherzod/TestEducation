@@ -53,7 +53,7 @@ namespace TestEducation.Service.SubjectService
             };
 
         }
-        public async Task<SubjectResponsModel> GetByIdSubject(int id , string lang)
+        public async Task<SubjectResponsModel> GetByIdSubject(Guid id , string lang)
         {
             Language userLanguage = Language.uz;
 
@@ -85,7 +85,7 @@ namespace TestEducation.Service.SubjectService
             return subject;
 
         }
-        public async Task<UpdateSubjectResponseModel> UpdateSubject(int Id, UpdateSubjectModel subjectDTO)
+        public async Task<UpdateSubjectResponseModel> UpdateSubject(Guid Id, UpdateSubjectModel subjectDTO)
         {
             var subject = await _appDbContext.Subjects
                 .Include(y => y.SubjectTranslates)
@@ -93,7 +93,7 @@ namespace TestEducation.Service.SubjectService
 
             if (subject == null)
                 throw new NotFoundException("subject topilmadi.");
-
+            
             subject.Name = subjectDTO.SubjectNmae;
 
             // Remove all existing translations
@@ -120,7 +120,7 @@ namespace TestEducation.Service.SubjectService
 
 
         }
-        public async Task<string> DeleteSubject(int id)
+        public async Task<string> DeleteSubject(Guid id)
         {
             var subject = await _appDbContext.Subjects
                 .FirstOrDefaultAsync(x => x.Id == id);

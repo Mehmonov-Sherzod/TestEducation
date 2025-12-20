@@ -10,5 +10,5 @@ public class CreateSubjectModel
 
 public class CreateSubjectResponseModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

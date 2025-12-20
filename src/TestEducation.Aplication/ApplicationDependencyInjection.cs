@@ -13,6 +13,7 @@ using TestEducation.Aplication.Service.Impl;
 using TestEducation.Aplication.Validators.QuestionValidator;
 using TestEducation.Aplication.Validators.SubjectValidator;
 using TestEducation.Aplication.Validators.UserValidatoe;
+using TestEducation.Aplication.Validators.UserValidator;
 using TestEducation.Data;
 using TestEducation.Service;
 using TestEducation.Service.FileStoreageService;
@@ -47,6 +48,7 @@ namespace TestEducation.Aplication
             services.AddScoped<IOtpService, OtpService>();
             services.AddScoped<IClaimService, ClaimService>();
             services.AddScoped<ITopicService, TopicService>();
+            services.AddScoped<ISharedSourceService, SharedSourceService>();
             services.AddHttpContextAccessor();
 
 
@@ -82,6 +84,8 @@ namespace TestEducation.Aplication
             services.AddScoped<IValidator<CreateQuestionModel>, QuestionCreateValidator>();
             services.AddScoped<IValidator<CreateUserModel>, UserCreateValidator>();
             services.AddScoped<IValidator<CreateSubjectModel>, SubjectCreateValidator>();
+            services.AddScoped<IValidator<UpdateUserModel>, UserUpdateValidator>();
+            services.AddScoped<IValidator<UpdateUserPassword>, UserUpdatePasswordValidator>();
 
             return services;
         }

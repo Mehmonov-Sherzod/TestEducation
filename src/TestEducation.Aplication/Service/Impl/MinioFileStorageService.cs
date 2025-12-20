@@ -49,7 +49,8 @@ namespace TestEducation.Aplication.Service.Impl
                 // Yuklangan faylga to'g'ridan-to'g'ri kirish URL'ini qaytarish
                 // Bu URL Minio serverining manzili va bucket/object nomini o'z ichiga oladi.
                 // Masalan: http://localhost:9000/my-bucket/my-image.jpg
-                return $"http://{_minioSettings.Endpoint}/{bucketName}/{objectName}";
+                //return $"http://{_minioSettings.Endpoint}/{bucketName}/{objectName}";
+                return $"http://localhost:9000/{bucketName}/{objectName}";
             }
             catch (MinioException e) // Minio'dan kelgan xatoliklarni qayd etish
             {

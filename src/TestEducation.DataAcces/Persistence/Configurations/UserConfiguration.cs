@@ -13,7 +13,7 @@ namespace TestEducation.DataAcces.Persistence.Configurations
             builder.HasData(
                 new User
                 {
-                    Id = 1,
+                    Id = Guid.Parse("11111111-1111-1111-1111-111111111119"),
                     FullName = "Sherzod",
                     Email = "mehmovovsherzod@gmail.com",
                     PhoneNumber = "+901537776",

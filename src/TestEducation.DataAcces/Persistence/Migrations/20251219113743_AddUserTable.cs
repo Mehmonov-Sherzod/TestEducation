@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -9,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TestEducation.DataAcces.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDB : Migration
+    public partial class AddUserTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,8 +17,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ProductName = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -32,8 +30,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "Permissions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false)
                 },
@@ -46,8 +43,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false)
                 },
@@ -60,8 +56,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "Subjects",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -70,11 +65,29 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "testProcesses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StartedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndsAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    TotalQuestions = table.Column<int>(type: "integer", nullable: false),
+                    CorrectAnswers = table.Column<int>(type: "integer", nullable: true),
+                    IncorrectAnswers = table.Column<int>(type: "integer", nullable: true),
+                    PercentageOfCorrectAnswers = table.Column<float>(type: "real", nullable: true),
+                    TotalScore = table.Column<double>(type: "double precision", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_testProcesses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FullName = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
@@ -95,8 +108,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "RolePermissions",
                 columns: table => new
                 {
-                    RoleId = table.Column<int>(type: "integer", nullable: false),
-                    PermissionId = table.Column<int>(type: "integer", nullable: false)
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PermissionId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -116,21 +129,19 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "subjectTranslates",
+                name: "sharedSources",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SubjectId = table.Column<int>(type: "integer", nullable: false),
-                    Language = table.Column<int>(type: "integer", nullable: false),
-                    ColumnName = table.Column<string>(type: "text", nullable: false),
-                    TranslateText = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: true),
+                    SubjectId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_subjectTranslates", x => x.id);
+                    table.PrimaryKey("PK_sharedSources", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_subjectTranslates_Subjects_SubjectId",
+                        name: "FK_sharedSources_Subjects_SubjectId",
                         column: x => x.SubjectId,
                         principalTable: "Subjects",
                         principalColumn: "Id",
@@ -138,20 +149,20 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tests",
+                name: "subjectTranslates",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    SubjectId = table.Column<int>(type: "integer", nullable: false),
-                    DurationMinutes = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SubjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Language = table.Column<int>(type: "integer", nullable: false),
+                    ColumnName = table.Column<string>(type: "text", nullable: false),
+                    TranslateText = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tests", x => x.Id);
+                    table.PrimaryKey("PK_subjectTranslates", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_tests_Subjects_SubjectId",
+                        name: "FK_subjectTranslates_Subjects_SubjectId",
                         column: x => x.SubjectId,
                         principalTable: "Subjects",
                         principalColumn: "Id",
@@ -162,10 +173,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "topics",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    SubjectId = table.Column<int>(type: "integer", nullable: false)
+                    SubjectId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -179,12 +189,35 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TestProcessUser",
+                columns: table => new
+                {
+                    TestProcessesId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TestProcessUser", x => new { x.TestProcessesId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_TestProcessUser_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TestProcessUser_testProcesses_TestProcessesId",
+                        column: x => x.TestProcessesId,
+                        principalTable: "testProcesses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "userOTPs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     Code = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ExpiredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -204,8 +237,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "UserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    RoleId = table.Column<int>(type: "integer", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -225,76 +258,14 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserTestResult",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    SubjectId = table.Column<int>(type: "integer", nullable: false),
-                    TotalQuestions = table.Column<int>(type: "integer", nullable: false),
-                    CorrectAnswers = table.Column<int>(type: "integer", nullable: false),
-                    WrongAnswers = table.Column<int>(type: "integer", nullable: false),
-                    Percentage = table.Column<double>(type: "double precision", nullable: false),
-                    TimeTaken = table.Column<TimeSpan>(type: "interval", nullable: false),
-                    StartedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    FinishedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserTestResult", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserTestResult_Subjects_SubjectId",
-                        column: x => x.SubjectId,
-                        principalTable: "Subjects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserTestResult_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "userTests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    TestId = table.Column<int>(type: "integer", nullable: false),
-                    StartedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_userTests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_userTests_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_userTests_tests_TestId",
-                        column: x => x.TestId,
-                        principalTable: "tests",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Question",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     QuestionText = table.Column<string>(type: "text", nullable: false),
                     ImageUrl = table.Column<string>(type: "text", nullable: true),
                     Level = table.Column<string>(type: "text", nullable: false),
-                    TopicId = table.Column<int>(type: "integer", nullable: false)
+                    TopicId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -311,11 +282,10 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "Answers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     AnswerText = table.Column<string>(type: "text", nullable: false),
                     IsCorrect = table.Column<bool>(type: "boolean", nullable: false),
-                    QuestionId = table.Column<int>(type: "integer", nullable: false)
+                    QuestionId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -332,9 +302,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "questionTranslations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    QuestionId = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    QuestionId = table.Column<Guid>(type: "uuid", nullable: false),
                     LanguageId = table.Column<int>(type: "integer", nullable: false),
                     ColumnName = table.Column<string>(type: "text", nullable: false),
                     TranslateText = table.Column<string>(type: "text", nullable: false)
@@ -354,12 +323,12 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "UserQuestions",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    QuestionId = table.Column<int>(type: "integer", nullable: false),
-                    Id = table.Column<int>(type: "integer", nullable: false),
-                    UserTestId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    QuestionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Order = table.Column<int>(type: "integer", nullable: false),
-                    AnsweredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    TextProcessId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TestProcessId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -377,9 +346,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserQuestions_userTests_UserTestId",
-                        column: x => x.UserTestId,
-                        principalTable: "userTests",
+                        name: "FK_UserQuestions_testProcesses_TestProcessId",
+                        column: x => x.TestProcessId,
+                        principalTable: "testProcesses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -388,9 +357,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "AnswerTranslate",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AnswerId = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    AnswerId = table.Column<Guid>(type: "uuid", nullable: false),
                     LanguageId = table.Column<int>(type: "integer", nullable: false),
                     ColumnName = table.Column<string>(type: "text", nullable: false),
                     TranslateText = table.Column<string>(type: "text", nullable: false)
@@ -410,24 +378,17 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "UserQuestionsAnswer",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Order = table.Column<int>(type: "integer", nullable: false),
-                    UserQuestionId = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserQuestionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserQuestionUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserQuestionQuestionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsCorrect = table.Column<bool>(type: "boolean", nullable: false),
                     IsMarked = table.Column<bool>(type: "boolean", nullable: false),
-                    UserQuestionUserId = table.Column<int>(type: "integer", nullable: false),
-                    UserQuestionQuestionId = table.Column<int>(type: "integer", nullable: false),
-                    AnswerId = table.Column<int>(type: "integer", nullable: false)
+                    AnswerText = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserQuestionsAnswer", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserQuestionsAnswer_Answers_AnswerId",
-                        column: x => x.AnswerId,
-                        principalTable: "Answers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserQuestionsAnswer_UserQuestions_UserQuestionUserId_UserQu~",
                         columns: x => new { x.UserQuestionUserId, x.UserQuestionQuestionId },
@@ -441,20 +402,20 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Barcha tizimni boshqaradigan SuperAdmin rol", "SuperAdmin" },
-                    { 2, "faqat student ustidan barcha ishlat test , subject , question yaratishlar", "Admin" },
-                    { 3, "Test yechish va natija ko‘rish", "Student" }
+                    { new Guid("00000011-0000-0000-0000-000000000001"), "Barcha tizimni boshqaradigan SuperAdmin rol", "SuperAdmin" },
+                    { new Guid("00000012-0000-0000-0000-000000000001"), "faqat student ustidan barcha ishlat test , subject , question yaratishlar", "Admin" },
+                    { new Guid("00000013-0000-0000-0000-000000000001"), "Test yechish va natija ko‘rish", "Student" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Count", "CreatedAt", "Email", "ExpiredAt", "FullName", "IsActive", "IsVerified", "Password", "PhoneNumber", "Salt" },
-                values: new object[] { 1, 0, new DateTime(2025, 11, 14, 14, 31, 0, 0, DateTimeKind.Utc), "mehmovovsherzod@gmail.com", null, "Sherzod", true, false, "XeASJOgK7h7Lk0XkPOlOq0LfqTu9bA93NrmMHnm3/mY=", "+901537776", "8a68becd-d900-4835-b809-d728ac097656" });
+                values: new object[] { new Guid("11111111-1111-1111-1111-111111111119"), 0, new DateTime(2025, 11, 14, 14, 31, 0, 0, DateTimeKind.Utc), "mehmovovsherzod@gmail.com", null, "Sherzod", true, false, "XeASJOgK7h7Lk0XkPOlOq0LfqTu9bA93NrmMHnm3/mY=", "+901537776", "8a68becd-d900-4835-b809-d728ac097656" });
 
             migrationBuilder.InsertData(
                 table: "UserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { 1, 1 });
+                values: new object[] { new Guid("00000011-0000-0000-0000-000000000001"), new Guid("11111111-1111-1111-1111-111111111119") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Answers_QuestionId",
@@ -482,6 +443,11 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 column: "PermissionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_sharedSources_SubjectId",
+                table: "sharedSources",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Subjects_Name",
                 table: "Subjects",
                 column: "Name",
@@ -493,9 +459,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 column: "SubjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tests_SubjectId",
-                table: "tests",
-                column: "SubjectId");
+                name: "IX_TestProcessUser_UserId",
+                table: "TestProcessUser",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_topics_SubjectId",
@@ -513,14 +479,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserQuestions_UserTestId",
+                name: "IX_UserQuestions_TestProcessId",
                 table: "UserQuestions",
-                column: "UserTestId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserQuestionsAnswer_AnswerId",
-                table: "UserQuestionsAnswer",
-                column: "AnswerId");
+                column: "TestProcessId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserQuestionsAnswer_UserQuestionUserId_UserQuestionQuestion~",
@@ -537,26 +498,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 table: "Users",
                 column: "Email",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserTestResult_SubjectId",
-                table: "UserTestResult",
-                column: "SubjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserTestResult_UserId",
-                table: "UserTestResult",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_userTests_TestId",
-                table: "userTests",
-                column: "TestId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_userTests_UserId",
-                table: "userTests",
-                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -575,7 +516,13 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "RolePermissions");
 
             migrationBuilder.DropTable(
+                name: "sharedSources");
+
+            migrationBuilder.DropTable(
                 name: "subjectTranslates");
+
+            migrationBuilder.DropTable(
+                name: "TestProcessUser");
 
             migrationBuilder.DropTable(
                 name: "userOTPs");
@@ -587,13 +534,10 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "UserRoles");
 
             migrationBuilder.DropTable(
-                name: "UserTestResult");
+                name: "Answers");
 
             migrationBuilder.DropTable(
                 name: "Permissions");
-
-            migrationBuilder.DropTable(
-                name: "Answers");
 
             migrationBuilder.DropTable(
                 name: "UserQuestions");
@@ -605,16 +549,13 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 name: "Question");
 
             migrationBuilder.DropTable(
-                name: "userTests");
-
-            migrationBuilder.DropTable(
-                name: "topics");
-
-            migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "tests");
+                name: "testProcesses");
+
+            migrationBuilder.DropTable(
+                name: "topics");
 
             migrationBuilder.DropTable(
                 name: "Subjects");

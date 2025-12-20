@@ -35,7 +35,7 @@ namespace TestEducation.API.Controllers
         }
         [RequirePermission(PermissionEnum.ManageTopics)]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTopic([FromBody] UpdateTopicModel model, int id)
+        public async Task<IActionResult> UpdateTopic([FromBody] UpdateTopicModel model, Guid id)
         {
             var result = await _topicService.UpdateTopic(model, id);
             return Ok(ApiResult<UpdateTopicResponseModel>.Success(result));
@@ -43,7 +43,7 @@ namespace TestEducation.API.Controllers
 
         [RequirePermission(PermissionEnum.ManageTopics)]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTopic(int id)
+        public async Task<IActionResult> DeleteTopic(Guid id)
         {
             var result = await _topicService.DeleteTopic(id);
             return Ok(ApiResult<string>.Success(result));

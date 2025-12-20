@@ -9,7 +9,7 @@ namespace TestEducation.Aplication.Service
 {
     public interface IOtpService
     {
-        Task<string> GenerateAndSaveOtpAsync(int userId);
-        Task<UserOTPs?> GetLatestOtpAsync(int userId, string code);
+        Task<string> GenerateAndSaveOtpAsync(Guid userId);
+        Task<UserOTPs?> GetLatestOtpAsync(Guid userId, string code);
     }
 }

@@ -18,11 +18,13 @@ namespace TestEducation.Aplication.Validators.UserValidator
                 .Matches("[a-z]").WithMessage("Parolda kamida bitta kichik harf bo‘lishi kerak.")
                 .Matches("[0-9]").WithMessage("Parolda kamida bitta raqam bo‘lishi kerak.");
 
+
             RuleFor(p => p.NewPassword)
-               .MinimumLength(8).WithMessage("must be at least 8 characters")
-               .Matches("[A-Z]").WithMessage("Parolda kamida bitta katta harf bo‘lishi kerak.")
-               .Matches("[a-z]").WithMessage("Parolda kamida bitta kichik harf bo‘lishi kerak.")
-               .Matches("[0-9]").WithMessage("Parolda kamida bitta raqam bo‘lishi kerak.");
+                 .MinimumLength(8).WithMessage("must be at least 8 characters")
+                 .Matches("[A-Z]").WithMessage("Parolda kamida bitta katta harf bo‘lishi kerak.")
+                 .Matches("[a-z]").WithMessage("Parolda kamida bitta kichik harf bo‘lishi kerak.")
+                 .Matches("[0-9]").WithMessage("Parolda kamida bitta raqam bo‘lishi kerak.");
+
         }
     }
 }

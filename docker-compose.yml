@@ -11,7 +11,7 @@ services:
       - "5001:5001"  # HTTPS
     depends_on:
       - testeducation_database
-      - testeducation_minio
+      - minio
       - testeducation_rabbitmq 
     networks:
       - testeducation_network
@@ -33,9 +33,9 @@ services:
     restart: unless-stopped
 
   # MinIO Object Storage
-  testeducation_minio:
+  minio:
     image: minio/minio
-    container_name: testeducation_minio
+    container_name: minio
     environment:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=minioadmin

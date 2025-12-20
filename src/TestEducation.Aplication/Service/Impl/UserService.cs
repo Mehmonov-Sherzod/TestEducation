@@ -45,10 +45,9 @@ namespace TestEducation.Service.UserService
         {
             var users = await _appDbContext.Users.AnyAsync(x => x.Email == userDTO.Email);
 
-            var error = _localizer["EmailExists"];
-
+       
             if (users)
-                throw new BadRequestException(error);
+                throw new BadRequestException("This Email already exists");
 
 
             string salt = Guid.NewGuid().ToString();
@@ -87,7 +86,7 @@ namespace TestEducation.Service.UserService
 
         }
 
-        public async Task<UserResponseModel> GetByIdUser(int id)
+        public async Task<UserResponseModel> GetByIdUser(Guid id)
         {
             var user = await _appDbContext.Users
                      .Where(x => x.Id == id)
@@ -109,7 +108,7 @@ namespace TestEducation.Service.UserService
 
         public async Task<UserResponseModel> GetCurrentUser()
         {
-            var currentUserId = int.Parse(_claimService.ClaimGetUserId()
+            var currentUserId = Guid.Parse(_claimService.ClaimGetUserId()
                              ?? throw new NotFoundException("Foydalanuvchi topilmadi"));
 
             var user = await _appDbContext.Users
@@ -132,14 +131,16 @@ namespace TestEducation.Service.UserService
 
         public async Task<UpdateUserResponseModel> UpdateUser(UpdateUserModel userDTO)
         {
-            var currentUserId = int.Parse(_claimService.ClaimGetUserId()
+            var currentUserId = Guid.Parse(_claimService.ClaimGetUserId()
                              ?? throw new NotFoundException("Foydalanuvchi topilmadi"));
-
 
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);
 
             if (user == null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
+
+            //if (user.Id == currentUserId)
+            //    throw new ForbiddenException("Forbidden");
 
             user.FullName = userDTO.FullName;
             user.Email = userDTO.Email;
@@ -154,7 +155,7 @@ namespace TestEducation.Service.UserService
             };
         }
 
-        public async Task<string> DeleteByIdUser(int id)
+        public async Task<string> DeleteByIdUser(Guid id)
         {
             var user = await _appDbContext.Users
                         .Include(u => u.UserRoles)
@@ -329,7 +330,7 @@ namespace TestEducation.Service.UserService
 
         public async Task<UpdateUserPasswordResponseModel> ResetPassword(UpdateUserPassword password)
         {
-            var currentUserId = int.Parse(_claimService.ClaimGetUserId()
+            var currentUserId = Guid.Parse(_claimService.ClaimGetUserId()
                             ?? throw new NotFoundException("Foydalanuvchi topilmadi"));
 
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);

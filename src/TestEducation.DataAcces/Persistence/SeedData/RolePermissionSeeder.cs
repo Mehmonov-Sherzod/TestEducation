@@ -40,14 +40,14 @@ namespace TestEducation.Aplication.Helpers.SeedData
 
             _appDbContext.SaveChanges();
 
-            List<int> role = _appDbContext.Roles.Select(x => x.Id).ToList();
-            List<int> Permissions = _appDbContext.Permissions.Select(x => x.Id).ToList();
-            HashSet<int> PermissionId1 = _appDbContext.RolePermissions.Where(x => x.RoleId == 1).Select(x => x.PermissionId).ToHashSet();
-            HashSet<int> PermissionId2 = _appDbContext.RolePermissions.Where(x => x.RoleId == 2).Select(x => x.PermissionId).ToHashSet();
+            List<Guid> role = _appDbContext.Roles.Select(x => x.Id).ToList();
+            List<Guid> Permissions = _appDbContext.Permissions.Select(x => x.Id).ToList();
+            HashSet<Guid> PermissionId1 = _appDbContext.RolePermissions.Where(x => x.RoleId == Guid.Parse("00000011-0000-0000-0000-000000000001")).Select(x => x.PermissionId).ToHashSet();
+            HashSet<Guid> PermissionId2 = _appDbContext.RolePermissions.Where(x => x.RoleId == Guid.Parse("00000012-0000-0000-0000-000000000001")).Select(x => x.PermissionId).ToHashSet();
 
             foreach (var roles in role)
             {
-                if (roles == 1)
+                if (roles == Guid.Parse("00000011-0000-0000-0000-000000000001"))
                 {
                     foreach (var permission in Permissions)
                     {
@@ -63,7 +63,7 @@ namespace TestEducation.Aplication.Helpers.SeedData
                     }
                 }
 
-                if (roles == 2)
+                if (roles == Guid.Parse("00000012-0000-0000-0000-000000000001"))
                 {
                     var allPermissions = _appDbContext.Permissions.ToList();
                     foreach (var permission in allPermissions)

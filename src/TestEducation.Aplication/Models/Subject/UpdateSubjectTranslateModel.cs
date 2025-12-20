@@ -9,7 +9,7 @@ namespace TestEducation.Aplication.Models.Subject
 {
     public class UpdateSubjectTranslateModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public Language LanguageId { get; set; }
 
         public string ColumnName { get; set; }

@@ -29,7 +29,7 @@ namespace TestEducation.Controllers
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdSubject(
-            [FromRoute] int id,
+            [FromRoute] Guid id,
             [FromHeader] string lang)
         {
             var result = await _IsubjectServise.GetByIdSubject(id, lang);
@@ -39,7 +39,7 @@ namespace TestEducation.Controllers
 
         [RequirePermission(PermissionEnum.ManageSubjects)]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSubject(int Id, UpdateSubjectModel subjectDTO)
+        public async Task<IActionResult> UpdateSubject(Guid Id, UpdateSubjectModel subjectDTO)
         {
             var result = await _IsubjectServise.UpdateSubject(Id, subjectDTO);
 
@@ -48,7 +48,7 @@ namespace TestEducation.Controllers
 
         [RequirePermission(PermissionEnum.ManageSubjects)]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSubject(int id)
+        public async Task<IActionResult> DeleteSubject(Guid id)
         {
             var result = await _IsubjectServise.DeleteSubject(id);
 

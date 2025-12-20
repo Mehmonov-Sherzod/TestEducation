@@ -5,8 +5,8 @@ namespace TestEducation.Models
 {
     public class RolePermission
     {
-        public int RoleId { get; set; }
-        public int PermissionId { get; set; }
+        public Guid RoleId { get; set; }
+        public Guid PermissionId { get; set; }
         public Role Role { get; set; }
         public Permission Permission { get; set; }
     }

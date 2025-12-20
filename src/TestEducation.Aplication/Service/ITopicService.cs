@@ -8,7 +8,7 @@ namespace TestEducation.Aplication.Service
     {
         Task<CreateTopicResponseModel> CreateTopic(CreateTopicModel model);
         Task<PaginationResult<SubjectTopicsResponse>> GetAllPageTopic(TopicPageModel model);
-        Task<UpdateTopicResponseModel> UpdateTopic(UpdateTopicModel model, int Id);
-        Task<string> DeleteTopic(int Id);
+        Task<UpdateTopicResponseModel> UpdateTopic(UpdateTopicModel model, Guid Id);
+        Task<string> DeleteTopic(Guid Id);
     }
 }

@@ -9,12 +9,12 @@ namespace TestEducation.Aplication.Models.Topic
 {
     public class CreateTopicModel
     {
-        public string TopicName { get; set; }   
-        public int SubjectId    { get; set; } 
+        public string TopicName { get; set; }
+        public Guid SubjectId    { get; set; }
     }
 
-    public class CreateTopicResponseModel   
+    public class CreateTopicResponseModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

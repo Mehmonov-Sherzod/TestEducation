@@ -48,6 +48,9 @@ namespace TestEducation.Service.QuestionAnswerService
 
             var result = _validationRules.Validate(questionDTO);
 
+            
+            
+
             Question question = new Question
             {
                 QuestionText = questionDTO.QuestionText,
@@ -62,7 +65,7 @@ namespace TestEducation.Service.QuestionAnswerService
                        TranslateText = x.TranslateText
                    })
                    .ToList(),
-                Answers = questionDTO.Answers
+                   Answers = questionDTO.Answers
                    .Select(a => new Answer
                    {
                        AnswerText = a.Text,
@@ -89,7 +92,7 @@ namespace TestEducation.Service.QuestionAnswerService
             };
 
         }
-        public async Task<QuestionAnswerResponseModel> GetByIdQuestionAnswer(int Id, string lang)
+        public async Task<QuestionAnswerResponseModel> GetByIdQuestionAnswer(Guid Id, string lang)
         {
             Language QuestionLanguage = Language.uz;
 
@@ -135,23 +138,23 @@ namespace TestEducation.Service.QuestionAnswerService
             return question;
 
         }
-        public async Task<UpdateQuestionAnswerResponseModel> UpdateQuestionAnswer(int id, UpdateQuestionAnswerModel questionUpdateDTO)
+        public async Task<UpdateQuestionAnswerResponseModel> UpdateQuestionAnswer(Guid id, UpdateQuestionAnswerModel questionUpdateDTO)
         {
             #region
-            //string? urlImage = null;
-            //if (questionUpdateDTO.Image != null && questionUpdateDTO.Image.Length > 0)
-            //{
-            //    var extension = Path.GetExtension(questionUpdateDTO.Image.FileName);
-            //    var objectName = $"{Guid.NewGuid()}{extension}";
+            string? urlImage = null;
+            if (questionUpdateDTO.Image != null && questionUpdateDTO.Image.Length > 0)
+            {
+                var extension = Path.GetExtension(questionUpdateDTO.Image.FileName);
+                var objectName = $"{Guid.NewGuid()}{extension}";
 
-            //    using var mystream = questionUpdateDTO.Image.OpenReadStream();
-            //    urlImage = await _fileStorageService.UploadFileAsync(
-            //        "questions-image",
-            //        objectName,
-            //        mystream,
-            //        questionUpdateDTO.Image.ContentType
-            //    );
-            //}
+                using var mystream = questionUpdateDTO.Image.OpenReadStream();
+                urlImage = await _fileStorageService.UploadFileAsync(
+                    "questions-image",
+                    objectName,
+                    mystream,
+                    questionUpdateDTO.Image.ContentType
+                );
+            }
             #endregion
 
             Question question = await _appDbContext.Question
@@ -162,14 +165,14 @@ namespace TestEducation.Service.QuestionAnswerService
                 throw new NotFoundException("Question topilmadi.");
 
             question.QuestionText = questionUpdateDTO.QuestionText;
-            //question.ImageUrl = urlImage;
+            question.ImageUrl = urlImage;
 
-            HashSet<int> mySet = new HashSet<int>();
+            HashSet<Guid> mySet = new HashSet<Guid>();
 
             for (int j = 0; j < questionUpdateDTO.Answers.Count(); j++)
             {
                 mySet.Add(questionUpdateDTO.Answers[j].Id);
-                if (questionUpdateDTO.Answers[j].Id == 0)
+                if (questionUpdateDTO.Answers[j].Id == null)
                 {
                     Answer newAnswer = new Answer
                     {
@@ -205,7 +208,7 @@ namespace TestEducation.Service.QuestionAnswerService
 
             return new UpdateQuestionAnswerResponseModel { Id = question.Id };
         }
-        public async Task<string> DeleteQuestionAnswer(int Id)
+        public async Task<string> DeleteQuestionAnswer(Guid Id)
         {
             var question = await _appDbContext.Question
                 .Include(a => a.Answers)
@@ -240,7 +243,7 @@ namespace TestEducation.Service.QuestionAnswerService
             memoryStream1.Position = 0; // Streamni boshiga qaytarish, chunki undan o'qish mumkin bo'lishi uchun
             return memoryStream1;
         }
-        public async Task<PaginationResult<QuestionAnswerResponseModel>> CreateQuestionAnswerPage(PageOption model, string lang)
+        public async Task<PaginationResult<QuestionAnswerResponseModel>> CreateQuestionAnswerPage(PageOption model, string lang, Guid? TopicId ,Guid SubjectId)
         {
             Language QuestionLanguage = Language.uz;
 
@@ -251,7 +254,15 @@ namespace TestEducation.Service.QuestionAnswerService
             else if (lang == "eng")
                 QuestionLanguage = Language.eng;
 
-            var query = _appDbContext.Question.AsQueryable();
+            var query = _appDbContext.Question.Include(x => x.Topic)
+                .Where(x => x.Topic.SubjectId == SubjectId)
+                .AsQueryable();
+
+
+            if (!string.IsNullOrEmpty(TopicId.ToString()))
+            {
+                query = query.Where(x => x.TopicId == TopicId);
+            }
 
             if (!string.IsNullOrEmpty(model.Search))
             {
@@ -263,6 +274,7 @@ namespace TestEducation.Service.QuestionAnswerService
                 .Take(model.PageSize)
                 .Select(x => new QuestionAnswerResponseModel
                 {
+                    Id = x.Id,
                     QuestionText = x.QuestionText,
                     Image = x.ImageUrl,
                     QuestionLevel = x.Level,
@@ -273,9 +285,10 @@ namespace TestEducation.Service.QuestionAnswerService
                                ColumnName = x.ColumnName,
                                TranslateText = x.TranslateText,
                            }).ToList(),
-                    Answers = x.Answers
+                          Answers = x.Answers
                                   .Select(n => new AnswerResponseModel
                                   {
+                                      Id = n.Id,                                   
                                       AnswerText = n.AnswerText,
                                       Translate = n.answerTranslates
                                       .Where(x => x.LanguageId == QuestionLanguage)

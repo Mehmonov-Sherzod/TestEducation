@@ -32,7 +32,7 @@ namespace TestEducation.Controllers
 
         [RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdQuestionAnswer(int id, string lang)
+        public async Task<IActionResult> GetByIdQuestionAnswer(Guid id, string lang)
         {
             var result = await _questionAnswerService.GetByIdQuestionAnswer(id, lang);
 
@@ -41,7 +41,7 @@ namespace TestEducation.Controllers
 
         [RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateQuestionAnswer(int id, UpdateQuestionAnswerModel questionUpdateDTO)
+        public async Task<IActionResult> UpdateQuestionAnswer(Guid id, UpdateQuestionAnswerModel questionUpdateDTO)
         {
             var result = await _questionAnswerService.UpdateQuestionAnswer(id, questionUpdateDTO);
 
@@ -50,7 +50,7 @@ namespace TestEducation.Controllers
 
         [RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteQuestionAnswer(int id)
+        public async Task<IActionResult> DeleteQuestionAnswer(Guid id)
         {
             var result = await _questionAnswerService.DeleteQuestionAnswer(id);
 
@@ -85,9 +85,9 @@ namespace TestEducation.Controllers
 
         [RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpPost("get-all-page")]
-        public async Task<IActionResult> GetAllQuestionAnswerPage(PageOption model, string lang)
+        public async Task<IActionResult> GetAllQuestionAnswerPage(PageOption model, string lang, Guid TopicId, Guid SubjectId)
         {
-            var result = await _questionAnswerService.CreateQuestionAnswerPage(model, lang);
+            var result = await _questionAnswerService.CreateQuestionAnswerPage(model, lang, TopicId, SubjectId );
 
             return Ok(ApiResult<PaginationResult<QuestionAnswerResponseModel>>.Success(result));
 

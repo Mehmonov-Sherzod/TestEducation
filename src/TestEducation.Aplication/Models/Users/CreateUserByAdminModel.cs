@@ -12,7 +12,7 @@ namespace TestEducation.Aplication.Models.Users
             public string Email { get; set; }
             public string Password { get; set; }
             public string PhoneNumber { get; set; }
-            public List<int> RoleIds { get; set; }
+            public List<Guid> RoleIds { get; set; }
     }
     public class CreateAdminResponseModel : BaseResponseModel;
 }

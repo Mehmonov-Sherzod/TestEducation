@@ -9,8 +9,10 @@ namespace TestEducation.DataAcces.Persistence.Configurations
         public void Configure(EntityTypeBuilder<UserRole> builder)
         {
             builder.HasData(
-                new UserRole { UserId = 1, RoleId = 1 }
-                );
+                new UserRole { UserId = Guid.Parse("11111111-1111-1111-1111-111111111119"),
+                               RoleId = Guid.Parse("00000011-0000-0000-0000-000000000001"),
+                              }
+                   );
         }
     }
 }

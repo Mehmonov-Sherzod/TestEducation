@@ -12,7 +12,7 @@ namespace TestEducation.Aplication.Service.Impl
             _appDbContext = appDbContext;
 
         }
-        public async Task<bool> HasPermissionAsync(int userId, string permissionName)
+        public async Task<bool> HasPermissionAsync(Guid userId, string permissionName)
         {
             return await _appDbContext.UserRoles
                 .Where(u => u.UserId == userId)

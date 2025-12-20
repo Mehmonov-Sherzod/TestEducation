@@ -3,7 +3,7 @@
     public  class TestResponseModel
     {
         public string Name { get; set; }
-        public int SubjectId { get; set; }
+        public Guid SubjectId { get; set; }
         public int DurationMinutes { get; set; }
     }
 }

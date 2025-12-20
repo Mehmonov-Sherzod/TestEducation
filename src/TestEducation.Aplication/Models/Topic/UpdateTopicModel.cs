@@ -13,6 +13,6 @@ namespace TestEducation.Aplication.Models.Topic
 
     public class UpdateTopicResponseModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

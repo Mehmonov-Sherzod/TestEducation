@@ -7,9 +7,9 @@ namespace TestEducation.Service.UserService
     public interface IUserService
     {
         Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO);
-        Task<UserResponseModel> GetByIdUser(int id);
+        Task<UserResponseModel> GetByIdUser(Guid id);
         Task<UpdateUserResponseModel> UpdateUser(UpdateUserModel userDTO);
-        Task<string> DeleteByIdUser(int id);
+        Task<string> DeleteByIdUser(Guid id);
         Task<PaginationResult<UserResponseModel>> CreateUserPage(PageOption model);
         Task<LoginResponseModel> LoginAsync(LoginUserModel loginUserModel);
         Task<CreateAdminResponseModel> AdminCreateUserAsync(CreateUserByAdminModel createUserByAdminModel);

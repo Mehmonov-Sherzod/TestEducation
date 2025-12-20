@@ -9,7 +9,7 @@ namespace TestEducation.Aplication.Models.TestProcess
 {
     public class TestProcessModel
     {
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime EndsAt { get; set; }
         public int TotalQuestions { get; set; }

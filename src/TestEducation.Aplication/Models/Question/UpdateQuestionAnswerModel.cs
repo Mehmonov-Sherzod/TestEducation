@@ -7,7 +7,7 @@ namespace TestEducation.Aplication.Models.Question
     public class UpdateQuestionAnswerModel
     {
         public string QuestionText { get; set; }
-        //public IFormFile? Image { get; set; }
+        public IFormFile? Image { get; set; }
         public QuestionLevel Level { get; set; }
         public List<UpdateAnswerModel> Answers { get; set; }
     }

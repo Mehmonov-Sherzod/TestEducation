@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TestEducation.Models;
 
@@ -14,9 +9,9 @@ namespace TestEducation.DataAcces.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Role> builder)
         {
             builder.HasData(
-               new Role { Id = 1, Name = "SuperAdmin", Description = "Barcha tizimni boshqaradigan SuperAdmin rol" },
-               new Role { Id = 2, Name = "Admin", Description = "faqat student ustidan barcha ishlat test , subject , question yaratishlar" },
-               new Role { Id = 3, Name = "Student", Description = "Test yechish va natija ko‘rish" }
+               new Role { Id = Guid.Parse("00000011-0000-0000-0000-000000000001"), Name = "SuperAdmin", Description = "Barcha tizimni boshqaradigan SuperAdmin rol" },
+               new Role { Id = Guid.Parse("00000012-0000-0000-0000-000000000001"), Name = "Admin", Description = "faqat student ustidan barcha ishlat test , subject , question yaratishlar" },
+               new Role { Id = Guid.Parse("00000013-0000-0000-0000-000000000001"), Name = "Student", Description = "Test yechish va natija ko‘rish" }
                );
         }
     }

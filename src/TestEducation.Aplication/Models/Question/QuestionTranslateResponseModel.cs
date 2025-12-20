@@ -2,6 +2,7 @@
 {
     public class QuestionTranslateResponseModel
     {
+      
         public string ColumnName { get; set; }
 
         public string TranslateText { get; set; }

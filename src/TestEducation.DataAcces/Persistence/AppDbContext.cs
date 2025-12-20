@@ -24,6 +24,8 @@ namespace TestEducation.Data
         public DbSet<QuestionTranslation> questionTranslations { get; set; }
         public DbSet<Topic> topics { get; set; }    
 
+        public DbSet<SharedSource> sharedSources { get; set; }  
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

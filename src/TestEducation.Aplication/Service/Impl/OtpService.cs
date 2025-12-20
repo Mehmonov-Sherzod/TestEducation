@@ -15,7 +15,7 @@ namespace TestEducation.Aplication.Service.Impl
             _emailService = emailService;
         }
 
-        public async Task<string> GenerateAndSaveOtpAsync(int userId)
+        public async Task<string> GenerateAndSaveOtpAsync(Guid userId)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
@@ -37,7 +37,7 @@ namespace TestEducation.Aplication.Service.Impl
             return otpCode;
         }
 
-        public async Task<UserOTPs?> GetLatestOtpAsync(int userId, string code)
+        public async Task<UserOTPs?> GetLatestOtpAsync(Guid userId, string code)
         {
             return await _context.userOTPs
                 .Where(o => o.UserId == userId && o.Code == code && o.ExpiredAt > DateTime.UtcNow)
