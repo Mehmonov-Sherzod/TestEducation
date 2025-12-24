@@ -15,16 +15,17 @@ namespace TestEducation.Data
         public DbSet<User> Users { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Subject> Subjects { get; set; }
-        public DbSet<Order> Orders { get; set; }
         public DbSet<UserQuestion> UserQuestions { get; set; }
         public DbSet<UserQuestionAnswer> UserQuestionsAnswer { get; set; }
-        public DbSet<TestProcess> testProcesses { get; set; }
-        public DbSet<UserOTPs> userOTPs  { get; set; }
-        public DbSet<SubjectTranslate> subjectTranslates { get; set; }
-        public DbSet<QuestionTranslation> questionTranslations { get; set; }
-        public DbSet<Topic> topics { get; set; }    
-
-        public DbSet<SharedSource> sharedSources { get; set; }  
+        public DbSet<TestProcess> TestProcesses { get; set; }
+        public DbSet<UserOTPs> UserOTPs  { get; set; }
+        public DbSet<SubjectTranslate> SubjectTranslates { get; set; }
+        public DbSet<QuestionTranslation> QuestionTranslations { get; set; }
+        public DbSet<Topic> Topics { get; set; }    
+        public DbSet<UserBalance> UserBalances { get; set; }
+        public DbSet<SharedSource> SharedSources { get; set; }  
+        public DbSet<BalanceTransaction> BalanceTransactions { get; set; }
+        public DbSet<UserSharedSource> UserSharedSources   { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

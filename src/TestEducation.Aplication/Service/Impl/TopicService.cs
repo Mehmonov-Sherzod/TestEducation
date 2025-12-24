@@ -19,7 +19,7 @@ namespace TestEducation.Aplication.Service.Impl
 
         public async Task<CreateTopicResponseModel> CreateTopic(CreateTopicModel model)
         {
-            var exists = await _appDbContext.topics.AnyAsync(x => x.Name == model.TopicName && x.SubjectId == model.SubjectId);
+            var exists = await _appDbContext.Topics.AnyAsync(x => x.Name == model.TopicName && x.SubjectId == model.SubjectId);
 
             if (exists)
                 throw new BadRequestException("Bu mavzu allaqachon mavjud");
@@ -34,7 +34,7 @@ namespace TestEducation.Aplication.Service.Impl
                 SubjectId = model.SubjectId,
             };
 
-            await _appDbContext.topics.AddAsync(topic);
+            await _appDbContext.Topics.AddAsync(topic);
             await _appDbContext.SaveChangesAsync();
 
             return new CreateTopicResponseModel
@@ -45,12 +45,12 @@ namespace TestEducation.Aplication.Service.Impl
 
         public async Task<string> DeleteTopic(Guid Id)
         {
-            var topic = await _appDbContext.topics.FirstOrDefaultAsync(x => x.Id == Id);
+            var topic = await _appDbContext.Topics.FirstOrDefaultAsync(x => x.Id == Id);
 
             if (topic == null)
                 throw new NotFoundException("Mavzu topilmadi");
 
-            _appDbContext.topics.Remove(topic);
+            _appDbContext.Topics.Remove(topic);
             await _appDbContext.SaveChangesAsync();
 
             return "Mavzu o'chirildi";
@@ -58,7 +58,7 @@ namespace TestEducation.Aplication.Service.Impl
 
         public async Task<PaginationResult<SubjectTopicsResponse>> GetAllPageTopic(TopicPageModel model)
         {
-            var query = _appDbContext.topics
+            var query = _appDbContext.Topics
                         .Include(t => t.Subject)
                         .Include(t => t.Questions)
                         .AsQueryable();
@@ -106,7 +106,7 @@ namespace TestEducation.Aplication.Service.Impl
 
         public async Task<UpdateTopicResponseModel> UpdateTopic(UpdateTopicModel model, Guid Id)
         {
-            var topic = await _appDbContext.topics.FirstOrDefaultAsync(x => x.Id == Id);
+            var topic = await _appDbContext.Topics.FirstOrDefaultAsync(x => x.Id == Id);
 
             if (topic == null)
                 throw new NotFoundException("Mavzu topilmadi");

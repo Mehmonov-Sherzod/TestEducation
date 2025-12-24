@@ -12,7 +12,7 @@ namespace TestEducation.Domain.Entities
     {
         public Guid Id { get; set; } 
 
-        public Answer answer { get; set; }
+        public Answer Answer { get; set; }
 
         public Guid AnswerId { get; set; }
 

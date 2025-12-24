@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.Subject;
 using TestEducation.Aplication.Models.Topic;
@@ -27,6 +28,7 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<CreateTopicResponseModel>.Success(result));
         }
 
+        [Authorize]
         [HttpGet("paged")]
         public async Task<IActionResult> GetAllPageTopic([FromQuery] TopicPageModel topicPage)
         {

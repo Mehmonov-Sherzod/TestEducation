@@ -11,7 +11,8 @@ namespace TestEducation.Aplication.Models.SharedSource
     {
         public string Description { get; set; }
 
-        public IFormFile? Image { get; set; }
+        public IFormFile? File { get; set; }
+        public decimal Price { get; set; }
 
         public Guid SubjectId { get; set; }
     }

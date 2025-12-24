@@ -31,7 +31,7 @@ namespace TestEducation.Aplication.Service.Impl
                 ExpiredAt = DateTime.UtcNow.AddMinutes(5)
             };
 
-            await _context.userOTPs.AddAsync(otp);
+            await _context.UserOTPs.AddAsync(otp);
             await _context.SaveChangesAsync();
 
             return otpCode;
@@ -39,7 +39,7 @@ namespace TestEducation.Aplication.Service.Impl
 
         public async Task<UserOTPs?> GetLatestOtpAsync(Guid userId, string code)
         {
-            return await _context.userOTPs
+            return await _context.UserOTPs
                 .Where(o => o.UserId == userId && o.Code == code && o.ExpiredAt > DateTime.UtcNow)
                 .OrderByDescending(o => o.CreatedAt)
                 .FirstOrDefaultAsync();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TestEducation.Aplication.Models;
 using TestEducation.Aplication.Models.SharedSource;
 using TestEducation.Aplication.Service;
@@ -18,6 +19,7 @@ namespace TestEducation.API.Controllers
             _sharedSourceService = sharedSourceService;
         }
 
+        [RequestFormLimits(MultipartBodyLengthLimit = 52428800)]
         [RequirePermission(PermissionEnum.ManageAdmins)]
         [HttpPost("create-source")]
         public async Task<IActionResult> CreateShareSource(CreateSharedSource createSharedSource)
@@ -27,5 +29,22 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<CreateSharedSourceResponseModel>.Success(result));
         }
 
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> GetAllPageSourceBook(PageOption pageOption , Guid SubjectId)
+        {
+            var result = await _sharedSourceService.GetAllPageSource(pageOption, SubjectId);
+
+            return Ok(ApiResult<PaginationResult<SharedSourceResponse>>.Success(result));
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSource(Guid id)
+        {
+            var result = await _sharedSourceService.DeleteSourse(id);
+
+            return Ok(ApiResult<string>.Success(result));
+        }
     }
 }

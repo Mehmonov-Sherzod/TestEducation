@@ -9,7 +9,7 @@ namespace TestEducation.Models
         public bool IsCorrect { get; set; }
         public Guid QuestionId { get; set; }
         public Question Question { get; set; }
-        public List<AnswerTranslate> answerTranslates { get; set; }
+        public List<AnswerTranslate> AnswerTranslates { get; set; }
 
     }
 }

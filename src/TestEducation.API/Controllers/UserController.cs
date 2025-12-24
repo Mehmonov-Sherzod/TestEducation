@@ -13,7 +13,7 @@ namespace TestEducation.API.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private IUserService _userService;
+        private readonly  IUserService _userService;
         public UserController(IUserService userService)
         {
             _userService = userService;
@@ -59,7 +59,7 @@ namespace TestEducation.API.Controllers
             return Ok(ApiResult<string>.Success(result));
         }
 
-        [RequirePermission(PermissionEnum.ManageAdmins , PermissionEnum.ManageUsersStudent)]
+        [RequirePermission(PermissionEnum.ManageAdmins, PermissionEnum.ManageUsersStudent)]
         [HttpPost("get-all-page")]
         public async Task<IActionResult> CreateUserPage(PageOption model)
         {

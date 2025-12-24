@@ -15,7 +15,9 @@ namespace TestEducation.Models
         public bool IsVerified { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? ExpiredAt { get; set; }
-        public List<UserQuestion> userQuestions { get; set; }
+        public List<UserSharedSource> UserSharedSources { get; set; }   
+        public UserBalance UserBalance { get; set; }    
+        public List<UserQuestion> UserQuestions { get; set; }
         public List<UserRole> UserRoles { get; set; }
         public List<TestProcess> TestProcesses { get; set; }
     }

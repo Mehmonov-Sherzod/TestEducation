@@ -12,7 +12,6 @@ services:
     depends_on:
       - testeducation_database
       - minio
-      - testeducation_rabbitmq 
     networks:
       - testeducation_network
 
@@ -48,28 +47,13 @@ services:
       - "9000:9000"
       - "9001:9001"
 
-   # Rabbitmq 
-  testeducation_rabbitmq:
-    image: rabbitmq:3-management     
-    container_name: testeducation_rabbitmq
-    environment:
-     - RABBITMQ_DEFAULT_USER=guest     
-     - RABBITMQ_DEFAULT_PASS=guest  
-    networks:
-    - testeducation_network
-    volumes:
-    - rabbitmq_data:/var/lib/rabbitmq
-    ports:
-    - "5672:5672"  
-    - "15672:15672" 
 
 volumes:
   testeducation_database:
     name: testeducation_database
   minio_data:
     name: minio_data
-  rabbitmq_data:
-    name: rabbitmq_data
+
 
     
 networks:

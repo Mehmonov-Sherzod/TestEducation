@@ -9,7 +9,7 @@ namespace TestEducation.Domain.Entities
 {
     public class UserOTPs
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string Code { get; set; } = null!;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

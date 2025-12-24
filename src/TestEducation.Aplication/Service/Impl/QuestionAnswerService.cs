@@ -70,7 +70,7 @@ namespace TestEducation.Service.QuestionAnswerService
                    {
                        AnswerText = a.Text,
                        IsCorrect = a.IsCorrect,
-                       answerTranslates = a.Translate
+                       AnswerTranslates = a.Translate
                         .Select(x => new AnswerTranslate
                         {
                             LanguageId = x.LanguageId,
@@ -122,7 +122,7 @@ namespace TestEducation.Service.QuestionAnswerService
                                   .Select(n => new AnswerResponseModel
                                   {
                                       AnswerText = n.AnswerText,
-                                      Translate = n.answerTranslates
+                                      Translate = n.AnswerTranslates
                                       .Where(x => x.LanguageId == QuestionLanguage)
                                       .Select(e => new AnswerTranslateResponseModel
                                       {
@@ -290,7 +290,7 @@ namespace TestEducation.Service.QuestionAnswerService
                                   {
                                       Id = n.Id,                                   
                                       AnswerText = n.AnswerText,
-                                      Translate = n.answerTranslates
+                                      Translate = n.AnswerTranslates
                                       .Where(x => x.LanguageId == QuestionLanguage)
                                       .Select(e => new AnswerTranslateResponseModel
                                       {

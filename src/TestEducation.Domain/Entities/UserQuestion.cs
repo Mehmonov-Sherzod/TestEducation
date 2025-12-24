@@ -12,6 +12,6 @@ public class UserQuestion
     public int Order { get; set; }
     public Guid TextProcessId { get; set; }
     public TestProcess TestProcess { get; set; }
-    public List<UserQuestionAnswer> UserAnswers { get; set; } = new List<UserQuestionAnswer>();
+    public List<UserQuestionAnswer> UserAnswers { get; set; }
 }
 

@@ -1,4 +1,5 @@
 ﻿using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Http.Features;
 using Telegram.Bot;
 using TestEducation.API;
 using TestEducation.API.Filter;
@@ -13,14 +14,6 @@ using TestEducation.DataAcces;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.AddSingleton<ITelegramBotClient>(sp =>
-{
-    var token = builder.Configuration["TelegramBot:Token"];
-    return new TelegramBotClient(token);
-});
-var passwordHelper = new PasswordHelper();
-
-builder.Services.AddHostedService<TelegramServiceOtp>();
 
 builder.Services.AddControllers(config => config.Filters.Add(typeof(ValidateModelAttribute)))
     .AddJsonOptions(options =>
@@ -38,6 +31,11 @@ builder.Services.Configure<JwtOption>(builder.Configuration.GetSection("JwtOptio
 builder.Services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
 builder.Services.AddJwtAuth(builder.Configuration);
 builder.Services.AddSwagger(builder.Configuration);
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 52428800; // 50 MB
+});
 
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
@@ -57,18 +55,26 @@ var localizationOptions = new RequestLocalizationOptions()
     .AddSupportedCultures(supportedCultures)
     .AddSupportedUICultures(supportedCultures);
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://10.30.13.228:3000",
+                "http://10.30.13.228",
+                "https://10.30.13.228",
+                "http://localhost:3000"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
-
 app.UseRequestLocalization(localizationOptions);
-
-
-app.UseCors(corsPolicyBuilder =>
-    corsPolicyBuilder.AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-);
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -83,7 +89,7 @@ using (var scope = app.Services.CreateScope())
     context.SeedMapping();
 }
 
-app.UseHttpsRedirection();
+app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthentication();
 app.UseAuthorization();

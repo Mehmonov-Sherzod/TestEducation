@@ -41,7 +41,6 @@ namespace TestEducation.Aplication
             services.AddScoped<IQuestionAnswerService, QuestionAnswerService>();
             services.AddScoped<PasswordHelper>();
             services.AddScoped<VerifyPassword>();
-            services.AddSingleton<IRabbitMQproducer, RabbitMQProducer>();
             services.AddScoped<QuestionCreateValidator>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IEmailService, EmailService>();
@@ -49,6 +48,10 @@ namespace TestEducation.Aplication
             services.AddScoped<IClaimService, ClaimService>();
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<ISharedSourceService, SharedSourceService>();
+            services.AddScoped<IUserBalandeService, UserBalanceService>();
+            services.AddScoped<IBalanceTransactionService, BalanceTransactionService>();
+            services.AddScoped<IBoughtSourceBuyService, BoughtSourceBuyService>();
+            services.AddScoped<IUserSharedSourcesService, UserSharedSourcesService>();
             services.AddHttpContextAccessor();
 
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Security.Cryptography;
 using TestEducation.Aplication.Exceptions;
 using TestEducation.Aplication.Helpers.PasswordHashers;
 using TestEducation.Aplication.Models;
@@ -8,6 +9,7 @@ using TestEducation.Aplication.Models.Users;
 using TestEducation.Aplication.Service;
 using TestEducation.Aplication.Service.Impl;
 using TestEducation.Data;
+using TestEducation.Domain.Entities;
 using TestEducation.Models;
 
 namespace TestEducation.Service.UserService
@@ -41,14 +43,25 @@ namespace TestEducation.Service.UserService
             _claimService = claimService;
         }
 
+        private async Task<string> GenerateUniqueBalanceId()
+        {
+            string balanceId;
+
+            do
+            {
+                balanceId = RandomNumberGenerator.GetInt32(10000000, 99999999).ToString();
+            }
+            while (await _appDbContext.UserBalances.AnyAsync(b => b.BalanceCode == balanceId));
+
+            return balanceId;
+        }
+
         public async Task<CreateUserResponseModel> CreateUser(CreateUserModel userDTO)
         {
             var users = await _appDbContext.Users.AnyAsync(x => x.Email == userDTO.Email);
-
        
             if (users)
                 throw new BadRequestException("This Email already exists");
-
 
             string salt = Guid.NewGuid().ToString();
             var hashPass = passwordHelper.Encrypt(userDTO.Password, salt);
@@ -60,8 +73,12 @@ namespace TestEducation.Service.UserService
                 Password = hashPass,
                 PhoneNumber = userDTO.PhoneNumber,
                 CreatedAt = DateTime.UtcNow,
-                Salt = salt
-
+                Salt = salt,
+                UserBalance = new UserBalance
+                {
+                    BalanceCode = await GenerateUniqueBalanceId(),
+                    Amout = 0,
+                }      
             };
 
             _appDbContext.Users.Add(user);
@@ -78,7 +95,7 @@ namespace TestEducation.Service.UserService
                 await _appDbContext.UserRoles.AddAsync(userRole);
                 await _appDbContext.SaveChangesAsync();
             }
-
+            
             return new CreateUserResponseModel
             {
                 Id = user.Id,
@@ -288,7 +305,6 @@ namespace TestEducation.Service.UserService
             };
         }
 
-
         public async Task<CreateAdminResponseModel> AdminCreateUserAsync(CreateUserByAdminModel createUserByAdmin)
         {
             var users = await _appDbContext.Users
@@ -393,7 +409,7 @@ namespace TestEducation.Service.UserService
             if (user == null)
                 throw new BadRequestException(" Bunday email biln Foydalanuvchi topilmadi.");
 
-            var UserOtp = await _appDbContext.userOTPs
+            var UserOtp = await _appDbContext.UserOTPs
                 .Where(x => x.Code == userEmailReset.OtpCode)
                 .OrderByDescending(x => x.CreatedAt)
                 .FirstOrDefaultAsync();

@@ -49,22 +49,36 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.ToTable("AnswerTranslate");
                 });
 
-            modelBuilder.Entity("TestEducation.Domain.Entities.Order", b =>
+            modelBuilder.Entity("TestEducation.Domain.Entities.BalanceTransaction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<string>("ProductName")
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserAdmin")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Orders");
+                    b.ToTable("BalanceTransactions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111118-1111-1111-1111-111111111119"),
+                            CardNumber = "9860 3401 0311 6182",
+                            FullName = "Mehmonov Sherzod",
+                            UserAdmin = "@Sherzod_3466"
+                        });
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.QuestionTranslation", b =>
@@ -91,7 +105,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("questionTranslations");
+                    b.ToTable("QuestionTranslations");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.SharedSource", b =>
@@ -107,6 +121,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Property<string>("Path")
                         .HasColumnType("text");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
                     b.Property<Guid>("SubjectId")
                         .HasColumnType("uuid");
 
@@ -114,7 +131,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("sharedSources");
+                    b.ToTable("SharedSources");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.SubjectTranslate", b =>
@@ -141,7 +158,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("subjectTranslates");
+                    b.ToTable("SubjectTranslates");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.TestProcess", b =>
@@ -176,7 +193,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("testProcesses");
+                    b.ToTable("TestProcesses");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.Topic", b =>
@@ -196,7 +213,40 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("topics");
+                    b.ToTable("Topics");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.UserBalance", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amout")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("BalanceCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserBalances");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111112-1111-1111-1111-111111111119"),
+                            Amout = 9999999999m,
+                            BalanceCode = "675983410",
+                            UserId = new Guid("11111111-1111-1111-1111-111111111119")
+                        });
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.UserOTPs", b =>
@@ -222,7 +272,33 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("userOTPs");
+                    b.ToTable("UserOTPs");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.UserSharedSource", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("SourceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserSharedSources");
                 });
 
             modelBuilder.Entity("TestEducation.Models.Answer", b =>
@@ -529,13 +605,13 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Domain.Entities.AnswerTranslate", b =>
                 {
-                    b.HasOne("TestEducation.Models.Answer", "answer")
-                        .WithMany("answerTranslates")
+                    b.HasOne("TestEducation.Models.Answer", "Answer")
+                        .WithMany("AnswerTranslates")
                         .HasForeignKey("AnswerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("answer");
+                    b.Navigation("Answer");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.QuestionTranslation", b =>
@@ -582,10 +658,32 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Navigation("Subject");
                 });
 
+            modelBuilder.Entity("TestEducation.Domain.Entities.UserBalance", b =>
+                {
+                    b.HasOne("TestEducation.Models.User", "User")
+                        .WithOne("UserBalance")
+                        .HasForeignKey("TestEducation.Domain.Entities.UserBalance", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TestEducation.Domain.Entities.UserOTPs", b =>
                 {
                     b.HasOne("TestEducation.Models.User", "User")
                         .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.UserSharedSource", b =>
+                {
+                    b.HasOne("TestEducation.Models.User", "User")
+                        .WithMany("UserSharedSources")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -649,7 +747,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("TestEducation.Models.User", "User")
-                        .WithMany("userQuestions")
+                        .WithMany("UserQuestions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -718,7 +816,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.Answer", b =>
                 {
-                    b.Navigation("answerTranslates");
+                    b.Navigation("AnswerTranslates");
                 });
 
             modelBuilder.Entity("TestEducation.Models.Permission", b =>
@@ -749,9 +847,14 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.User", b =>
                 {
+                    b.Navigation("UserBalance")
+                        .IsRequired();
+
+                    b.Navigation("UserQuestions");
+
                     b.Navigation("UserRoles");
 
-                    b.Navigation("userQuestions");
+                    b.Navigation("UserSharedSources");
                 });
 
             modelBuilder.Entity("TestEducation.Models.UserQuestion", b =>
