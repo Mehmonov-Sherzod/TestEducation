@@ -18,7 +18,8 @@ namespace TestEducation.Domain.Entities
         public int? IncorrectAnswers { get; set; }
         public float? PercentageOfCorrectAnswers { get; set; }
         public double TotalScore { get; set; }
+        public bool IsFinished { get; set; }
+        public User User { get; set; }
         public List<UserQuestion> UserQuestions { get; set; }
-        public List<User> User { get; set; }
     }
 }

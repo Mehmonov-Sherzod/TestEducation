@@ -1,0 +1,58 @@
+{
+  "QuestionText": "2 + 3 = ?",
+  "TopicId": "019b368e-b3ab-7212-8122-409d91a3befc",
+  "Level": 0,
+  "Translate": [
+    {
+      "LanguageId": 0,
+      "ColumnName": "QuestionText",
+      "TranslateText": "2 + 3 = ?"
+    }
+  ],
+  "Answers": [
+    {
+      "Text": "5",
+      "IsCorrect": true,
+      "Translate": [
+        {
+          "LanguageId": 0,
+          "ColumnName": "Text",
+          "TranslateText": "5"
+        }
+      ]
+    },
+    {
+      "Text": "4",
+      "IsCorrect": false,
+      "Translate": [
+        {
+          "LanguageId": 0,
+          "ColumnName": "Text",
+          "TranslateText": "4"
+        }
+      ]
+    },
+    {
+      "Text": "6",
+      "IsCorrect": false,
+      "Translate": [
+        {
+          "LanguageId": 0,
+          "ColumnName": "Text",
+          "TranslateText": "6"
+        }
+      ]
+    },
+    {
+      "Text": "7",
+      "IsCorrect": false,
+      "Translate": [
+        {
+          "LanguageId": 0,
+          "ColumnName": "Text",
+          "TranslateText": "7"
+        }
+      ]
+    }
+  ]
+}

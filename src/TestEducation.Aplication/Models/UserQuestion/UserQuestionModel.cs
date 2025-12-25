@@ -1,4 +1,5 @@
-﻿using TestEducation.Aplication.Models.TestProcess;
+﻿
+using TestEducation.Aplication.Models.TestProcsess;
 using TestEducation.Aplication.Models.UserQuestionAnswer;
 
 namespace TestEducation.Aplication.Models.UserQuestion
@@ -9,7 +10,7 @@ namespace TestEducation.Aplication.Models.UserQuestion
         public Guid QuestionId { get; set; }
         public int Order { get; set; }
         public Guid TextProcessId { get; set; }
-        public TestProcessModel TestProcess { get; set; }
+        public TestProcessResponce TestProcess { get; set; }
         public List<UserQuestionAnswerModel> UserAnswers { get; set; }
     }
 }

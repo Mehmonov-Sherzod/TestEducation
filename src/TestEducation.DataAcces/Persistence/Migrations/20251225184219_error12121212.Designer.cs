@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestEducation.Data;
@@ -11,9 +12,11 @@ using TestEducation.Data;
 namespace TestEducation.DataAcces.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251225184219_error12121212")]
+    partial class error12121212
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,14 +135,10 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("TotalQuestions")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
+                        .HasColumnType("integer");
 
                     b.Property<double>("TotalScore")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("double precision")
-                        .HasDefaultValue(0.0);
+                        .HasColumnType("double precision");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -148,7 +147,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TestProcesses", (string)null);
+                    b.ToTable("TestProcesses");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.Topic", b =>
@@ -687,7 +686,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.HasOne("TestEducation.Domain.Entities.TestProcess", "TestProcess")
                         .WithMany("UserQuestions")
                         .HasForeignKey("TestProcessId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TestEducation.Models.User", "User")

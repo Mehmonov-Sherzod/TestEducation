@@ -70,12 +70,13 @@ namespace TestEducation.Aplication.Service.Impl
             return BalanceUser; 
         }
 
-        public async Task<string> UpdateUserBalance(UpdateUserBalance updateUserBalance, Guid Id)
+        public async Task<string> UpdateUserBalance(UpdateUserBalance updateUserBalance, Guid Id, decimal Amount)
         {
             var Balance = await _appDbContext.UserBalances.FirstOrDefaultAsync(x => x.Id == Id);
 
            
             Balance.Amout = updateUserBalance.Amout;
+            Balance.Amout += Amount;
 
             _appDbContext.UserBalances.Update(Balance);
             await _appDbContext.SaveChangesAsync();

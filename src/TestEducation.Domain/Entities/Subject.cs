@@ -6,6 +6,8 @@ namespace TestEducation.Models
     {
         public Guid Id { get; set; } 
         public string Name { get; set; }
+
+        public List<Question> Questions { get; set; }
         public List<SubjectTranslate> SubjectTranslates { get; set; }
     }
 }

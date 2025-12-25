@@ -21,7 +21,7 @@ namespace TestEducation.Controllers
             _fileStoreageService = fileStorageService;
         }
 
-        [RequirePermission(PermissionEnum.ManageQuestions)]
+        //[RequirePermission(PermissionEnum.ManageQuestions)]
         [HttpPost]
         public async Task<IActionResult> CreateQuestionAnswer(CreateQuestionModel questionDTO)
         {

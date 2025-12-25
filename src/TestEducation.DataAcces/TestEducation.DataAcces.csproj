@@ -19,8 +19,5 @@
   <ItemGroup>
     <ProjectReference Include="..\TestEducation.Domain\TestEducation.Domain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Persistence\Migrations\" />
-  </ItemGroup>
 
 </Project>

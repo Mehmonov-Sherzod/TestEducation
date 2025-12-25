@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestEducation.Data;
@@ -11,9 +12,11 @@ using TestEducation.Data;
 namespace TestEducation.DataAcces.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251225094133_1234fds121")]
+    partial class _1234fds121
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,33 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.AnswerTranslate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AnswerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ColumnName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TranslateText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnswerId");
+
+                    b.ToTable("AnswerTranslate");
+                });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.BalanceTransaction", b =>
                 {
@@ -52,6 +82,33 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                             FullName = "Mehmonov Sherzod",
                             UserAdmin = "@Sherzod_3466"
                         });
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.QuestionTranslation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ColumnName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TranslateText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("QuestionTranslations");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.SharedSource", b =>
@@ -122,9 +179,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Property<int?>("IncorrectAnswers")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("boolean");
-
                     b.Property<float?>("PercentageOfCorrectAnswers")
                         .HasColumnType("real");
 
@@ -132,23 +186,17 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("TotalQuestions")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
+                        .HasColumnType("integer");
 
                     b.Property<double>("TotalScore")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("double precision")
-                        .HasDefaultValue(0.0);
+                        .HasColumnType("double precision");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TestProcesses", (string)null);
+                    b.ToTable("TestProcesses");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.Topic", b =>
@@ -487,6 +535,9 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Property<Guid>("TestProcessId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("TextProcessId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("UserId", "QuestionId");
 
                     b.HasIndex("QuestionId");
@@ -550,6 +601,43 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("TestProcessUser", b =>
+                {
+                    b.Property<Guid>("TestProcessesId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("TestProcessesId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TestProcessUser");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.AnswerTranslate", b =>
+                {
+                    b.HasOne("TestEducation.Models.Answer", "Answer")
+                        .WithMany("AnswerTranslates")
+                        .HasForeignKey("AnswerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Answer");
+                });
+
+            modelBuilder.Entity("TestEducation.Domain.Entities.QuestionTranslation", b =>
+                {
+                    b.HasOne("TestEducation.Models.Question", "Question")
+                        .WithMany("QuestionTranslations")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+                });
+
             modelBuilder.Entity("TestEducation.Domain.Entities.SharedSource", b =>
                 {
                     b.HasOne("TestEducation.Models.Subject", "Subject")
@@ -570,17 +658,6 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Subject");
-                });
-
-            modelBuilder.Entity("TestEducation.Domain.Entities.TestProcess", b =>
-                {
-                    b.HasOne("TestEducation.Models.User", "User")
-                        .WithMany("TestProcesses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TestEducation.Domain.Entities.Topic", b =>
@@ -641,7 +718,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
             modelBuilder.Entity("TestEducation.Models.Question", b =>
                 {
                     b.HasOne("TestEducation.Models.Subject", "Subject")
-                        .WithMany("Questions")
+                        .WithMany()
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -687,7 +764,7 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.HasOne("TestEducation.Domain.Entities.TestProcess", "TestProcess")
                         .WithMany("UserQuestions")
                         .HasForeignKey("TestProcessId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TestEducation.Models.User", "User")
@@ -731,6 +808,21 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TestProcessUser", b =>
+                {
+                    b.HasOne("TestEducation.Domain.Entities.TestProcess", null)
+                        .WithMany()
+                        .HasForeignKey("TestProcessesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestEducation.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TestEducation.Domain.Entities.TestProcess", b =>
                 {
                     b.Navigation("UserQuestions");
@@ -741,6 +833,11 @@ namespace TestEducation.DataAcces.Persistence.Migrations
                     b.Navigation("Questions");
                 });
 
+            modelBuilder.Entity("TestEducation.Models.Answer", b =>
+                {
+                    b.Navigation("AnswerTranslates");
+                });
+
             modelBuilder.Entity("TestEducation.Models.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
@@ -749,6 +846,8 @@ namespace TestEducation.DataAcces.Persistence.Migrations
             modelBuilder.Entity("TestEducation.Models.Question", b =>
                 {
                     b.Navigation("Answers");
+
+                    b.Navigation("QuestionTranslations");
 
                     b.Navigation("UserQuestions");
                 });
@@ -762,15 +861,11 @@ namespace TestEducation.DataAcces.Persistence.Migrations
 
             modelBuilder.Entity("TestEducation.Models.Subject", b =>
                 {
-                    b.Navigation("Questions");
-
                     b.Navigation("SubjectTranslates");
                 });
 
             modelBuilder.Entity("TestEducation.Models.User", b =>
                 {
-                    b.Navigation("TestProcesses");
-
                     b.Navigation("UserBalance")
                         .IsRequired();
 

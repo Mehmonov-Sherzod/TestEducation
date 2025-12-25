@@ -43,9 +43,9 @@ namespace TestEducation.API.Controllers
         [RequirePermission(PermissionEnum.ManageAdmins)]
         [HttpPut]
 
-        public async Task<IActionResult> UpdateUserBalance(UpdateUserBalance updateUserBalance , Guid Id)
+        public async Task<IActionResult> UpdateUserBalance(UpdateUserBalance updateUserBalance , Guid Id, decimal Amount)
         {
-            var result = await _userBalandeService.UpdateUserBalance(updateUserBalance, Id);
+            var result = await _userBalandeService.UpdateUserBalance(updateUserBalance, Id, Amount);
 
             return Ok(ApiResult<string>.Success(result));
 

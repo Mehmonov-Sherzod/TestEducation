@@ -52,6 +52,7 @@ namespace TestEducation.Aplication
             services.AddScoped<IBalanceTransactionService, BalanceTransactionService>();
             services.AddScoped<IBoughtSourceBuyService, BoughtSourceBuyService>();
             services.AddScoped<IUserSharedSourcesService, UserSharedSourcesService>();
+            services.AddScoped<IStartTestService , StartTestService>();
             services.AddHttpContextAccessor();
 
 

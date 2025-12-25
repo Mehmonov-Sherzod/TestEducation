@@ -11,13 +11,9 @@ namespace TestEducation.Domain.Entities
     {
         public Guid Id  { get; set; }
         public string Description { get; set; }
-
         public string? Path { get; set; }   
-
         public Guid SourceId { get; set; }
-
         public User User { get; set; }  
-
         public Guid UserId { get; set; }    
     }
 }

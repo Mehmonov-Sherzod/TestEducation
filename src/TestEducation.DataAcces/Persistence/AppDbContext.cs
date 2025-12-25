@@ -20,7 +20,6 @@ namespace TestEducation.Data
         public DbSet<TestProcess> TestProcesses { get; set; }
         public DbSet<UserOTPs> UserOTPs  { get; set; }
         public DbSet<SubjectTranslate> SubjectTranslates { get; set; }
-        public DbSet<QuestionTranslation> QuestionTranslations { get; set; }
         public DbSet<Topic> Topics { get; set; }    
         public DbSet<UserBalance> UserBalances { get; set; }
         public DbSet<SharedSource> SharedSources { get; set; }  

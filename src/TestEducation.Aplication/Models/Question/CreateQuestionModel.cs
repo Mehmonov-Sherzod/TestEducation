@@ -9,10 +9,9 @@ namespace TestEducation.Aplication.Models.Question
     {
         public string QuestionText { get; set; }
         public Guid TopicId { get; set; }
+        public Guid SubjectId { get; set; }
         public IFormFile? Image { get; set; }
         public QuestionLevel Level { get; set; }
-
-        public List<CreateQuestionTranslateModel> Translate { get; set; }
         public List<CreateAnswerModel> Answers { get; set; }
     }
     public class CreateQuestionAnswerResponseModel : BaseResponseModel;

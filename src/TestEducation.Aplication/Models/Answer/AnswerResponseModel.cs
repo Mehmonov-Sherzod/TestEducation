@@ -5,6 +5,5 @@
         public Guid Id { get; set; }
         public string AnswerText { get; set; }
 
-        public List<AnswerTranslateResponseModel> Translate { get; set; }
     }
 }

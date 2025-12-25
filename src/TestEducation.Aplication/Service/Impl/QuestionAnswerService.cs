@@ -46,38 +46,20 @@ namespace TestEducation.Service.QuestionAnswerService
                 );
             }
 
-            var result = _validationRules.Validate(questionDTO);
-
+            var result = _validationRules.Validate(questionDTO);          
             
-            
-
             Question question = new Question
             {
                 QuestionText = questionDTO.QuestionText,
                 TopicId = questionDTO.TopicId,
+                SubjectId = questionDTO.SubjectId,  
                 ImageUrl = urlImage,
-                Level = questionDTO.Level,
-                QuestionTranslations = questionDTO.Translate
-                   .Select(x => new QuestionTranslation
-                   {
-                       LanguageId = x.LanguageId,
-                       ColumnName = x.ColumnName,
-                       TranslateText = x.TranslateText
-                   })
-                   .ToList(),
+                Level = questionDTO.Level,              
                    Answers = questionDTO.Answers
                    .Select(a => new Answer
                    {
                        AnswerText = a.Text,
-                       IsCorrect = a.IsCorrect,
-                       AnswerTranslates = a.Translate
-                        .Select(x => new AnswerTranslate
-                        {
-                            LanguageId = x.LanguageId,
-                            ColumnName = x.ColumnName,
-                            TranslateText = x.TranslateText
-                        }).ToList(),
-
+                       IsCorrect = a.IsCorrect,                     
                    })
                    .ToList(),
             };
@@ -94,15 +76,6 @@ namespace TestEducation.Service.QuestionAnswerService
         }
         public async Task<QuestionAnswerResponseModel> GetByIdQuestionAnswer(Guid Id, string lang)
         {
-            Language QuestionLanguage = Language.uz;
-
-            if (lang == "uz")
-                QuestionLanguage = Language.uz;
-            else if (lang == "ru")
-                QuestionLanguage = Language.rus;
-            else if (lang == "eng")
-                QuestionLanguage = Language.eng;
-
 
             var question = await _appDbContext.Question
                     .Where(x => x.Id == Id)
@@ -110,25 +83,11 @@ namespace TestEducation.Service.QuestionAnswerService
                     {
                         QuestionText = x.QuestionText,
                         Image = x.ImageUrl,
-                        QuestionLevel = x.Level,
-                        Translate = x.QuestionTranslations
-                        .Where(x => x.LanguageId == QuestionLanguage)
-                           .Select(x => new QuestionTranslateResponseModel
-                           {
-                               ColumnName = x.ColumnName,
-                               TranslateText = x.TranslateText,
-                           }).ToList(),
+                        QuestionLevel = x.Level,                      
                         Answers = x.Answers
                                   .Select(n => new AnswerResponseModel
                                   {
-                                      AnswerText = n.AnswerText,
-                                      Translate = n.AnswerTranslates
-                                      .Where(x => x.LanguageId == QuestionLanguage)
-                                      .Select(e => new AnswerTranslateResponseModel
-                                      {
-                                          ColumnName = e.ColumnName,
-                                          TranslateText = e.TranslateText,
-                                      }).ToList()
+                                      AnswerText = n.AnswerText,                                    
                                   }).ToList()
                     }).FirstOrDefaultAsync();
 
@@ -245,15 +204,6 @@ namespace TestEducation.Service.QuestionAnswerService
         }
         public async Task<PaginationResult<QuestionAnswerResponseModel>> CreateQuestionAnswerPage(PageOption model, string lang, Guid? TopicId ,Guid SubjectId)
         {
-            Language QuestionLanguage = Language.uz;
-
-            if (lang == "uz")
-                QuestionLanguage = Language.uz;
-            else if (lang == "ru")
-                QuestionLanguage = Language.rus;
-            else if (lang == "eng")
-                QuestionLanguage = Language.eng;
-
             var query = _appDbContext.Question.Include(x => x.Topic)
                 .Where(x => x.Topic.SubjectId == SubjectId)
                 .AsQueryable();
@@ -278,25 +228,11 @@ namespace TestEducation.Service.QuestionAnswerService
                     QuestionText = x.QuestionText,
                     Image = x.ImageUrl,
                     QuestionLevel = x.Level,
-                    Translate = x.QuestionTranslations
-                        .Where(x => x.LanguageId == QuestionLanguage)
-                           .Select(x => new QuestionTranslateResponseModel
-                           {
-                               ColumnName = x.ColumnName,
-                               TranslateText = x.TranslateText,
-                           }).ToList(),
                           Answers = x.Answers
                                   .Select(n => new AnswerResponseModel
                                   {
                                       Id = n.Id,                                   
-                                      AnswerText = n.AnswerText,
-                                      Translate = n.AnswerTranslates
-                                      .Where(x => x.LanguageId == QuestionLanguage)
-                                      .Select(e => new AnswerTranslateResponseModel
-                                      {
-                                          ColumnName = e.ColumnName,
-                                          TranslateText = e.TranslateText,
-                                      }).ToList()
+                                      AnswerText = n.AnswerText,                                    
                                   }).ToList()
                 }).ToListAsync();
 

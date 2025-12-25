@@ -15,6 +15,6 @@ namespace TestEducation.Aplication.Service
 
         Task<PaginationResult<GetAllPageUserBalance>> GetAllPageUserBalance(PageOption pageOption);
 
-        Task<string> UpdateUserBalance(UpdateUserBalance updateUserBalance, Guid Id);
+        Task<string> UpdateUserBalance(UpdateUserBalance updateUserBalance, Guid Id , decimal Amount);
     }
 }
